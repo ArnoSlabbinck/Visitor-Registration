@@ -38,9 +38,6 @@ namespace VisitorRegistrationApp
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            services.AddScoped<CompanyRepository>();
-
-            services.AddScoped<EmployeeRepository>();
 
             services.AddScoped<IVisitorService, VisitorService>();
 

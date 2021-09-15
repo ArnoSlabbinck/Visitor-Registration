@@ -5,12 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using VisitorRegistrationApp.Data;
 using VisitorRegistrationApp.Models;
 
@@ -56,6 +52,13 @@ namespace VisitorRegistrationApp.Controllers
             
             return View(visitorViewModel);
         }
+        [Authorize]
+        [HttpGet]
+        public IActionResult SignIn()
+        {
+            return View();
+        }
+
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public IActionResult Service( [FromForm] VisitorViewModel visitorViewModel)

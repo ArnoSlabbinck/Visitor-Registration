@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using VisitorRegistrationApp.Data;
 using VisitorRegistrationApp.Data.Entities;
@@ -279,7 +275,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
                         _logger.LogInformation("Visitor can now visit the building.");
 
 
-                        return Partial("SignIn");
+                        return RedirectToAction("SignIn", "Home");
 
 
 
@@ -289,7 +285,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
                     _logger.LogInformation("Visitor can now visit the building.");
 
 
-                    return Partial("SignIn");
+                    return RedirectToAction("SignIn", "Home");
 
                 }
                 foreach (var error in result.Errors)

@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 
@@ -28,7 +25,7 @@ namespace VisitorRegistrationApp.Data.Repository
 
         public async Task<TEntity> Delete(int id)
         {
-            var entity = await applicationDbContext.Set<TEntity>().FindAsync(); 
+            var entity = await applicationDbContext.Set<TEntity>().FindAsync(id); 
             if(entity == null)
             {
                 return entity; 
@@ -42,7 +39,7 @@ namespace VisitorRegistrationApp.Data.Repository
             return await applicationDbContext.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task<List<TEntity>> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAll()
         {
             return await applicationDbContext.Set<TEntity>().ToListAsync();
         }
@@ -57,7 +54,7 @@ namespace VisitorRegistrationApp.Data.Repository
 
     public interface IRepository<T> where T : class, IEntity
     {
-        Task<List<T>> GetAll();
+        Task<IEnumerable<T>> GetAll();
 
         Task<T> Get(int id);
 

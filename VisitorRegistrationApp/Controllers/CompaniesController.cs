@@ -2,12 +2,9 @@
 using BL.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
-using VisitorRegistrationApp.Data.Repository;
 using VisitorRegistrationApp.Models;
 
 namespace VisitorRegistrationApp.Controllers
@@ -15,12 +12,11 @@ namespace VisitorRegistrationApp.Controllers
     public class CompaniesController : Controller
     {
         private readonly IMapper mapper;
-        private readonly CompanyRepository companyRepository;
         private readonly ICompanyService companyService;
-        public CompaniesController(IMapper mapper, CompanyRepository companyRepository, 
+        public CompaniesController(IMapper mapper,
             ICompanyService companyService)
         {
-            this.companyRepository = companyRepository;
+         
             this.mapper = mapper;
             this.companyService = companyService;
         }
@@ -28,17 +24,21 @@ namespace VisitorRegistrationApp.Controllers
         public ActionResult Index()
         {
             //Ophalen van alle companies in Building
-            var results =  companyRepository.GetAll().Result;
+            var results = companyService.getAll().Result; 
             
-            List<CompanyViewModel> AllCompanies = mapper.Map<List<CompanyViewModel>>(results); 
+            IEnumerable<CompanyViewModel> AllCompanies = mapper.Map<IEnumerable<CompanyViewModel>>(results); 
 
             return View(AllCompanies);
         }
 
         // GET: CompaniesController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int? id)
         {
-            var Company = companyRepository.Get(id);
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            var Company = companyService.Get((int)id).Result;
             CompanyViewModel company = mapper.Map<CompanyViewModel>(Company);
             return View(company);
         }
@@ -58,7 +58,7 @@ namespace VisitorRegistrationApp.Controllers
             {
                 companyViewModel.Building = companyService.GetBuilding();
                 var results = mapper.Map<Company>(companyViewModel);
-                await companyRepository.Add(results);
+                companyService.Add(results);
                 
                 return RedirectToAction(nameof(Index));
             }
@@ -71,16 +71,23 @@ namespace VisitorRegistrationApp.Controllers
         // GET: CompaniesController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            CompanyViewModel companyView = mapper.Map<CompanyViewModel>(companyService.Get(id).Result);
+            return View(companyView);
         }
 
         // POST: CompaniesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(CompanyViewModel companyView)
         {
+          
             try
             {
+                var result = mapper.Map<Company>(companyView);
+                companyService.Update(result);
+                
+                // Omvormen van View Model naar Company 
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -90,9 +97,14 @@ namespace VisitorRegistrationApp.Controllers
         }
 
         // GET: CompaniesController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            CompanyViewModel companyView = mapper.Map<CompanyViewModel>(companyService.Get((int)id).Result);
+            return View(companyView);
         }
 
         // POST: CompaniesController/Delete/5
@@ -102,6 +114,7 @@ namespace VisitorRegistrationApp.Controllers
         {
             try
             {
+                companyService.Delete((int)id);
                 return RedirectToAction(nameof(Index));
             }
             catch
