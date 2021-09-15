@@ -1,0 +1,207 @@
+﻿
+@page
+
+@model RegisterModel
+@{
+    ViewData["Title"] = "Sign In";
+
+
+
+}
+
+
+
+
+
+<a class="btn btn-info" asp-controller="Home" asp-action="Service"><i class="glyphicon glyphicon-arrow-left"></i>Back</a>
+
+<h1>Visitor Infomation</h1>
+
+
+<!-- Alert when picking wrong date -->
+<div class="alert alert-danger" role="alert" style="display:none">
+    You need to pick the right date for your meeting. Can not select start date before today
+</div>
+
+<form class="row g-3" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="col-md-6">
+        <label asp-for="Input.Email"></label>
+        <input type="email" asp-for="Input.Email" class="form-control" placeholder="ernest.simmons@company.com" />
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Input.PhoneNumber"></label>
+        <input type="tel" asp-for="Input.PhoneNumber" class="form-control" placeholder="(04) ..." />
+        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Input.FirstName"></label>
+        <input type="text" asp-for="Input.FirstName" class="form-control" placeholder="Ernest" />
+        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Input.LastName"></label>
+        <input type="text" asp-for="Input.LastName" class="form-control" placeholder="Simmons" />
+        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="Male" value="true" asp-for="Input.Gender">
+            <label class="form-check-label" for="male">Male</label><br>
+            <span asp-validation-for="Input.Gender" class="text-danger"></span>
+        </div>
+
+
+    </div>
+    <div class="col-md-6">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="Female" value="false" asp-for="Input.Gender">
+            <label class="form-check-label" for="female">Female</label><br>
+            <span asp-validation-for="Input.Gender" class="text-danger"></span>
+        </div>
+
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Input.VisitedCompany"></label>
+        <select id="selectedCompany" asp-items="Model.Input.AllCompanies" asp-for="Input.VisitedCompany" class="form-control"></select>
+        <span asp-validation-for="Input.VisitedCompany" class="text-danger"></span>
+    </div>
+    <div class="col-md-12">
+        <label asp-for="Input.ApppointmentWith"></label>
+        <select id="selectedEmployee" asp-items="Model.Input.AllEmployeesOfCompany" asp-for="Input.ApppointmentWith" class="form-control"></select>
+        <span asp-validation-for="Input.AllEmployeesOfCompany" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Input.RegistrationDay"></label>
+        <input id="day" type="datetime-local" required pattern="\d{4}-\d{2}-\d{2}" asp-for="Input.RegistrationDay" class="form-control" placeholder="ernest.simmons@company.com" />
+        <span asp-validation-for="Input.RegistrationDay" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Input.Starttime"></label>
+        <input type="time" asp-for="Input.Starttime" min="09:00" max="18:00" class="form-control" />
+        <span asp-validation-for="Input.Starttime" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Input.EndTime"></label>
+        <input type="time" asp-for="Input.EndTime" min="09:00" max="18:00" class="form-control" />
+        <span asp-validation-for="Input.EndTime" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   value=""
+                   id="invalidCheck2"
+                   required />
+            <label class="form-check-label" for="invalidCheck2">
+                Agree to terms and conditions
+            </label>
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Check in</button>
+
+    </div>
+</form>
+
+
+
+
+
+<script>
+    $('#selectedEmployee').change(function () {
+        var data = { employee: $("#selectedEmployee option:selected").text() }
+        $.ajax({
+            type: 'GET',
+            url: '/Identity/Account/Register?handler=SetEmployee',
+            data: data,
+
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+    $("#selectedCompany").change(function (e) {
+        var employees = document.getElementById("selectedEmployee");
+        e.preventDefault();
+        var selectedCompany = $(this).val();
+
+        var data = $.ajax({
+            method: "GET",
+            url: '/Identity/Account/Register?handler=Employees',
+            data: {
+                selectedCompany: selectedCompany
+            },
+            error: function (req, err) {
+                console.log('my message' + err);
+            },
+            success: function () {
+
+                if (typeof data != "undefined") {
+                    // variable is undefined
+                    console.log(data);
+                    postSelectedEmployees(data.responseJSON, employees);
+                    //Binden van selected Data aan mijn input model
+
+                }
+
+
+
+
+            }
+        });
+
+
+
+    });
+
+    function postSelectedEmployees(data, employees) {
+
+        let index = 0;
+        console.log(data);
+        Object.entries(data).forEach(function (value) {
+
+            var opt = document.createElement("option");
+            opt.value = index;
+            opt.innerHTML = value[1]["text"];
+            employees.appendChild(opt);
+            index++;
+
+        });
+
+    }
+
+
+
+    //Maken van een validation voor opgegeven uren en datum
+    $("#day").change(function (e) {
+        // Breng in a datetime en vergelijk of de opgegeven value kleiner is dan de value gegeven
+        var today = Date.now();
+        var selectedDate = Date.parse($(this).val());
+        if (selectedDate < today) {
+            document.getElementById("day").value = "";
+            document.getElementsByClassName("alert")[0].style.display = "inline";
+            setTimeout(function () {
+                document.getElementsByClassName("alert")[0].style.display = "none";
+            }, 5000);
+
+
+
+        }
+        // Als dat zo is geef een alert en reset de value tot  dag van vandaag
+    });
+
+
+
+</script>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

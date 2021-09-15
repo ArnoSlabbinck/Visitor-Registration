@@ -1,0 +1,27 @@
+﻿@model VisitorViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+}
+
+
+
+<form id="ServiceForm" method="post" asp-controller="Home" asp-action="Service">
+    <h1>How may I help you ? </h1>
+    <div class="form-group ">
+        <h3>I am </h3>
+        <div class="col-md-6">
+            <select asp-items="Model.Purpose" asp-for="ChosenPurpose" class="form-control"></select>
+            <span asp-validation-for="ChosenPurpose" class="text-danger"></span>
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:175px;margin-top:125px;">Continue</button>
+</form>
+
+
+
+
+

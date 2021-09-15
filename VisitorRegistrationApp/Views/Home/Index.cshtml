@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="text-center home-page bg">
+    <h1 class="display-4">Welcome To The Four Wings </h1>
+    <h1>Sign In</h1>
+    <a class="btn btn-link" asp-controller="Home" asp-action="Service" style="text-decoration:none"> Start Here</a>
+</div>
+
+<style>
+    
+    @*.home-page {
+        height: 100%;
+        width:100%;
+        
+    }
+
+    .bg {
+        /* The image used */
+        background-image: url('@Url.Content("~/photos/lobby.jpg")');
+        /* Full height */
+        height: 100%;
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }*@
+</style>
+
+

@@ -1,0 +1,92 @@
+﻿@model IEnumerable<VisitorViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var searchTerm = (string)ViewData["Search"];
+    int counter = 1;
+}
+
+<h1>Visitors</h1>
+
+@if (string.IsNullOrEmpty(searchTerm))
+{
+
+    <h1> You need to fill in a keyword to find something</h1>
+}
+
+else
+{
+
+    @if (!Model.Any())
+    {
+        <h1>There were no Users found with search term : @searchTerm .Try Again</h1>
+
+        }
+        else
+        {
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Company</th>
+                        <th scope="col">Host</th>
+                        <th scope="col">Check-In/Check-Out</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var visitor in Model)
+                    {
+                    <tr>
+                            <th>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        
+                                    </label>
+                                </div>
+                            </th>
+                            <th scope="row">@visitor.Fullname</th>
+                            <th>@visitor.Email</th>
+                            @if (visitor.VisitingCompany == null)
+                            {
+                                <th>No Company</th>
+                            }
+                            else
+                            {
+                                <th>@visitor.VisitingCompany.Name</th>
+                            }
+                            @if (visitor.AppointmentPeople == null)
+                            {
+                                <th>No Visit </th>
+                            }
+                            else
+                            {
+                                <th>@visitor.AppointmentPeople[0].Name</th>
+                            }
+                            <th>@visitor.VisitDate.ToString("HH:MM:yyyy") :  @visitor.VisitedTime</th>
+                            <th>
+                                <a class="btn btn-secondary my-2 my-sm-0" asp-controller="Home" asp-action="Edit">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                                <a class="btn btn-secondary my-2 my-sm-0" asp-controller="Home" asp-action="Remove">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                </a>
+
+
+
+                            </th>
+                    </tr>
+                        
+                        counter++;
+                    }
+
+                </tbody>
+            </table>
+        }
+
+}
+

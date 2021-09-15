@@ -1,0 +1,54 @@
+﻿@model IEnumerable<VisitorViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+    
+*@
+@{
+
+    int counter = 1;
+}
+
+@if (Model.Any() == false)
+{
+    <h2 class="text-capitalize font-weight-bold container" style="text-align:left; padding-right:4px;">An Error was found in your registration. Contact the administrator</h2>
+
+}
+else
+{
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Status</th>
+                <th scope="col">Visitor</th>
+                <th scope="col">Registered On</th>
+                <th scope="col">Due On</th>
+                <th scope="col">People</th>
+                <th scope="col">To Meet</th>
+                <th scope="col">Meeting completed?</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var visit in Model)
+            {
+                <tr>
+                    <th scope="row">@counter</th>
+                    <td>@visit.VisitStatus</td>
+                    <td>@visit.Fullname</td>
+                    <td>@visit.VisitDate</td>
+                    <td>@visit.VisitedTime</td>
+                    <td>@visit.AppointmentPeople.Count()</td>
+                    <td>@visit.AppointmentPeople[0]</td>
+                    <td><a asp-controller="Home" asp-action="Completed">Meeting Completed?</a></td>
+
+
+                </tr>
+                counter++;
+            }
+
+        </tbody>
+    </table>
+}
+
+
+
+

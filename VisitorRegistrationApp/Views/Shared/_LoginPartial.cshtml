@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using VisitorRegistrationApp.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+<ul class="navbar-nav  flex-grow-0">
+    @if (SignInManager.IsSignedIn(User))
+    {
+
+
+
+        @if (User.IsInRole("Administrator"))
+
+        {
+            <li class="nav-item">
+
+                <form class="d-flex" asp-controller="Home" asp-action="Search" method="post">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input class="form-control me-sm-2" type="text" name="searchInput" placeholder="Search">
+                            <span class="input-group-btn">
+                                <button class="btn btn-secondary my-2 my-sm-0" type="submit">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+
+
+            </li>
+        }
+
+
+
+        <li class="nav-item" style="padding:5px;">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button id="logout" type="submit" class="nav-link btn btn-link  text-white">Logout</button>
+            </form>
+        </li>
+
+
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link  text-white" id="register" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link  text-white" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+
+    }
+</ul>
