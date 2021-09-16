@@ -9,29 +9,30 @@ namespace VisitorRegistrationApp.Data.Repository
         where TEntity : class, IEntity
         where TContext : DbContext
     {
-        private ApplicationDbContext applicationDbContext; 
+        private readonly ApplicationDbContext applicationDbContext; 
         
         public BaseRepository(ApplicationDbContext applicationDbContext)
         {
             this.applicationDbContext = applicationDbContext; 
         }
 
-        public async Task<TEntity> Add(TEntity Entity)
+        public Task<TEntity> Add(TEntity Entity)
         {
             applicationDbContext.Set<TEntity>().Add(Entity);
-            await applicationDbContext.SaveChangesAsync();
-            return Entity;
+            applicationDbContext.SaveChanges();
+            return null;
         }
 
-        public async Task<TEntity> Delete(int id)
+        public Task<TEntity> Delete(int id)
         {
-            var entity = await applicationDbContext.Set<TEntity>().FindAsync(id); 
+            var entity =  applicationDbContext.Set<TEntity>().Find(id); 
             if(entity == null)
             {
-                return entity; 
+                return null; 
             }
             applicationDbContext.Set<TEntity>().Remove(entity);
-            return entity; 
+            applicationDbContext.SaveChanges();
+            return null; 
         }
 
         public async Task<TEntity> Get(int id)
@@ -44,11 +45,11 @@ namespace VisitorRegistrationApp.Data.Repository
             return await applicationDbContext.Set<TEntity>().ToListAsync();
         }
 
-        public async Task<TEntity> Update(TEntity Entity)
+        public  Task<TEntity> Update(TEntity Entity)
         {
             applicationDbContext.Entry(Entity).State = EntityState.Modified;
-            await applicationDbContext.SaveChangesAsync();
-            return Entity; 
+            applicationDbContext.SaveChanges();
+            return null; 
         }
     }
 

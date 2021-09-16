@@ -16,10 +16,17 @@ namespace VisitorRegistrationApp.Data.Repository
             return applicationDbContext.Building.SingleOrDefault();
             
         }
+
+        public IQueryable<Company> GetOrderedCompanies()
+        {
+            return applicationDbContext.Companies.OrderByDescending(p => p);
+        }
     }
 
     public interface ICompanyRespository : IRepository<Company>
     {
         Building getBuilding();
+
+        IQueryable<Company> GetOrderedCompanies();
     }
 }

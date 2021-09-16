@@ -31,6 +31,9 @@ namespace VisitorRegistrationApp.Controllers
             return View(AllCompanies);
         }
 
+
+       
+   
         // GET: CompaniesController/Details/5
         public ActionResult Details(int? id)
         {
@@ -59,7 +62,6 @@ namespace VisitorRegistrationApp.Controllers
                 companyViewModel.Building = companyService.GetBuilding();
                 var results = mapper.Map<Company>(companyViewModel);
                 companyService.Add(results);
-                
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -121,6 +123,26 @@ namespace VisitorRegistrationApp.Controllers
             {
                 return View();
             }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Search(string searchTerm)
+        {
+            //Simpel op zoeken van de companies bij naam 
+            // Terug geven van naam via Order by ascending or descending
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                return RedirectToAction(nameof(NotFound));
+            }
+            var results = companyService.SearchByName(searchTerm);
+            IEnumerable<CompanyViewModel> companyViews = mapper.Map<IEnumerable<CompanyViewModel>>(results);
+            //Toevoegen met een model 
+            return RedirectToAction(nameof(Index), new { companyViews = companyViews});
+        }
+
+        public IActionResult NotFound()
+        {
+            return View();
         }
     }
 }

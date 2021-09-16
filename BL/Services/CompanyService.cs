@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Data.Repository;
 
 namespace BL.Services
 {
-    public class CompanyService : ICompanyService, IDisposable 
+    public class CompanyService : ICompanyService 
     {
         private readonly ICompanyRespository companyRes;
-        private bool _disposed = false;
+       
         public CompanyService(ICompanyRespository companyRes)
         {
             this.companyRes = companyRes;
@@ -22,7 +23,7 @@ namespace BL.Services
 
         //Ophalen van alle companies
 
-        public  Task<IEnumerable<Company>> getAll()
+        public   Task<IEnumerable<Company>> getAll()
         {
             return companyRes.GetAll();
         }
@@ -36,36 +37,31 @@ namespace BL.Services
 
         //Update van een company
 
-        public async void Update(Company company)
+        public  void Update(Company company)
         {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException("The current instance has been disposed!");
-            }
-            await companyRes.Update(company);
+          
+            companyRes.Update(company);
         }
 
         // Creeeren van company
 
-        public async void Add(Company company)
+        public  void Add(Company company)
         {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException("The current instance has been disposed!");
-            }
-            await companyRes.Add(company);
+           
+            companyRes.Add(company);
         }
 
         //Verwijderen van een company
 
-        public async void Delete(int id)
+        public  void Delete(int id)
         {
-            await companyRes.Delete(id);
+            companyRes.Delete(id);
         }
 
-        public void Dispose()
+        public IEnumerable<Company> SearchByName(string searchTerm)
         {
-            _disposed = true;
+            return companyRes.GetOrderedCompanies().Where(o => o.Name.ToLower() == searchTerm.Trim().ToLower());
+            
         }
     }
 
@@ -82,5 +78,7 @@ namespace BL.Services
         void Add(Company company);
 
         void Delete(int id);
+
+        IEnumerable<Company> SearchByName(string searchTerm);
     }
 }
