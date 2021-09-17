@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,5 +16,9 @@ namespace VisitorRegistrationApp.Models
         public virtual ICollection<Employee> Employees { get; set; }
 
         public virtual Building Building { get; set; }
+
+        public IFormFile CompanyPhoto { get; set; }
+
+        public string PhotoUrl { get; set; }
     }
 }

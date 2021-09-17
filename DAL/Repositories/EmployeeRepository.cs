@@ -9,6 +9,8 @@ namespace VisitorRegistrationApp.Data.Repository
         {
             this.applicationDbContext = applicationDbContext;
         }
+
+
     }
 
     public interface IEmployeeRespository : IRepository<Employee>

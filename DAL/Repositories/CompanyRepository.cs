@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using VisitorRegistrationApp.Data.Entities;
 
 namespace VisitorRegistrationApp.Data.Repository
@@ -21,6 +24,12 @@ namespace VisitorRegistrationApp.Data.Repository
         {
             return applicationDbContext.Companies.OrderByDescending(p => p);
         }
+
+        public Company  GetEmployeesFromCompany(int id)
+        {
+            return applicationDbContext.Companies.Where(c => c.Id == id).Include(e => e.Employees).SingleOrDefault();
+        }
+
     }
 
     public interface ICompanyRespository : IRepository<Company>
@@ -28,5 +37,7 @@ namespace VisitorRegistrationApp.Data.Repository
         Building getBuilding();
 
         IQueryable<Company> GetOrderedCompanies();
+
+        Company GetEmployeesFromCompany(int id);
     }
 }

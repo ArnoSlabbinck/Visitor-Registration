@@ -56,11 +56,13 @@ namespace BL.Services
         public  void Delete(int id)
         {
             companyRes.Delete(id);
+            
         }
 
         public IEnumerable<Company> SearchByName(string searchTerm)
         {
             return companyRes.GetOrderedCompanies().Where(o => o.Name.ToLower() == searchTerm.Trim().ToLower());
+            
             
         }
     }

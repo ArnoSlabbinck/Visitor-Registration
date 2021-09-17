@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,22 +13,25 @@ namespace VisitorRegistrationApp.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="You need to fill in a name")]
         [StringLength(30, MinimumLength = 2)]
-        public string EmployeeName { get; set; }
+        public string Name { get; set; }
         [DataType(DataType.Date, ErrorMessage ="You need to fill in a date")]
-        public DateTime EmployeeBirthDay { get; set; }
+        public DateTime BirthDay { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage ="You need to fill in an Employee Job")]
         [StringLength(30, MinimumLength = 2)]
-        public string EmployeeJob { get; set; }
+        public string Job { get; set; }
 
-        public double Salary { get; set; }
+        public double Salary { get; set; } = 2000;
 
+        public IFormFile ProfilePhoto { get; set; }
+
+        public string PhotoUrl { get; set; }
 
         public bool AtWorkStatus { get; set; } = true;
 
-        [ForeignKey("Company")]
+        
         public int CompanyId { get; set; }
         [Required(ErrorMessage ="An Employee works for a company")]
         public virtual Company Company { get; set; }

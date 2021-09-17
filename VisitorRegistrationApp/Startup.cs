@@ -49,9 +49,11 @@ namespace VisitorRegistrationApp
 
             services.AddScoped<IEmployeeRespository, EmployeeRepository>();
 
+
+
             services.Configure<CookiePolicyOptions>(options =>
             {
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None;
             });
 
@@ -65,7 +67,13 @@ namespace VisitorRegistrationApp
 
 
 
-
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(60);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                
+            });
 
 
 
@@ -92,12 +100,12 @@ namespace VisitorRegistrationApp
             options.DefaultFileNames.Add("Register.cshtml");
             app.UseDefaultFiles(options);
             app.UseStaticFiles();
-
+    
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
@@ -105,6 +113,8 @@ namespace VisitorRegistrationApp
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseCookiePolicy();
         }
     }
 }

@@ -1,0 +1,61 @@
+﻿@model IEnumerable<VisitorViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<a class="btn btn-info" asp-controller="Home" asp-action="Service"><i class="glyphicon glyphicon-arrow-left"></i>Back</a>
+
+<h1>Please Select Person To Sign Out</h1>
+
+<form method="post" asp-action="Search" asp-route-logout="logout">
+    <div class="form-group">
+        <div class="input-group">
+            <input type="search" name="searchInput" class="form-control" value="" />
+            <input type="text" name="logOut" value="logout" disabled="disabled" style="display:none;" />
+            <span class="input-group-btn">
+                <button class="btn btn-lg">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+            </span>
+        </div>
+    </div>
+</form>
+
+
+
+@if (Model != null)
+{
+    <div class="card-deck">
+        @foreach (var person in Model)
+        {
+
+            @if (person != null)
+            {
+                <div class="col-sm-6 col-lg-4 mb-3">
+                    <div class="card mb-3">
+                        <img src=""
+                             class="card-img-top"
+                             alt="..." />
+                        <div class="card-body  text-center">
+                            <div class="d-flex bg-dark text-white">
+                                <div class="p-2  flex-fill alert-info">@person.Fullname</div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="card-footer text-center">
+                            <a asp-controller="Home" asp-action="SignOut" asp-route-name="@person.Fullname" class="btn btn-primary">Sign Out</a>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+
+}
+

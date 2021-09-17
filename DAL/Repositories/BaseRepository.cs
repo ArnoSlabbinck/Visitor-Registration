@@ -32,7 +32,7 @@ namespace VisitorRegistrationApp.Data.Repository
             }
             applicationDbContext.Set<TEntity>().Remove(entity);
             applicationDbContext.SaveChanges();
-            return null; 
+            return Task.FromResult(entity); 
         }
 
         public async Task<TEntity> Get(int id)

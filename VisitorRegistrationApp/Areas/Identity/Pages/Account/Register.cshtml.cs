@@ -23,8 +23,8 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly CompanyRepository companyRepository;
-        private readonly EmployeeRepository employeeRepository;
+        private readonly ICompanyRespository companyRepository;
+        private readonly IEmployeeRespository employeeRepository;
         private readonly RoleManager<IdentityRole> roleManager;
        
 
@@ -34,8 +34,8 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            CompanyRepository companyRepository, 
-            EmployeeRepository employeeRepository, 
+            ICompanyRespository companyRepository,
+            IEmployeeRespository employeeRepository, 
             RoleManager<IdentityRole> roleManager 
             )
         {

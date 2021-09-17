@@ -140,9 +140,6 @@ namespace VisitorRegistrationApp.Controllers
             return RedirectToAction(nameof(Index), new { companyViews = companyViews});
         }
 
-        public IActionResult NotFound()
-        {
-            return View();
-        }
+        
     }
 }

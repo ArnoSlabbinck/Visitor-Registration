@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -34,7 +35,9 @@ namespace VisitorRegistrationApp.Models
 
         public string ChosenPurpose { get; set; }
 
+        public IFormFile ProfilePhoto { get; set; }
 
+        public string PhotoUrl { get; set; }
         public List<SelectListItem> Purpose {
             get;
             set;
