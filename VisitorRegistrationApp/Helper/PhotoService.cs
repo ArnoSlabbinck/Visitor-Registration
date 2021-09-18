@@ -9,17 +9,21 @@ using System.Threading.Tasks;
 
 namespace BLL.Helper
 {
-    public class ConvertPhoto
+    public class PhotoService : IPhotoService
     {
+    
+
         private readonly IWebHostEnvironment hostEnvironment;
-        public ConvertPhoto(IWebHostEnvironment hostEnvironment)
+        public PhotoService(IWebHostEnvironment hostEnvironment)
         {
             this.hostEnvironment = hostEnvironment;
+           
         }
 
-        private string UploadPhoto(IFormFile photo)
+        public string UploadPhoto(IFormFile photo)
         {
             string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
+            // Path Vinden voor de photos folder 
             string pathName = Path.Combine(hostEnvironment.WebRootPath, "photos");
             string fileNameWithPath = Path.Combine(pathName, uniqueFileName);
 
@@ -31,10 +35,20 @@ namespace BLL.Helper
             return uniqueFileName;
         }
 
-        private void DeletePhoto(string photoUrl)
+        public void DeletePhoto(string photoUrl)
         {
             string path = Path.Combine(hostEnvironment.WebRootPath, photoUrl.Substring(1));
             System.IO.File.Delete(path);
         }
+
+      
+    }
+
+    public interface IPhotoService
+    {
+        void DeletePhoto(string photoUrl);
+
+        string UploadPhoto(IFormFile photo);
+
     }
 }

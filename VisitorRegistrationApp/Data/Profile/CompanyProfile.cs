@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Models;
+using BLL.Helper;
 
 namespace VisitorRegistrationApp.Data.Profile
 {
@@ -11,7 +12,10 @@ namespace VisitorRegistrationApp.Data.Profile
     {
         public CompanyProfile()
         {
-            this.CreateMap<Company, CompanyViewModel>().ReverseMap();
-        }
+            this.CreateMap<Company, CompanyViewModel>()
+                .ReverseMap();
+
+
+        }           
     }
 }

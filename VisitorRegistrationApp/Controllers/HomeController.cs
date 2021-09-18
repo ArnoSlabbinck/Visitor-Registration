@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BL.Services;
+using BLL.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,14 +23,18 @@ namespace VisitorRegistrationApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IMapper mapper;
         private readonly IVisitorService visitorService;
+        private readonly IPhotoService photoService;
         public HomeController(ILogger<HomeController> logger, 
             UserManager<ApplicationUser> userManager, 
             IMapper mapper, 
-            IVisitorService visitorService)
+            IVisitorService visitorService, 
+            IPhotoService photoService)
         {
             _logger = logger;
             this.mapper = mapper;
             this.visitorService = visitorService;
+            this.photoService = photoService;
+            
         }
 
         public IActionResult Index()
@@ -46,13 +51,7 @@ namespace VisitorRegistrationApp.Controllers
         {
             VisitorViewModel visitorViewModel = new VisitorViewModel();
 
-            visitorViewModel.Purpose = new List<SelectListItem> 
-            {
-                     new SelectListItem { Text = "Visitor", Value = "Visitor" },
-                     new SelectListItem { Text = "Making a Delivery", Value = "Delivery" },
-                     new SelectListItem { Text = "Siging Out", Value = "SignOut" }
-            };
-
+            
             
             return View(visitorViewModel);
         }
@@ -75,7 +74,8 @@ namespace VisitorRegistrationApp.Controllers
                 case "SignOut":
                     return RedirectToAction("SignOut");
                 case "Delivery":
-                    return RedirectToAction("Delivery");
+                    return RedirectToAction("Delivery"); 
+                    // Scannen van een package en dan een melding geven naar de persoon in de Building
             }
             return NotFound();
         }

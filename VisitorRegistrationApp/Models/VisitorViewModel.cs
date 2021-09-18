@@ -12,7 +12,11 @@ namespace VisitorRegistrationApp.Models
 {
     public class VisitorViewModel
     {
-        
+        public VisitorViewModel()
+        {
+            SetPurposes();
+        }
+
         public string FirstName { get; set; }
         
         public string LastName { get; set; }
@@ -41,6 +45,17 @@ namespace VisitorRegistrationApp.Models
         public List<SelectListItem> Purpose {
             get;
             set;
+        }
+
+        public void SetPurposes()
+        {
+            Purpose  = new List<SelectListItem>
+            {
+                     new SelectListItem { Text = "Visitor", Value = "Visitor" },
+                     new SelectListItem { Text = "Making a Delivery", Value = "Delivery" },
+                     new SelectListItem { Text = "Siging Out", Value = "SignOut" }
+            };
+
         }
     }
 }

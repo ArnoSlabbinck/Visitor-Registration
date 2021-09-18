@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Models;
 
+
 namespace VisitorRegistrationApp.Data.Profile
 {
     public class EmployeeProfile : AutoMapper.Profile
@@ -12,6 +13,8 @@ namespace VisitorRegistrationApp.Data.Profile
         public EmployeeProfile()
         {
             this.CreateMap<Employee, EmployeeViewModel>().ReverseMap();
+
+           
         }
     }
 }

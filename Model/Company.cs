@@ -18,7 +18,8 @@ namespace VisitorRegistrationApp.Data.Entities
         public int Id { get; set; }
         [Required(ErrorMessage = "An Company needs to have a name")]
         public string Name { get; set; }
-        
+        public string Description { get; set; }
+        public string CompanyPhoto { get; set; }
         public virtual ICollection<Employee> Employees { get; set; }
         [Required(ErrorMessage = "An Company needs to have a building")]
         public virtual Building Building { get; set; }

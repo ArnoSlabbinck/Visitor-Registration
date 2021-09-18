@@ -43,7 +43,7 @@ namespace VisitorRegistrationApp.Data
 
         public VisitStatus VisitStatus { get; set; }
 
-
+        public string VisitorPhoto { get; set; }
     }
 
     public enum VisitStatus

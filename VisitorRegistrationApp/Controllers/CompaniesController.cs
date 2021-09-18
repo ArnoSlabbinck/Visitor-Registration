@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BL.Services;
+using BLL.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -13,12 +14,15 @@ namespace VisitorRegistrationApp.Controllers
     {
         private readonly IMapper mapper;
         private readonly ICompanyService companyService;
+        private readonly IPhotoService photoService;
         public CompaniesController(IMapper mapper,
-            ICompanyService companyService)
+            ICompanyService companyService, 
+            IPhotoService photoService)
         {
          
             this.mapper = mapper;
             this.companyService = companyService;
+            this.photoService = photoService;
         }
         // GET: CompaniesController
         public ActionResult Index()
@@ -60,9 +64,20 @@ namespace VisitorRegistrationApp.Controllers
             try
             {
                 companyViewModel.Building = companyService.GetBuilding();
+                if (companyViewModel.Photo != null)
+                {
+                    string uniqueFileName = photoService.UploadPhoto(companyViewModel.Photo);
+
+                   companyViewModel.CompanyPhoto = "/photos/" + uniqueFileName;
+                }
                 var results = mapper.Map<Company>(companyViewModel);
+
                 companyService.Add(results);
                 return RedirectToAction(nameof(Index));
+
+                //Hoe kan ik de foto van IFormFile omzetten in de BLL laag en dat zo meegeven
+
+
             }
             catch
             {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
@@ -11,15 +12,19 @@ namespace BL.Services
     {
         private readonly IEmployeeRespository employeeRespository;
         private readonly ICompanyRespository companyRespository;
+       
+
         public EmployeeService(IEmployeeRespository employee, 
             ICompanyRespository companyRespository)
         {
             employeeRespository = employee;
             this.companyRespository = companyRespository;
+            
         }
 
         public  int Add(Employee employee)
         {
+            
             employeeRespository.Add(employee);
             return 0;
 

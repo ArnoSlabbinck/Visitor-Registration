@@ -19,7 +19,9 @@ namespace VisitorRegistrationApp.Data.Entities
         public int Id { get; set; }
         [Required(ErrorMessage = "A building needs to have a name")]
         public string Name { get; set; } = "4Wings";
-        
+
+        public string BuildingPhoto { get; set; }
+
 
         public virtual ICollection<ApplicationUser> Visitors { get; set; }
         public virtual ICollection<Company> Companies { get; set; }

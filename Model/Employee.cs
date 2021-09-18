@@ -22,7 +22,7 @@ namespace VisitorRegistrationApp.Data.Entities
 
         public  double Salary { get; set; }
 
-
+        public string ProfilePhoto { get; set; }
         public bool AtWorkStatus { get; set; } = true;
     
         [Required]

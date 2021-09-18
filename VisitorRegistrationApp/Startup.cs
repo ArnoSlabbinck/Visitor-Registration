@@ -16,6 +16,7 @@ using System.Reflection;
 using VisitorRegistrationApp.Data.Repository;
 using Model;
 using BL.Services;
+using BLL.Helper;
 
 namespace VisitorRegistrationApp
 {
@@ -38,6 +39,7 @@ namespace VisitorRegistrationApp
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+            services.AddScoped<IPhotoService, PhotoService>();
 
             services.AddScoped<IVisitorService, VisitorService>();
 
