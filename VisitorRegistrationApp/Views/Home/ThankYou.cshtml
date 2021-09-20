@@ -1,0 +1,19 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1 class="text-justify text-success">Thank you for  for visiting us. <br />
+    We hope to see you soon. <br/>
+    have a wonderfull day.</h1>
+
+<h3>You'll  automatically be redirected to the homepage.</h3>
+
+
+<script>
+    //Doen van een redirect naar een andere pagina
+    setTimeout(function () {
+        window.location.href = '@Url.Action("Index", "Home")';
+    }, 5000)
+</script>

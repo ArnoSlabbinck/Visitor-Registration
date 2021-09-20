@@ -100,6 +100,10 @@ namespace VisitorRegistrationApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public IActionResult ThankYou()
+        {
+            return View();
+        }
 
         public IActionResult ConfirmSignOut(string name)
         {
@@ -112,7 +116,7 @@ namespace VisitorRegistrationApp.Controllers
             }
 
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(ThankYou));
         }
 
 

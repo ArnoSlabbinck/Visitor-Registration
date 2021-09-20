@@ -1,5 +1,4 @@
-﻿@model VisitorViewModel
-@*
+﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -8,18 +7,42 @@
 
 </script>
 
-<h1>Take A Picture</h1>
+<h1 style="text-align:center">Take A Picture</h1>
 
-<h3>@Model.FirstName, smile to the camera</h3>
+<div id="picture-intro">
 
-<button onclick="startWebcam();">Start WebCam</button>
-<button onclick="stopWebcam();">Stop WebCam</button>
-<button onclick="snapshot();">Take Snapshot</button>
+    <h5> Smile to the camera</h5>
 
-<video id="webcam" autoplay playsinline width="640" height="480"></video>
-<canvas id="canvas" class="d-none">
-</canvas>
-<audio id="snapSound" src="audio/snap.wav" preload="auto"></audio>
+    <button id="webcam-start" class="btn btn-primary">Click to Start Camera</button>
+
+
+
+
+
+</div>
+
+<div id="errorMsg" class="col-12 col-md-6 alert-danger d-none">
+    Fail to start camera, please allow permision to access camera. <br />
+    If you are browsing through social media built in browsers, you would need to open the page in Sarafi (iPhone)/ Chrome (Android)
+    <button id="closeError" class="btn btn-primary ml-3">OK</button>
+</div>
+<div class="md-modal md-effect-12">
+    <div id="app-panel" class="app-panel md-content row p-0 m-0">
+        <div id="webcam-container" class="webcam-container col-12 d-none p-0 m-0">
+            <video id="webcam" autoplay playsinline width="340" height="180"></video>
+            <canvas id="canvas" class="d-none"></canvas>
+            <div class="flash"></div>
+            <audio id="snapSound" src="audio/snap.wav" preload="auto"></audio>
+        </div>
+        <div id="cameraControls" class="cameraControls">
+            <a href="#" class=" d-none" id="exit-app" title="Exit App"><i class="material-icons">exit_to_app</i></a>
+            <a href="#" id="take-photo" title="Take Photo"><i class="material-icons">camera_alt</i></a>
+            <a href="#" class=" d-none" id="download-photo" download="selfie.png" target="_blank" title="Save Photo"><i class="material-icons">file_download</i></a>
+            <a href="#" class=" d-none" id="resume-camera" title="Resume Camera"><i class="material-icons">camera_front</i></a>
+        </div>
+    </div>
+</div>
+
 
 
 <script>
@@ -28,43 +51,295 @@
     const snapSoundElement = document.getElementById('snapSound');
     const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement);
 
-    var ctx;  
-    function init() {
-        // Get the canvas and obtain a context for
-        // drawing in it
-        canvas = document.getElementById("myCanvas");
-        ctx = canvas.getContext('2d');
-    }
 
 
-    function snapchot() {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    }
-    }
-    //
-    function WebcamStart() {
+    $("#webcam-start").click(function () {
+
+        $('.md-modal').addClass('md-show');
+        removeCapture();
         webcam.start()
             .then(result => {
+                document.getElementById("picture-intro").style.display = "none";
+                cameraStarted();
                 console.log("webcam started");
-
-
             })
             .catch(err => {
-                console.log("The following error occured: " + err);
+                displayError();
             });
 
-    }
+
+    });
+
 
 
 
     function stopWebcam() {
+        // Delete canvas
         webcam.stop();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function resizedataURL(datas, wantedWidth, wantedHeight) {
+        var img = document.createElement('img');
+
+        img.onload = function () {
+            var canvas = document.createElement('');
+            var ctx = canvas.getContext('2d');
+            canvas.width = wantedWidth;
+            canvas.height = wantedHeight;
+            ctx.drawImage(this, 0, 0, wantedWidth, wantedHeight);
+            var dataURI = canvas.toDataURL();
+            img.src = dataURI;
+            return dataURI;
+        };
+
+
+        // Een automatische timeout van 5 seconden om de foto te laten trekken  Daarna snappen en stop zetten
+
+    }
+
+
+    function cameraStarted() {
+        $("#errorMsg").addClass("d-none");
+        $('.flash').hide();
+        $("#webcam-caption").html("on");
+        $("#webcam-control").removeClass("webcam-off");
+        $("#webcam-control").addClass("webcam-on");
+        $(".webcam-container").removeClass("d-none");
+        if (webcam.webcamList.length > 1) {
+            $("#cameraFlip").removeClass('d-none');
+        }
+        $("#wpfront-scroll-top-container").addClass("d-none");
+        window.scrollTo(0, 0);
+        $('body').css('overflow-y', 'hidden');
+    }
+
+
+    function cameraStopped() {
+        $("#errorMsg").addClass("d-none");
+        $("#wpfront-scroll-top-container").removeClass("d-none");
+        $("#webcam-control").removeClass("webcam-on");
+        $("#webcam-control").addClass("webcam-off");
+        $("#cameraFlip").addClass('d-none');
+        $(".webcam-container").addClass("d-none");
+        $("#webcam-caption").html("Click to Start Camera");
+        $('.md-modal').removeClass('md-show');
+    }
+
+    $("#take-photo").click(function () {
+        beforeTakePhoto();
+        let picture = webcam.snap();
+        document.querySelector('#download-photo').href = picture;
+        afterTakePhoto();
+    });
+
+    function beforeTakePhoto() {
+        $('.flash')
+            .show()
+            .animate({ opacity: 0.3 }, 500)
+            .fadeOut(500)
+            .css({ 'opacity': 0.7 });
+        window.scrollTo(0, 0);
+        $('#webcam-control').addClass('d-none');
+        $('#cameraControls').addClass('d-none');
+    }
+
+    function afterTakePhoto() {
+        webcam.stop();
+        $('#canvas').removeClass('d-none');
+        $('#take-photo').addClass('d-none');
+        $('#exit-app').removeClass('d-none');
+        $('#download-photo').removeClass('d-none');
+        $('#resume-camera').removeClass('d-none');
+        $('#cameraControls').removeClass('d-none');
+    }
+
+    $("#resume-camera").click(function () {
+        webcam.stream()
+            .then(facingMode => {
+                removeCapture();
+            });
+    });
+
+    $("#exit-app").click(function () {
+        // Afsluiten van Modal
+        cameraStopped();
+        webcam.stop();
+        document.getElementById("picture-intro").style.display = "block";
+        console.log("webcam stopped");
+    });
+    function removeCapture() {
+        $('#canvas').addClass('d-none');
+        $('#webcam-control').removeClass('d-none');
+        $('#cameraControls').removeClass('d-none');
+        $('#take-photo').removeClass('d-none');
+        $('#exit-app').addClass('d-none');
+        $('#download-photo').addClass('d-none');
+        $('#resume-camera').addClass('d-none');
+    }
+
+</script>
+<style>
+
+    .webcam-container {
+        height: 50vh;
+        width: 50vw;
+    }
+
+
+    #background-container {
+        height: 100vh;
+        width: 100vw;
     }
 
 
 
-    // Een automatische timeout van 5 seconden om de foto te laten trekken  Daarna snappen en stop zetten
+
+    .app-panel {
+        margin-bottom: 250px;
+        margin-top: 200px;
+        height: 50vh;
+        width: 50vw;
+        text-align: center;
+    }
+
+    #webcam {
+        margin-bottom: 250px;
+        margin-top: 200px;
+        display: block;
+        position: relative;
+        width: auto;
+        height: 50vh;
+        z-index: 999;
+        pointer-events: none;
+        margin: auto;
+    }
+
+    .md-modal {
+        margin: 0px 20px;
+        position: relative;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 50vw;
+        height: 50vh;
+        z-index: 2000;
+        visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    .md-show {
+        visibility: visible;
+    }
+
+    .md-overlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        visibility: hidden;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        opacity: 0;
+        -webkit-transition: all 0.3s;
+        -moz-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+
+    .md-show ~ .md-overlay {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .md-effect-12 .md-content {
+        -webkit-transform: scale(0.8);
+        -moz-transform: scale(0.8);
+        -ms-transform: scale(0.8);
+        transform: scale(0.8);
+        opacity: 0;
+        -webkit-transition: all 0.3s;
+        -moz-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+
+    .md-show.md-effect-12 ~ .md-overlay {
+        background-color: #e4f0e3;
+    }
+
+    .md-effect-12 .md-content h3,
+    .md-effect-12 .md-content {
+        background: transparent;
+    }
+
+    .md-show.md-effect-12 .md-content {
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    #errorMsg {
+        position: fixed;
+        top: 22vh;
+        left: 0;
+        padding: 20px;
+        z-index: 999999;
+    }
 
 
+    .cameraControls {
+        position: absolute;
+        bottom: 4vh;
+        width: 100%;
+        z-index: 99999;
+        background: transparent;
+        opacity: 0.7;
+        padding: 10px;
+    }
 
-</script>
+
+    .material-icons {
+        width: 750px;
+        font-size: 50px !important;
+        color: white;
+        width: 80px;
+        height: 80px;
+        background-color: black;
+        border-radius: 50%;
+        padding-top: 15px;
+        margin: 0 10px;
+    }
+
+    .flash {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #fff;
+        z-index: 999999;
+    }
+
+    #canvas {
+        margin-bottom: 250px;
+        margin-top: 200px;
+        background-color: transparent;
+        position: absolute;
+        width: auto;
+        height: 50vh;
+        z-index: 9999;
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #picture-intro {
+        text-align: center;
+    }
+</style>
