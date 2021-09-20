@@ -11,6 +11,8 @@ namespace VisitorRegistrationApp.Data
 {
     public class ApplicationUser : Microsoft.AspNetCore.Identity.IdentityUser
     {
+        
+        
         [Required(AllowEmptyStrings = false, ErrorMessage = "Please Provide Last Name")]
         [StringLength(20, MinimumLength = 5, ErrorMessage = "First Name Should be min 5 and max 20 length")]
         public string FirstName { get; set; }
@@ -52,7 +54,7 @@ namespace VisitorRegistrationApp.Data
         CheckIn,
         UpComming,
         ExpectedArrival, 
-        Completed, 
+        CheckOut, 
         Admin, 
         Employee
     }

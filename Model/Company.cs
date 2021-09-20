@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace VisitorRegistrationApp.Data.Entities
 {
-    public class Company : IEntity
+    public class Company 
     {
         public Company()
         {

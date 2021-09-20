@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace VisitorRegistrationApp.Data.Entities
 {
-    public class Employee : IEntity
+    public class Employee 
     {
         [DisplayName("EmployeeId")]
         public int Id { get; set; }

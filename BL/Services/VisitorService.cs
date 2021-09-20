@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DAL.Repositories;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,12 @@ namespace BL.Services
     public class VisitorService : IVisitorService
     {
         private readonly UserManager<ApplicationUser> userManager;
-        public VisitorService(UserManager<ApplicationUser> userManager)
+        private readonly IVisitorRepository visitorRepository;
+        public VisitorService(UserManager<ApplicationUser> userManager, 
+            IVisitorRepository visitorRepository)
         {
             this.userManager = userManager;
+            this.visitorRepository = visitorRepository;
         }
         public List<ApplicationUser> SearchSpecificUsers(string searchInput)
         {
@@ -46,14 +50,75 @@ namespace BL.Services
 
         }
 
-       
+        public async Task<bool> CheckOut(string name)
+        {
+            var splittedName = GoodNameFormat(name);
+            var firstName = splittedName[0].Trim();
+            var lastName = splittedName[1].Trim();
+            var visitor = visitorRepository.getUserByName(firstName, lastName);
+
+            if (visitor.VisitStatus != VisitStatus.CheckOut)
+            {
+                visitor.VisitStatus = VisitStatus.CheckOut;
+                await visitorRepository.Update(visitor);
+            }
+   
+            return true;
+        }
 
 
+
+        public string[] GoodNameFormat(string name)
+        {
+            string[] splittedName = new string[2]; 
+            var Name = name.Trim().ToLower();
+            int Startindex = Name.IndexOf(" ");
+            // Weten wat de lengte is van lege ruimtes 
+            int lengthEmptySpaces = 0; 
+            for(int i = Startindex; i < Name.Length; i++)
+            {
+                if(char.IsLetter(Name[i]))
+                {
+                    break; 
+                }
+                lengthEmptySpaces++;
+            }
+            string SpacesBetweenName = Name.Substring(Startindex, lengthEmptySpaces);
+            if(lengthEmptySpaces < 2)
+            {
+               
+                int counter = 0;
+                var splitName = Name.Split(SpacesBetweenName);
+                foreach (var namePiece in splitName)
+                {
+                    if(counter == 0)
+                    {
+                        splittedName[0] = namePiece;
+                    }
+                    else
+                    {            
+                        splittedName[1] += namePiece + " ";
+                    }
+                    counter++;
+                }
+                return splittedName;
+
+            }
+            else
+            {
+                return Name.Split(SpacesBetweenName);
+            }
+          
+        }
     }
 
     public interface IVisitorService
     {
         List<ApplicationUser> SearchSpecificUsers(string searchInput);
+
+        Task<bool> CheckOut(string name);
+
+        string[] GoodNameFormat(string name);
 
 
     }

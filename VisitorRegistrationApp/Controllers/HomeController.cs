@@ -39,6 +39,7 @@ namespace VisitorRegistrationApp.Controllers
 
         public IActionResult Index()
         {
+           
             return View();
         }
 
@@ -47,6 +48,10 @@ namespace VisitorRegistrationApp.Controllers
             return View(); 
         }
        
+        public IActionResult Picture()
+        {
+            return View();
+        }
         public IActionResult Service()
         {
             VisitorViewModel visitorViewModel = new VisitorViewModel();
@@ -94,6 +99,22 @@ namespace VisitorRegistrationApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
+        public IActionResult ConfirmSignOut(string name)
+        {
+            // terug naar hoofdscherm sturen 
+            // Veranderen van status visitor in de database => Veranderen van CheckIn naar CheckOut
+            bool result;
+            if(!string.IsNullOrEmpty(name))
+            {
+                result = visitorService.CheckOut(name).Result;
+            }
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]

@@ -17,6 +17,7 @@ using VisitorRegistrationApp.Data.Repository;
 using Model;
 using BL.Services;
 using BLL.Helper;
+using DAL.Repositories;
 
 namespace VisitorRegistrationApp
 {
@@ -50,6 +51,8 @@ namespace VisitorRegistrationApp
             services.AddScoped<ICompanyRespository, CompanyRepository>();
 
             services.AddScoped<IEmployeeRespository, EmployeeRepository>();
+
+            services.AddScoped<IVisitorRepository, VisitorRespository>();
 
 
 

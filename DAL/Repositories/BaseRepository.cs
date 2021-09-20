@@ -6,7 +6,7 @@ using VisitorRegistrationApp.Data.Entities;
 namespace VisitorRegistrationApp.Data.Repository
 {
     public abstract class BaseRepository<TEntity, TContext> : IRepository<TEntity>
-        where TEntity : class, IEntity
+        where TEntity : class
         where TContext : DbContext
     {
         private readonly ApplicationDbContext applicationDbContext; 
@@ -53,7 +53,7 @@ namespace VisitorRegistrationApp.Data.Repository
         }
     }
 
-    public interface IRepository<T> where T : class, IEntity
+    public interface IRepository<T> where T : class
     {
         Task<IEnumerable<T>> GetAll();
 

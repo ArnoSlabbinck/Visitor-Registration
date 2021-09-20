@@ -1,0 +1,70 @@
+﻿@model VisitorViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js">
+
+</script>
+
+<h1>Take A Picture</h1>
+
+<h3>@Model.FirstName, smile to the camera</h3>
+
+<button onclick="startWebcam();">Start WebCam</button>
+<button onclick="stopWebcam();">Stop WebCam</button>
+<button onclick="snapshot();">Take Snapshot</button>
+
+<video id="webcam" autoplay playsinline width="640" height="480"></video>
+<canvas id="canvas" class="d-none">
+</canvas>
+<audio id="snapSound" src="audio/snap.wav" preload="auto"></audio>
+
+
+<script>
+    const webcamElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('canvas');
+    const snapSoundElement = document.getElementById('snapSound');
+    const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement);
+
+    var ctx;  
+    function init() {
+        // Get the canvas and obtain a context for
+        // drawing in it
+        canvas = document.getElementById("myCanvas");
+        ctx = canvas.getContext('2d');
+    }
+
+
+    function snapchot() {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }
+    }
+    //
+    function WebcamStart() {
+        webcam.start()
+            .then(result => {
+                console.log("webcam started");
+
+
+            })
+            .catch(err => {
+                console.log("The following error occured: " + err);
+            });
+
+    }
+
+
+
+    function stopWebcam() {
+        webcam.stop();
+    }
+
+
+
+    // Een automatische timeout van 5 seconden om de foto te laten trekken  Daarna snappen en stop zetten
+
+
+
+</script>
