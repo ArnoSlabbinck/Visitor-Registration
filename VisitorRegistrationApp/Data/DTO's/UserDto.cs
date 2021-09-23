@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using VisitorRegistrationApp.Data.Entities;
+using AutoMapper;
 using VisitorRegistrationApp.Models;
-
 
 namespace VisitorRegistrationApp.Data.Profile
 {
-    public class EmployeeProfile : AutoMapper.Profile
+    public class UserDto : AutoMapper.Profile
     {
-        public EmployeeProfile()
+        public UserDto() 
         {
-            this.CreateMap<Employee, EmployeeViewModel>().ReverseMap();
-
-           
+            this.CreateMap<ApplicationUser, VisitorViewModel>();
         }
     }
 }

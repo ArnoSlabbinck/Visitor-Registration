@@ -1,4 +1,5 @@
-﻿using DAL.Repositories;
+﻿using BLL.Helper;
+using DAL.Repositories;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,14 @@ namespace BL.Services
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IVisitorRepository visitorRepository;
+        private readonly IPhotoService photoService;
         public VisitorService(UserManager<ApplicationUser> userManager, 
-            IVisitorRepository visitorRepository)
+            IVisitorRepository visitorRepository, 
+            IPhotoService photoService)
         {
             this.userManager = userManager;
             this.visitorRepository = visitorRepository;
+            this.photoService = photoService;
         }
         public List<ApplicationUser> SearchSpecificUsers(string searchInput)
         {
@@ -52,7 +56,7 @@ namespace BL.Services
 
         public async Task<bool> CheckOut(string name)
         {
-            var splittedName = GoodNameFormat(name);
+            var splittedName = SplitFullnameInFirstAndLast(name);
             var firstName = splittedName[0].Trim();
             var lastName = splittedName[1].Trim();
             var visitor = visitorRepository.getUserByName(firstName, lastName);
@@ -68,7 +72,7 @@ namespace BL.Services
 
 
 
-        public string[] GoodNameFormat(string name)
+        public string[] SplitFullnameInFirstAndLast(string name)
         {
             string[] splittedName = new string[2]; 
             var Name = name.Trim().ToLower();
@@ -110,6 +114,48 @@ namespace BL.Services
             }
           
         }
+
+        public Task<IEnumerable<ApplicationUser>> getAll()
+        {
+            return visitorRepository.GetAll(); 
+        }
+
+        public Task<ApplicationUser> Get(int Id)
+        {
+            return visitorRepository.Get(Id);
+        }
+
+        public Task<ApplicationUser> Update(ApplicationUser applicationUser)
+        {
+            return visitorRepository.Update(applicationUser); 
+        }
+
+        public Task<ApplicationUser> Add(ApplicationUser applicationUser)
+        {
+            return visitorRepository.Add(applicationUser);
+        }
+
+        public Task<bool> Delete(int id)
+        {
+            
+            visitorRepository.Delete(id);
+            return Task.FromResult(true);
+        }
+
+        public ApplicationUser GetUserFromName(string name)
+        {
+            var splitName = SplitFullnameInFirstAndLast(name);
+            var firstName = splitName[0].Trim();
+            var lastName = splitName[1].Trim();
+
+            return visitorRepository.getUserByName(firstName, lastName);
+
+        }
+
+        public void Delete(string userId)
+        {
+            visitorRepository.DeleteUserWithUserId(userId);
+        }
     }
 
     public interface IVisitorService
@@ -118,7 +164,22 @@ namespace BL.Services
 
         Task<bool> CheckOut(string name);
 
-        string[] GoodNameFormat(string name);
+        string[] SplitFullnameInFirstAndLast(string name);
+
+        ApplicationUser GetUserFromName(string name);
+
+        Task<IEnumerable<ApplicationUser>> getAll(); 
+
+        Task<ApplicationUser> Get(int Id);
+
+        Task<ApplicationUser> Update(ApplicationUser applicationUser);
+
+        Task<ApplicationUser> Add(ApplicationUser applicationUser);
+
+        Task<bool> Delete(int id);
+
+        void Delete(string userId);
+
 
 
     }

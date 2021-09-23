@@ -97,6 +97,183 @@ a{
 
 /* Self Custom
 -------------------------------------------------- */
+.webcam-container {
+    height: 50vh;
+    width: 50vw;
+}
+
+
+#background-container {
+    height: 100vh;
+    width: 100vw;
+}
+
+
+
+
+.app-panel {
+    margin-bottom: 250px;
+    margin-top: 200px;
+    height: 50vh;
+    width: 50vw;
+    text-align: center;
+}
+
+#webcam {
+    margin-bottom: 250px;
+    margin-top: 200px;
+    display: block;
+    position: relative;
+    width: auto;
+    height: 50vh;
+    z-index: 999;
+    pointer-events: none;
+    margin: auto;
+}
+
+.md-modal {
+    margin: 0px 20px;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 50vw;
+    height: 50vh;
+    z-index: 2000;
+    visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.md-show {
+    visibility: visible;
+}
+
+.md-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    opacity: 0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.md-show ~ .md-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.md-effect-12 .md-content {
+    -webkit-transform: scale(0.8);
+    -moz-transform: scale(0.8);
+    -ms-transform: scale(0.8);
+    transform: scale(0.8);
+    opacity: 0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.md-show.md-effect-12 ~ .md-overlay {
+    background-color: #e4f0e3;
+}
+
+.md-effect-12 .md-content h3,
+.md-effect-12 .md-content {
+    background: transparent;
+}
+
+.md-show.md-effect-12 .md-content {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+}
+
+#errorMsg {
+    position: fixed;
+    top: 22vh;
+    left: 0;
+    padding: 20px;
+    z-index: 999999;
+}
+
+
+.cameraControls {
+    position: absolute;
+    bottom: 4vh;
+    width: 100%;
+    z-index: 99999;
+    background: transparent;
+    opacity: 0.7;
+    padding: 10px;
+}
+
+
+.material-icons {
+    width: 750px;
+    font-size: 50px !important;
+    color: white;
+    width: 80px;
+    height: 80px;
+    background-color: black;
+    border-radius: 50%;
+    padding-top: 15px;
+    margin: 0 10px;
+}
+
+.flash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    z-index: 999999;
+}
+
+#canvas {
+    margin-bottom: 250px;
+    margin-top: 200px;
+    background-color: transparent;
+    position: absolute;
+    width: auto;
+    height: 50vh;
+    z-index: 9999;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#picture-intro {
+    text-align: center;
+}
+
+#guide-picture {
+    background-color: #000000;
+    color: #ffffff;
+    width: 250px;
+    height: 255px;
+    border-radius: 5px;
+    font-size: 35px;
+    font-weight: 700;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: block;
+}
+
+
+
 
 .countdown-container {
     position: relative;

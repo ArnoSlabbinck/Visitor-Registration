@@ -5,25 +5,15 @@
 }
 
 <h1>Details</h1>
-<div class="container">
-    <div class="row" style="min-height:min-content">
-        <div class="col-sm-8">
-            <section class="mb-3 card">
-                <div class="card-header">
-                    <h4><strong>@Model.Name</strong></h4>
-                </div>
-                <div class="card-body" style="height:315px">
-                    <p>@Model.Description</p>
-                </div>
-            </section>
-            <div class="col-sm-3">
-                <section class="mb-3 card">
-                    <img src="@Model.CompanyPhoto" />
-                </section>
-            </div>
-        </div>
+<div id="detail" class="card">
+    <img style="max-height:350px;" class="card-img-top" src="@Model.CompanyPhoto" alt="Nothing to see yet">
+
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text">Email: @Model.Description</p>
     </div>
-</div> 
+
+</div>
   <div>
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-link">Edit</a> 
     <a asp-action="Index" class="btn btn-link">Back to List</a>

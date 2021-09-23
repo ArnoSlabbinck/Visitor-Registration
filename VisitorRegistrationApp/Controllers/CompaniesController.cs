@@ -14,15 +14,15 @@ namespace VisitorRegistrationApp.Controllers
     {
         private readonly IMapper mapper;
         private readonly ICompanyService companyService;
-        private readonly IPhotoService photoService;
+
         public CompaniesController(IMapper mapper,
-            ICompanyService companyService, 
-            IPhotoService photoService)
+            ICompanyService companyService
+            )
         {
          
             this.mapper = mapper;
             this.companyService = companyService;
-            this.photoService = photoService;
+           
         }
         // GET: CompaniesController
         public ActionResult Index()
@@ -39,13 +39,14 @@ namespace VisitorRegistrationApp.Controllers
        
    
         // GET: CompaniesController/Details/5
-        public ActionResult Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
-            var Company = companyService.Get((int)id).Result;
+
+            var Company = await Task.FromResult(companyService.Get((int)id).Result);
             CompanyViewModel company = mapper.Map<CompanyViewModel>(Company);
             return View(company);
         }
@@ -64,15 +65,10 @@ namespace VisitorRegistrationApp.Controllers
             try
             {
                 companyViewModel.Building = companyService.GetBuilding();
-                if (companyViewModel.Photo != null)
-                {
-                    string uniqueFileName = photoService.UploadPhoto(companyViewModel.Photo);
-
-                   companyViewModel.CompanyPhoto = "/photos/" + uniqueFileName;
-                }
+               
                 var results = mapper.Map<Company>(companyViewModel);
 
-                companyService.Add(results);
+                bool addedCompany = await Task.FromResult(companyService.Add(results));
                 return RedirectToAction(nameof(Index));
 
                 //Hoe kan ik de foto van IFormFile omzetten in de BLL laag en dat zo meegeven
@@ -86,22 +82,22 @@ namespace VisitorRegistrationApp.Controllers
         }
 
         // GET: CompaniesController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            CompanyViewModel companyView = mapper.Map<CompanyViewModel>(companyService.Get(id).Result);
+            CompanyViewModel companyView = mapper.Map<CompanyViewModel>(await Task.FromResult(companyService.Get(id).Result));
             return View(companyView);
         }
 
         // POST: CompaniesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(CompanyViewModel companyView)
+        public async  Task<ActionResult> Edit(CompanyViewModel companyView)
         {
           
             try
             {
                 var result = mapper.Map<Company>(companyView);
-                companyService.Update(result);
+                await Task.FromResult(companyService.Update(result));
                 
                 // Omvormen van View Model naar Company 
 
@@ -114,24 +110,24 @@ namespace VisitorRegistrationApp.Controllers
         }
 
         // GET: CompaniesController/Delete/5
-        public ActionResult Delete(int? id)
+        public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
-            CompanyViewModel companyView = mapper.Map<CompanyViewModel>(companyService.Get((int)id).Result);
+            CompanyViewModel companyView = mapper.Map<CompanyViewModel>( await Task.FromResult(companyService.Get((int)id).Result));
             return View(companyView);
         }
 
         // POST: CompaniesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
-                companyService.Delete((int)id);
+                await Task.FromResult(companyService.Delete((int)id));
                 return RedirectToAction(nameof(Index));
             }
             catch

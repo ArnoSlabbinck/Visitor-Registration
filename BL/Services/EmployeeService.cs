@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Data.Repository;
+using VisitorRegistrationApp.Helper;
 
 namespace BL.Services
 {

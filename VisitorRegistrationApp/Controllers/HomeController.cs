@@ -176,6 +176,14 @@ namespace VisitorRegistrationApp.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RedirectToVisitorProfile(string pictureUrl)
+        {
+
+            return RedirectToAction("Delivery");
+        }
+
        
         private List<VisitorViewModel> MapApplicationUserToUserViewModel(List<ApplicationUser> applicationUsers)
         {

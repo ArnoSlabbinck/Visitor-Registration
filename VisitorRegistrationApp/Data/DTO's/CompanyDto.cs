@@ -8,9 +8,9 @@ using BLL.Helper;
 
 namespace VisitorRegistrationApp.Data.Profile
 {
-    public class CompanyProfile : AutoMapper.Profile
+    public class CompanyDto : AutoMapper.Profile
     {
-        public CompanyProfile()
+        public CompanyDto()
         {
             this.CreateMap<Company, CompanyViewModel>()
                 .ReverseMap();

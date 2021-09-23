@@ -1,0 +1,29 @@
+﻿@model VisitorViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>Details</h1>
+<div id="detail" class="card">
+    <img style="max-height:350px;" class="card-img-top" src="" alt="Nothing to see yet">
+
+    <div class="card-body">
+        <h5 class="card-title">@Model.Fullname</h5>
+        <p class="card-text">Email: @Model.Email</p>
+        <p class="card-text">Date: @Model.VisitDate.ToString("dd/MM/yyyy")</p>
+
+        <p class="card-text">Company: @Model.VisitingCompany</p>
+        @if (Model.AppointmentPeople != null)
+            {
+                <p class="card-text">Sign Out: @Model.AppointmentPeople[0].Name</p>
+            }
+        <p class="card-text">Notes: </p>
+    </div>
+
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Fullname" class="btn btn-link">Edit</a>
+    <a asp-action="Index" class="btn btn-link">Back to List</a>
+</div>

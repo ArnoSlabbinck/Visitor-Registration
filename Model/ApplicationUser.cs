@@ -1,8 +1,10 @@
 ﻿
 
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
@@ -46,6 +48,13 @@ namespace VisitorRegistrationApp.Data
         public VisitStatus VisitStatus { get; set; }
 
         public string VisitorPhoto { get; set; }
+
+        public string Notes { get; set; }
+
+        [NotMapped]
+        public IFormFile ProfilePhoto { get; set; }
+
+
     }
 
     public enum VisitStatus
