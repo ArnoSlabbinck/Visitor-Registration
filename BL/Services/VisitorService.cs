@@ -24,6 +24,13 @@ namespace BL.Services
             this.visitorRepository = visitorRepository;
             this.photoService = photoService;
         }
+        public VisitorService(IVisitorRepository visitorRepository,
+           IPhotoService photoService)
+        {
+            
+            this.visitorRepository = visitorRepository;
+            this.photoService = photoService;
+        }
         public List<ApplicationUser> SearchSpecificUsers(string searchInput)
         {
             searchInput = searchInput.Trim().ToLower();
