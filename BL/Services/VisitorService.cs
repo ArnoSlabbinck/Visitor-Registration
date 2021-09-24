@@ -13,7 +13,7 @@ namespace BL.Services
 {
     public class VisitorService : IVisitorService
     {
-        private readonly UserManager<ApplicationUser> userManager;
+        public readonly UserManager<ApplicationUser> userManager;
         private readonly IVisitorRepository visitorRepository;
         private readonly IPhotoService photoService;
         public VisitorService(UserManager<ApplicationUser> userManager, 
@@ -24,13 +24,7 @@ namespace BL.Services
             this.visitorRepository = visitorRepository;
             this.photoService = photoService;
         }
-        public VisitorService(IVisitorRepository visitorRepository,
-           IPhotoService photoService)
-        {
-            
-            this.visitorRepository = visitorRepository;
-            this.photoService = photoService;
-        }
+   
         public List<ApplicationUser> SearchSpecificUsers(string searchInput)
         {
             searchInput = searchInput.Trim().ToLower();
@@ -186,6 +180,8 @@ namespace BL.Services
         Task<bool> Delete(int id);
 
         void Delete(string userId);
+
+
 
 
 

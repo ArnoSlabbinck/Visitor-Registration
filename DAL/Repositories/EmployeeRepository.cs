@@ -1,4 +1,5 @@
-﻿using VisitorRegistrationApp.Data.Entities;
+﻿using System;
+using VisitorRegistrationApp.Data.Entities;
 
 namespace VisitorRegistrationApp.Data.Repository
 {

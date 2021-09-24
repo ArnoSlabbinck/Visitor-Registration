@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace VisitorRegistrationApp.Data.Repository
             return applicationDbContext.Companies.Where(c => c.Id == id).Include(e => e.Employees).SingleOrDefault();
         }
 
+        
     }
 
     public interface ICompanyRespository : IRepository<Company>

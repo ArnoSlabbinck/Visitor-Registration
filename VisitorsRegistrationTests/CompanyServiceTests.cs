@@ -16,37 +16,12 @@ namespace VisitorsRegistrationTests
     [TestFixture]
     public class CompanyServiceTests
     {
-        private readonly Mock<ICompanyRespository> _companyRepoMock = new Mock<ICompanyRespository>();
-        private readonly Mock<IPhotoService> _photoMock = new Mock<IPhotoService>();
-        private readonly Building building = new Building { Id = 1, Name = "FourWings" };
-        private readonly CompanyService companyService;
+        private readonly InjectFixture _injectFixture;
 
-        private readonly IEnumerable<Company> secondCompanies = new List<Company>() {
-                new Faker<Company>().RuleFor(x => x.Name, x => x.Person.Company.Name)
-                .RuleFor(x => x.Id, x => x.IndexFaker)
-                .RuleFor(x => x.Description, x => x.Random.Words()),
-                new Faker<Company>().RuleFor(x => x.Name, x => x.Person.Company.Name)
-                .RuleFor(x => x.Id, x => x.IndexFaker)
-                .RuleFor(x => x.Description, x => x.Random.Words()),
-                new Faker<Company>().RuleFor(x => x.Name, x => x.Person.Company.Name)
-                .RuleFor(x => x.Id, x => x.IndexFaker)
-                .RuleFor(x => x.Description, x => x.Random.Words()),
-                new Faker<Company>().RuleFor(x => x.Name, x => x.Person.Company.Name)
-                .RuleFor(x => x.Id, x => x.IndexFaker)
-                .RuleFor(x => x.Description, x => x.Random.Words()),
-                new Faker<Company>().RuleFor(x => x.Name, x => x.Person.Company.Name)
-                .RuleFor(x => x.Id, x => x.IndexFaker)
-                .RuleFor(x => x.Description, x => x.Random.Words()),
-            };
         public CompanyServiceTests()
         {
-            companyService = new CompanyService(_companyRepoMock.Object, _photoMock.Object);
-            IEnumerable<Company> companies = new List<Company>() {
-                new Company { Id = 1, Building = building, Name = "Allphi", Description = "Consultancy software" },
-                new Company { Id = 2, Building  = building, Name = "Quaest", Description = "Accountancy company"},
-                new Company { Id = 3, Building = building, Name = "Quroum", Description="AI company"},
-                new Company { Id  = 4, Building = building, Name  = "Axiom", Description = "Drone company"}
-                };
+         
+            _injectFixture = new InjectFixture();//All mock object are setup in injectFixture class
 
          
 
@@ -55,16 +30,16 @@ namespace VisitorsRegistrationTests
         public void CompanyRepositoryGetAll_ShouldReturnAllCompanies()
         {
 
-            _companyRepoMock.Setup(x => x.GetAll()).Returns(Task.FromResult(secondCompanies)); 
-            _companyRepoMock.Object.GetAll();
-            _companyRepoMock.Verify(x => x.GetAll());
+            _injectFixture._companyRepoMock.Setup(x => x.GetAll()).Returns(Task.FromResult(_injectFixture.secondCompanies)); 
+            _injectFixture._companyRepoMock.Object.GetAll();
+            _injectFixture._companyRepoMock.Verify(x => x.GetAll());
         
         }
 
         [Test]
         public void CompanyRepositoryGet_ShouldReturnOneCompany()
         {
-
+            //Verify if i can get one specific O
         }
     }
 }
