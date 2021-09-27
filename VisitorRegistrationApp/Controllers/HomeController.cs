@@ -2,6 +2,7 @@
 using BL.Services;
 using BLL.Helper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,9 +12,15 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using VisitorRegistrationApp.Data;
+using VisitorRegistrationApp.Data.Helper;
 using VisitorRegistrationApp.Models;
+
 
 namespace VisitorRegistrationApp.Controllers
 {
@@ -24,6 +31,9 @@ namespace VisitorRegistrationApp.Controllers
         private readonly IMapper mapper;
         private readonly IVisitorService visitorService;
         private readonly IPhotoService photoService;
+        private readonly UserManager<ApplicationUser> userManager;
+
+
         public HomeController(ILogger<HomeController> logger, 
             UserManager<ApplicationUser> userManager, 
             IMapper mapper, 
@@ -34,6 +44,8 @@ namespace VisitorRegistrationApp.Controllers
             this.mapper = mapper;
             this.visitorService = visitorService;
             this.photoService = photoService;
+            this.userManager = userManager;
+           
             
         }
 
@@ -113,6 +125,8 @@ namespace VisitorRegistrationApp.Controllers
             if(!string.IsNullOrEmpty(name))
             {
                 result = visitorService.CheckOut(name).Result;
+                string VisitorName = User.Identity.Name;
+                _logger.LogInformation($"{VisitorName} is now signout from the lobby");
             }
 
 
@@ -176,12 +190,30 @@ namespace VisitorRegistrationApp.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult RedirectToVisitorProfile(string pictureUrl)
+        [HttpGet]
+        public async Task<IActionResult> RedirectToVisitorProfile([FromBody] string DateImage, string ImageUrl)
         {
+            if (ImageUrl == null || ImageUrl.Length == 0)
+            {
+                return BadRequest();
+            }
+            //using (var memoryStream = new MemoryStream())
+            //{
+            //    //convert uploaded image as image xobject like given below
+            //    await base64Image.CopyToAsync(memoryStream);
+            //    using (var img = Image.FromStream(memoryStream, true, true))
+            //    {
+            //        string base64String = Base64ImageConverter.ImageToBase64(img, System.Drawing.Imaging.ImageFormat.Jpeg);
+            //        // TODO: ResizeImage(img, 100, 100);
+            //    }
+            //}
+            
+        
+           
+            //'System.Drawing.Imaging.ImageFormat.Jpeg' is the image extension
 
-            return RedirectToAction("Delivery");
+
+            return View();
         }
 
        
@@ -230,6 +262,8 @@ namespace VisitorRegistrationApp.Controllers
             // This should not happen. Perhaps better to throw exception at this point?
             return null;
         }
+
+      
     }
 
 

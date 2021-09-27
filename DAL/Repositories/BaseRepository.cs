@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,16 +11,19 @@ namespace VisitorRegistrationApp.Data.Repository
         where TEntity : class
         where TContext : DbContext
     {
-        private readonly ApplicationDbContext applicationDbContext; 
+        private readonly ApplicationDbContext applicationDbContext;
+        private readonly ILogger<TEntity> logger;
         
-        public BaseRepository(ApplicationDbContext applicationDbContext)
+        public BaseRepository(ApplicationDbContext applicationDbContext, ILogger<TEntity> logger)
         {
-            this.applicationDbContext = applicationDbContext; 
+            this.applicationDbContext = applicationDbContext;
+            this.logger = logger;
         }
 
         public Task<TEntity> Add(TEntity Entity)
         {
             applicationDbContext.Set<TEntity>().Add(Entity);
+            logger.LogInformation($"A new {Entity} is created in the database");
             applicationDbContext.SaveChanges();
             return null;
         }
@@ -32,6 +36,7 @@ namespace VisitorRegistrationApp.Data.Repository
                 return null; 
             }
             applicationDbContext.Set<TEntity>().Remove(entity);
+            logger.LogInformation($"{entity.ToString()} is now deleted from the database with id of {id}");
             applicationDbContext.SaveChanges();
             return Task.FromResult(entity); 
         }
@@ -49,6 +54,7 @@ namespace VisitorRegistrationApp.Data.Repository
         public  Task<TEntity> Update(TEntity Entity)
         {
             applicationDbContext.Entry(Entity).State = EntityState.Modified;
+            logger.LogInformation($"{Entity.ToString()} is now updated int the database ");
             applicationDbContext.SaveChanges();
             return null; 
         }

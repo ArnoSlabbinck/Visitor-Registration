@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,9 +11,11 @@ namespace VisitorRegistrationApp.Data.Repository
     public class CompanyRepository : BaseRepository<Company, ApplicationDbContext>, ICompanyRespository
     {
         private readonly ApplicationDbContext applicationDbContext;
-        public CompanyRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
+        private readonly ILogger<Company> logger;
+        public CompanyRepository(ApplicationDbContext applicationDbContext, ILogger<Company> logger) : base(applicationDbContext, logger)
         {
             this.applicationDbContext = applicationDbContext;
+            this.logger = logger;
         }
 
         public Building getBuilding()

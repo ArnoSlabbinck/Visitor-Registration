@@ -21,45 +21,54 @@
 </div>
 
 
-<div class="flex-row">
 
-    <div id="errorMsg" class="col-12 col-md-6 alert-danger d-none">
-        Fail to start camera, please allow permision to access camera. <br />
-        If you are browsing through social media built in browsers, you would need to open the page in Sarafi (iPhone)/ Chrome (Android)
-        <button id="closeError" class="btn btn-primary ml-3">OK</button>
-    </div>
-    <div class="md-modal md-effect-12">
-        <div id="app-panel" class="app-panel md-content row p-0 m-0">
-            <div id="webcam-container" class="webcam-container col-12 d-none p-0 m-0">
-                <video id="webcam" autoplay playsinline width="340" height="180"></video>
-                <canvas id="canvas" class="d-none"></canvas>
-                <div class="flash"></div>
-                <audio id="snapSound" src="audio/snap.wav" preload="auto"></audio>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <div id="errorMsg" class="col-12 col-md-6 alert-danger d-none">
+                Fail to start camera, please allow permision to access camera. <br />
+                If you are browsing through social media built in browsers, you would need to open the page in Sarafi (iPhone)/ Chrome (Android)
+                <button id="closeError" class="btn btn-primary ml-3">OK</button>
             </div>
-            <div id="cameraControls" class="cameraControls">
-                <a href="#" class=" d-none" id="exit-app" title="Exit App"><i class="material-icons">exit_to_app</i></a>
-                <a href="#" id="take-photo" title="Take Photo"><i class="material-icons">camera_alt</i></a>
-                <a href="#" class=" d-none" id="download-photo" download="selfie.png" target="_blank" title="Save Photo"><i class="material-icons">file_download</i></a>
-                <a href="#" class=" d-none" id="resume-camera" title="Resume Camera"><i class="material-icons">camera_front</i></a>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-
-<div id="guide-picture" class="align-items-center flex-column d-flex justify-content-center">
-    <!-- seconds -->
-    <div class="clock-item clock-seconds countdown-time-value ">
-        <div class="wrap">
-            <div class="inner">
-                <div id="canvas_seconds" class="clock-canvas"></div>
-                <div class="text">
-                    <p id="counter" class="val">0</p>
-                    <p class="type-seconds type-time">SECONDS</p>
+            <div class="md-modal md-effect-12">
+                <div id="app-panel" class="app-panel md-content row p-0 m-0">
+                    <div id="webcam-container" class="webcam-container col-12 d-none p-0 m-0">
+                        <video id="webcam" autoplay playsinline width="340" height="180"></video>
+                        <canvas id="canvas" class="d-none"></canvas>
+                        <div class="flash"></div>
+                        <audio id="snapSound" src="audio/snap.wav" preload="auto"></audio>
+                    </div>
+                    <div id="cameraControls" class="cameraControls">
+                        <a href="#" class=" d-none" id="exit-app" title="Exit App"><i class="material-icons">exit_to_app</i></a>
+                        <a href="#" id="take-photo" title="Take Photo"><i class="material-icons">camera_alt</i></a>
+                        <a href="#" class=" d-none" id="download-photo" download="selfie.png" target="_blank" title="Save Photo"><i class="material-icons">file_download</i></a>
+                        <a href="#" class=" d-none" id="resume-camera" title="Resume Camera"><i class="material-icons">camera_front</i></a>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="col-sm">
+            <div id="guide-picture">
+                <!-- seconds -->
+                <div class=" wrapper ">
+                    <div class="countdown-container">
+                        <div class="inner">
+                            <div id="canvas_seconds" class="clock-canvas"></div>
+                            <div class="big-text">
+                                <p id="counter" class="val">0</p>
+                                <p class="type-seconds type-time">SECONDS</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+       
+     
+
     </div>
 </div>
-

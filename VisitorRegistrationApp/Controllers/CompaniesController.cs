@@ -3,6 +3,7 @@ using BL.Services;
 using BLL.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
@@ -14,14 +15,15 @@ namespace VisitorRegistrationApp.Controllers
     {
         private readonly IMapper mapper;
         private readonly ICompanyService companyService;
-
+        private readonly ILogger<CompaniesController> logger;
         public CompaniesController(IMapper mapper,
-            ICompanyService companyService
-            )
+            ICompanyService companyService, 
+            ILogger<CompaniesController> logger)
         {
          
             this.mapper = mapper;
             this.companyService = companyService;
+            this.logger = logger;
            
         }
         // GET: CompaniesController
@@ -69,6 +71,7 @@ namespace VisitorRegistrationApp.Controllers
                 var results = mapper.Map<Company>(companyViewModel);
 
                 bool addedCompany = await Task.FromResult(companyService.Add(results));
+                logger.LogInformation($"A new company {results.Id} has been added to the database");
                 return RedirectToAction(nameof(Index));
 
                 //Hoe kan ik de foto van IFormFile omzetten in de BLL laag en dat zo meegeven
@@ -98,9 +101,9 @@ namespace VisitorRegistrationApp.Controllers
             {
                 var result = mapper.Map<Company>(companyView);
                 await Task.FromResult(companyService.Update(result));
-                
-                // Omvormen van View Model naar Company 
 
+                // Omvormen van View Model naar Company 
+                logger.LogInformation($"The Company {result.Id} has been updated");
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -128,6 +131,7 @@ namespace VisitorRegistrationApp.Controllers
             try
             {
                 await Task.FromResult(companyService.Delete((int)id));
+                logger.LogInformation($"The Company with {id} has been deleted");
                 return RedirectToAction(nameof(Index));
             }
             catch

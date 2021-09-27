@@ -74,6 +74,7 @@ $("#webcam-start").click(function () {
 function TakePicture() {
     beforeTakePhoto();
     let picture = webcam.snap();
+    pictureUrl = picture
     document.querySelector('#download-photo').href = picture;
     afterTakePhoto();
 }
@@ -176,22 +177,20 @@ $("#exit-app").click(function () {
     webcam.stop();
     document.getElementById("picture-intro").style.display = "block";
     console.log("webcam stopped");
+    const base64 = pictureUrl.split(",")[1]
+    var data = {
+        DateImage: new Date().toISOString(),
+        ImageUrl: base64
+    };
+    var url = '/Home/RedirectToVisitorProfile';
+    
 
     // Ajax request: redirect doen server naar andere pagina
-    $.ajax({
-        method: "POST",
-        url: '/Home/RedirectToVisitorProfile',
-        data: {
-            pictureUrl: pictureUrl
-        },
-        error: function (req, err) {
-            console.log('my message' + err);
-        },
-        success: function (data) {
-            console.log(data)
-
-
-
+    await fetch(url, {
+        method: "post",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-Type": "application/json"
         }
     });
     // Dan Url terug krijgen voor redirct doen naar andere pagina 

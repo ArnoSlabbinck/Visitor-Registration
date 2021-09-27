@@ -42,16 +42,15 @@ namespace VisitorsRegistrationTests
         }
 
 
-        [Test]
-        public async string  SearchSpecificUsers_CheckIfUsersInDatbase_IsNotNull()
-        {
-            // Testing if i can get the right User from the in memory Database using search 
-            //Arrange
-            var users = injectFixture.visitorService;
-            var userOne = await users.userManager.Users
-            //Assert
-            Assert.IsEmpty();
-        }
+        //[Test]
+        //public async string  SearchSpecificUsers_CheckIfUsersInDatbase_IsNotNull()
+        //{
+        //    // Testing if i can get the right User from the in memory Database using search 
+        //    //Arrange
+        //    var users = injectFixture.visitorService;
+        //    //Assert
+        //    return null;
+        //}
 
 
 

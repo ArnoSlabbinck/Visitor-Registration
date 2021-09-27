@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data;
+using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Data.Repository;
 
 namespace DAL.Repositories
@@ -11,9 +13,11 @@ namespace DAL.Repositories
     public class VisitorRespository : BaseRepository<ApplicationUser, ApplicationDbContext> , IVisitorRepository
     {
         private readonly ApplicationDbContext applicationDbContext;
-        public VisitorRespository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
+        private readonly ILogger<ApplicationUser> logger;
+        public VisitorRespository(ApplicationDbContext applicationDbContext, ILogger<ApplicationUser> logger) : base(applicationDbContext, logger)
         {
             this.applicationDbContext = applicationDbContext;
+            this.logger = logger;
         }
 
         public void DeleteUserWithUserId(string userid)
