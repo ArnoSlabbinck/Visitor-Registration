@@ -177,16 +177,19 @@ $("#exit-app").click(function () {
     webcam.stop();
     document.getElementById("picture-intro").style.display = "block";
     console.log("webcam stopped");
-    const base64 = pictureUrl.split(",")[1]
+    const base64 = pictureUrl.split(",")[1];
+    console.log(base64);
     var data = {
         DateImage: new Date().toISOString(),
         ImageUrl: base64
     };
+    console.log(data);
+    console.log(JSON.stringify(data));
     var url = '/Home/RedirectToVisitorProfile';
     
 
     // Ajax request: redirect doen server naar andere pagina
-    await fetch(url, {
+     fetch(url, {
         method: "post",
         body: JSON.stringify(data),
         headers: {

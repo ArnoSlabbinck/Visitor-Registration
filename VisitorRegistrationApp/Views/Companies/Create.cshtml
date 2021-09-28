@@ -22,11 +22,7 @@
                 @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Photo"></label>
-                <input asp-for="Photo" type="file" class="form-control" />
-                <span class="text-danger" asp-validation-for="Photo"></span>
-            </div>
+      
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" style="margin-top:20px;" />

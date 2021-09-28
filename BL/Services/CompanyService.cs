@@ -12,16 +12,13 @@ namespace BL.Services
     public class CompanyService : ICompanyService 
     {
         private readonly ICompanyRespository companyRes;
-        private readonly IPhotoService photoService;
+     
 
 
-
-
-        public CompanyService(ICompanyRespository companyRes, 
-            IPhotoService photoService)
+        public CompanyService(ICompanyRespository companyRes)
         {
             this.companyRes = companyRes;
-            this.photoService = photoService;
+       
         }
         public Building GetBuilding()
         {
@@ -58,13 +55,7 @@ namespace BL.Services
 
         public  bool Add(Company company)
         {
-            if (company.Photo != null)
-            {
-                string uniqueFileName = photoService.UploadPhoto(company.Photo);
-
-                company.CompanyPhoto = "/photos/" + uniqueFileName;
-            }
-
+         
             companyRes.Add(company);
             return true;
         }

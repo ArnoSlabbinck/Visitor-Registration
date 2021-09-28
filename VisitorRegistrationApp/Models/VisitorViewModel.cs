@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -38,10 +39,7 @@ namespace VisitorRegistrationApp.Models
         public DateTime VisitDate { get; set; }
 
         public string ChosenPurpose { get; set; }
-
-        public IFormFile ProfilePhoto { get; set; }
-
-        public string PhotoUrl { get; set; }
+        public virtual Image Picture { get; set; }
         public List<SelectListItem> Purpose {
             get;
             set;
@@ -53,7 +51,8 @@ namespace VisitorRegistrationApp.Models
             {
                      new SelectListItem { Text = "Visitor", Value = "Visitor" },
                      new SelectListItem { Text = "Making a Delivery", Value = "Delivery" },
-                     new SelectListItem { Text = "Siging Out", Value = "SignOut" }
+                     new SelectListItem { Text = "Siging Out", Value = "SignOut" },
+                     new SelectListItem { Text = " UpComing", Value = " UpComing"}
             };
 
         }

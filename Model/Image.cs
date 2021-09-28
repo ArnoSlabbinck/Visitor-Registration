@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Model
+{
+    public class Image
+    {
+        public int ImageId { get; set; }
+        [Required]
+        [StringLength(40, ErrorMessage = "Image name can't be more than 40 characters long")]
+        public string ImageName { get; set; }
+        [Required]
+        public string OriginalFormat { get; set; }
+
+        public byte[] ImageFile { get; set; }
+    }
+}

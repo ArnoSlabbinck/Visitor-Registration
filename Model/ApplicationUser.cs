@@ -1,6 +1,7 @@
 ﻿
 
 using Microsoft.AspNetCore.Http;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -46,13 +47,12 @@ namespace VisitorRegistrationApp.Data
         public TimeSpan? VisitedTime { get; set; }// Bereiken bij het completed visiting
 
         public VisitStatus VisitStatus { get; set; }
-
-        public string VisitorPhoto { get; set; }
+        
+        public virtual Image Picture { get; set; }
 
         public string Notes { get; set; }
 
-        [NotMapped]
-        public IFormFile ProfilePhoto { get; set; }
+   
 
 
     }

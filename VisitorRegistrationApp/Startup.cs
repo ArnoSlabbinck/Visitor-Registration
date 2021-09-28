@@ -41,7 +41,6 @@ namespace VisitorRegistrationApp
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            services.AddScoped<IPhotoService, PhotoService>();
 
             services.AddScoped<IVisitorService, VisitorService>();
 

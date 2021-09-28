@@ -24,19 +24,28 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Status</th>
             <th>
-                
+                Name
             </th>
-            <th></th>
+            <th>Registered On</th>
+            <th>Due Date</th>
+            <th>People</th>
+            <th>To Meet</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+                <td>@item.VisitStatus.ToString() </td>
                 <td>
                     @item.Fullname
                 </td>
+                <td></td>
+                <td>@item.VisitDate.ToString("dd/MM/yyyy") </td>
+                <td>@item.AppointmentPeople?.Count() </td>
+                <td>@item.AppointmentPeople?[0].Name </td>
                 <td>
                     <a class="btn btn-sm" asp-action="Edit" asp-route-name="@item.Fullname"><i class="glyphicon glyphicon-edit"></i></a>
                     <a class="btn btn-sm" asp-action="Details" asp-route-name="@item.Fullname"><i class="glyphicon glyphicon-zoom-in"></i></a>

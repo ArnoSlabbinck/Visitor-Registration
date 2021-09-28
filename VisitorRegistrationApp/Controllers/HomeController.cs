@@ -30,20 +30,18 @@ namespace VisitorRegistrationApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IMapper mapper;
         private readonly IVisitorService visitorService;
-        private readonly IPhotoService photoService;
+     
         private readonly UserManager<ApplicationUser> userManager;
 
 
         public HomeController(ILogger<HomeController> logger, 
             UserManager<ApplicationUser> userManager, 
             IMapper mapper, 
-            IVisitorService visitorService, 
-            IPhotoService photoService)
+            IVisitorService visitorService)
         {
             _logger = logger;
             this.mapper = mapper;
             this.visitorService = visitorService;
-            this.photoService = photoService;
             this.userManager = userManager;
            
             
@@ -91,7 +89,9 @@ namespace VisitorRegistrationApp.Controllers
                 case "SignOut":
                     return RedirectToAction("SignOut");
                 case "Delivery":
-                    return RedirectToAction("Delivery"); 
+                    return RedirectToAction("Delivery");
+                case "Upcoming":
+                    return RedirectToAction(" UpComing");
                     // Scannen van een package en dan een melding geven naar de persoon in de Building
             }
             return NotFound();
@@ -183,17 +183,35 @@ namespace VisitorRegistrationApp.Controllers
             return View(visitorViews);
         }
 
+        public IActionResult UpComing()
+        {
+            //Visitors kunnen een planning maken voor in de toekomst
+            // Via het kiezen van een calendar kunnen ze kiezen welke afspraak
+            // Contact persoon
+            // Maken van api call voor google calendar om calendar te kunne zien 
+            return View();
+        }
 
       
         public IActionResult Delivery()
         {
             return View();
         }
-
-        [HttpGet]
-        public async Task<IActionResult> RedirectToVisitorProfile([FromBody] string DateImage, string ImageUrl)
+        
+        public class RedirectToVisitorProfileData
         {
-            if (ImageUrl == null || ImageUrl.Length == 0)
+            public string DateImage { get; set; }
+
+            public string ImageUrl { get; set; }
+        }
+
+
+        [HttpPost]
+
+        public async Task<IActionResult> RedirectToVisitorProfile([FromBody] RedirectToVisitorProfileData data)
+        {
+
+            if (data == null || data.ImageUrl == null || data.ImageUrl.Length == 0)
             {
                 return BadRequest();
             }

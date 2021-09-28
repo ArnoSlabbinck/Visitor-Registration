@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,9 +26,8 @@ namespace VisitorRegistrationApp.Models
 
         public double Salary { get; set; } = 2000;
 
-        public IFormFile ProfilePhoto { get; set; }
+        public virtual Image Picture { get; set; }
 
-        public string PhotoUrl { get; set; }
 
         public bool AtWorkStatus { get; set; } = true;
 

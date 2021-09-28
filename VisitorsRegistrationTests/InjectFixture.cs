@@ -20,7 +20,6 @@ namespace VisitorsRegistrationTests
     public class InjectFixture : IDisposable
     {
         public readonly Mock<ICompanyRespository> _companyRepoMock = new Mock<ICompanyRespository>();
-        public readonly Mock<IPhotoService> _photoMock = new Mock<IPhotoService>();
         public readonly Building building = new Building { Id = 1, Name = "FourWings" };
         public readonly CompanyService companyService;
         public readonly UserManager<ApplicationUser> userManager;
@@ -73,8 +72,8 @@ namespace VisitorsRegistrationTests
             fakeUserManager.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>()))
                 .ReturnsAsync(IdentityResult.Success);
 
-            companyService = new CompanyService(_companyRepoMock.Object, _photoMock.Object);
-            visitorService = new VisitorService(fakeUserManager.Object,_visitorRepoMock.Object, _photoMock.Object);
+            companyService = new CompanyService(_companyRepoMock.Object);
+            visitorService = new VisitorService(fakeUserManager.Object,_visitorRepoMock.Object);
         }
         public void Dispose()
         {

@@ -21,22 +21,21 @@ namespace VisitorRegistrationApp.Controllers
         private readonly ICompanyService companyService;
         private readonly IEmployeeService employeeService;
         private readonly ILogger<EmployeesController> logger;
-        private readonly IPhotoService photoService;
-
+       
 
         public EmployeesController(IMapper mapper, 
             IEmployeeRespository employeeRepository,
             ICompanyService companyService, 
             IEmployeeService employeeService, 
-            ILogger<EmployeesController> logger, 
-            IPhotoService photoService)
+            ILogger<EmployeesController> logger
+           )
         {
             this.employeeRepository = employeeRepository;
             this.mapper = mapper;
             this.companyService = companyService;
             this.employeeService = employeeService;
             this.logger = logger;
-            this.photoService = photoService; 
+    
         }
 
         // GET: EmployeesController

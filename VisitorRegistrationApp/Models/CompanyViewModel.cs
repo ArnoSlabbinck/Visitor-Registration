@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,8 +21,8 @@ namespace VisitorRegistrationApp.Models
         [Display(Name = "Description")]
         public string Description { get; set; }
         [Display(Name = "Photo")]
-        public IFormFile Photo { get; set; }
+        public virtual Image Picture { get; set; }
 
-        public string CompanyPhoto { get; set; }
+
     }
 }

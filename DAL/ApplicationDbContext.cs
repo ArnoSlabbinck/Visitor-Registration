@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,8 @@ namespace VisitorRegistrationApp.Data
         public DbSet<Employee> Employees { get; set; }
 
         public DbSet<Building> Building { get; set; }
+
+        public DbSet<Image> Images { get; set; }
 
       
     

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,14 +24,12 @@ namespace VisitorRegistrationApp.Data.Entities
 
         public  double Salary { get; set; }
 
-        public string PhotoUrl { get; set; }
         public bool AtWorkStatus { get; set; } = true;
     
         [Required]
         public virtual Company Company { get; set; }
 
-        [NotMapped]
-        public IFormFile ProfilePhoto { get; set; }
+        public virtual Image Picture { get; set; }
 
         [Required(ErrorMessage = "An Employee needs to have a hire date")]
         public DateTime HireDate { get; set; }

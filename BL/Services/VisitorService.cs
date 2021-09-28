@@ -15,14 +15,14 @@ namespace BL.Services
     {
         public readonly UserManager<ApplicationUser> userManager;
         private readonly IVisitorRepository visitorRepository;
-        private readonly IPhotoService photoService;
+  
         public VisitorService(UserManager<ApplicationUser> userManager, 
-            IVisitorRepository visitorRepository, 
-            IPhotoService photoService)
+            IVisitorRepository visitorRepository
+            )
         {
             this.userManager = userManager;
             this.visitorRepository = visitorRepository;
-            this.photoService = photoService;
+
         }
    
         public List<ApplicationUser> SearchSpecificUsers(string searchInput)
