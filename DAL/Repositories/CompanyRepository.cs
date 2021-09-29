@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 
 namespace VisitorRegistrationApp.Data.Repository
@@ -29,12 +30,20 @@ namespace VisitorRegistrationApp.Data.Repository
             return applicationDbContext.Companies.OrderByDescending(p => p);
         }
 
-        public Company  GetEmployeesFromCompany(int id)
+        public async Task<Company>  GetEmployeesFromCompany(int id)
         {
-            return applicationDbContext.Companies.Where(c => c.Id == id).Include(e => e.Employees).SingleOrDefault();
+            return await Task.FromResult(await applicationDbContext.Companies.Where(c => c.Id == id).Include(e => e.Employees).FirstOrDefaultAsync());
         }
 
-        
+        public async Task<Company> GetCompanyWithImage(int id)
+        {
+           return await Task.FromResult(await applicationDbContext.Companies.Where(c => c.Id == id).Include(e => e.Picture).FirstOrDefaultAsync());
+        }
+
+        public async Task<Company> GetCompanyWithImageAndEmployees(int id)
+        {
+            return await Task.FromResult(await applicationDbContext.Companies.Where(c => c.Id == id).Include(e => e.Picture).Include(h => h.Employees).FirstOrDefaultAsync());
+        }
     }
 
     public interface ICompanyRespository : IRepository<Company>
@@ -43,6 +52,10 @@ namespace VisitorRegistrationApp.Data.Repository
 
         IQueryable<Company> GetOrderedCompanies();
 
-        Company GetEmployeesFromCompany(int id);
+        Task<Company> GetEmployeesFromCompany(int id);
+
+        Task<Company> GetCompanyWithImage(int id);
+
+        Task<Company> GetCompanyWithImageAndEmployees(int id);
     }
 }

@@ -12,8 +12,10 @@ namespace VisitorRegistrationApp.Data.Profile
     {
         public CompanyDto()
         {
-            this.CreateMap<Company, CompanyViewModel>()
-                .ReverseMap();
+            this.CreateMap<Company, CompanyViewModel>();
+            this.CreateMap<CompanyViewModel, Company>();
+                
+               
 
 
         }           

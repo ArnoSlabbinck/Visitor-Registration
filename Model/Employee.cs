@@ -25,16 +25,14 @@ namespace VisitorRegistrationApp.Data.Entities
         public  double Salary { get; set; }
 
         public bool AtWorkStatus { get; set; } = true;
-    
-        [Required]
-        public virtual Company Company { get; set; }
 
-        public virtual Image Picture { get; set; }
 
         [Required(ErrorMessage = "An Employee needs to have a hire date")]
         public DateTime HireDate { get; set; }
 
         public DateTime? EndDate { get; set; }
+
+        public int? PictureId { get; set; }
 
         public string Address1 { get; set; }
         public string Address2 { get; set; }
@@ -43,6 +41,8 @@ namespace VisitorRegistrationApp.Data.Entities
         public string PostalCode { get; set; }
         public string Country { get; set; }
 
+        public virtual Image Picture { get; set; }
 
+        public virtual Company Company { get; set; }
     }
 }

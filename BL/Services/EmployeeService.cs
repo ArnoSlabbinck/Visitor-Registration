@@ -59,7 +59,7 @@ namespace BL.Services
         {
             //verkrijg alle employees van de Company
 
-            var employees = companyRespository.GetEmployeesFromCompany(id).Employees;
+            var employees = companyRespository.GetEmployeesFromCompany(id).Result.Employees;
 
             return employees;
 

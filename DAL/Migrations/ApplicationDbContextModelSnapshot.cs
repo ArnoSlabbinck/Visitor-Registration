@@ -241,7 +241,7 @@ namespace DAL.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("PictureImageId")
+                    b.Property<int?>("PictureId")
                         .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
@@ -278,7 +278,9 @@ namespace DAL.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("PictureImageId");
+                    b.HasIndex("PictureId")
+                        .IsUnique()
+                        .HasFilter("[PictureId] IS NOT NULL");
 
                     b.HasIndex("VisitingCompanyId");
 
@@ -321,14 +323,16 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PictureImageId")
+                    b.Property<int?>("PictureId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BuildingId");
 
-                    b.HasIndex("PictureImageId");
+                    b.HasIndex("PictureId")
+                        .IsUnique()
+                        .HasFilter("[PictureId] IS NOT NULL");
 
                     b.ToTable("Companies");
                 });
@@ -358,7 +362,7 @@ namespace DAL.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Country")
@@ -379,7 +383,7 @@ namespace DAL.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("PictureImageId")
+                    b.Property<int?>("PictureId")
                         .HasColumnType("int");
 
                     b.Property<string>("PostalCode")
@@ -397,7 +401,9 @@ namespace DAL.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("PictureImageId");
+                    b.HasIndex("PictureId")
+                        .IsUnique()
+                        .HasFilter("[PictureId] IS NOT NULL");
 
                     b.ToTable("Employees");
                 });
@@ -460,8 +466,8 @@ namespace DAL.Migrations
                         .HasForeignKey("BuildingId");
 
                     b.HasOne("Model.Image", "Picture")
-                        .WithMany()
-                        .HasForeignKey("PictureImageId");
+                        .WithOne("ApplicationUser")
+                        .HasForeignKey("VisitorRegistrationApp.Data.ApplicationUser", "PictureId");
 
                     b.HasOne("VisitorRegistrationApp.Data.Entities.Company", "VisitingCompany")
                         .WithMany()
@@ -481,8 +487,8 @@ namespace DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("Model.Image", "Picture")
-                        .WithMany()
-                        .HasForeignKey("PictureImageId");
+                        .WithOne("Company")
+                        .HasForeignKey("VisitorRegistrationApp.Data.Entities.Company", "PictureId");
 
                     b.Navigation("Building");
 
@@ -497,17 +503,24 @@ namespace DAL.Migrations
 
                     b.HasOne("VisitorRegistrationApp.Data.Entities.Company", "Company")
                         .WithMany("Employees")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CompanyId");
 
                     b.HasOne("Model.Image", "Picture")
-                        .WithMany()
-                        .HasForeignKey("PictureImageId");
+                        .WithOne("Employee")
+                        .HasForeignKey("VisitorRegistrationApp.Data.Entities.Employee", "PictureId");
 
                     b.Navigation("Company");
 
                     b.Navigation("Picture");
+                });
+
+            modelBuilder.Entity("Model.Image", b =>
+                {
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("VisitorRegistrationApp.Data.ApplicationUser", b =>

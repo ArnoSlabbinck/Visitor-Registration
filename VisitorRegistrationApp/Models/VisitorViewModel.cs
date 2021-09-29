@@ -39,7 +39,20 @@ namespace VisitorRegistrationApp.Models
         public DateTime VisitDate { get; set; }
 
         public string ChosenPurpose { get; set; }
-        public virtual Image Picture { get; set; }
+
+        public string Base64Image { get; set; }
+        //Uploaden van imagefile 
+        //Omzetten naar bytearray
+        // Omzetting onmiddelijk in de Viewmodel laten gebeure
+        [Required(ErrorMessage = "You need to file in an image")]
+        
+        public IFormFile file { get; set; }
+    
+
+
+
+        public byte[] ImageFile { get; set; }
+
         public List<SelectListItem> Purpose {
             get;
             set;

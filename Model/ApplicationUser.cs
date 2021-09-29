@@ -47,12 +47,11 @@ namespace VisitorRegistrationApp.Data
         public TimeSpan? VisitedTime { get; set; }// Bereiken bij het completed visiting
 
         public VisitStatus VisitStatus { get; set; }
-        
+
+        public int? PictureId { get; set; }
         public virtual Image Picture { get; set; }
 
         public string Notes { get; set; }
-
-   
 
 
     }

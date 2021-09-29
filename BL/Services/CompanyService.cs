@@ -39,7 +39,7 @@ namespace BL.Services
         public async Task<Company> Get(int Id)
         {
             Guard.AgainstNull(Id, nameof(Id));
-            return await companyRes.Get(Id);
+            return await companyRes.GetCompanyWithImageAndEmployees(Id);
         }
 
         //Update van een company

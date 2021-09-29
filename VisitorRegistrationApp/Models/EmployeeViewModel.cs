@@ -25,8 +25,13 @@ namespace VisitorRegistrationApp.Models
         public string Job { get; set; }
 
         public double Salary { get; set; } = 2000;
+        public string Base64Image { get; set; }
+        //Uploaden van imagefile 
+        //Omzetten naar bytearray
+        // Omzetting onmiddelijk in de Viewmodel laten gebeure
+        [Required(ErrorMessage = "You need to upload the right image type")]
 
-        public virtual Image Picture { get; set; }
+        public IFormFile file { get; set; }
 
 
         public bool AtWorkStatus { get; set; } = true;
@@ -35,5 +40,7 @@ namespace VisitorRegistrationApp.Models
         public int CompanyId { get; set; }
         [Required(ErrorMessage ="An Employee works for a company")]
         public virtual Company Company { get; set; }
+
+        public virtual Model.Image Picture { get; set; }
     }
 }

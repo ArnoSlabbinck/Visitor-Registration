@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
+using VisitorRegistrationApp.Data.Helper;
 using VisitorRegistrationApp.Models;
 
 namespace VisitorRegistrationApp.Controllers
@@ -50,6 +51,8 @@ namespace VisitorRegistrationApp.Controllers
 
             var Company = await Task.FromResult(companyService.Get((int)id).Result);
             CompanyViewModel company = mapper.Map<CompanyViewModel>(Company);
+            if(company.Picture !=  null)
+                company.Base64Image = ImgToByteConverter.byteArrayToImage(company.Picture.ImageFile);
             return View(company);
         }
 
@@ -64,24 +67,32 @@ namespace VisitorRegistrationApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CompanyViewModel companyViewModel)
         {
-            try
+            if(FileChecker.CheckUploadedFileIsImage(companyViewModel.file))
             {
-                companyViewModel.Building = companyService.GetBuilding();
-               
-                var results = mapper.Map<Company>(companyViewModel);
+                if (ModelState.IsValid)
+                {
+                    companyViewModel.Picture = new Model.Image();
+                    //Omzetten van file naar byte array
+                    companyViewModel.Picture.ImageFile = ImageConverter.fileToByteArray(companyViewModel.file);
+                    companyViewModel.Picture.ImageName = $"{companyViewModel.Name} picture";
+                    companyViewModel.Picture.OriginalFormat = companyViewModel.file.Length.ToString();
 
-                bool addedCompany = await Task.FromResult(companyService.Add(results));
-                logger.LogInformation($"A new company {results.Id} has been added to the database");
-                return RedirectToAction(nameof(Index));
+                    // Validation on viewmocel
+                    companyViewModel.Building = companyService.GetBuilding();
 
-                //Hoe kan ik de foto van IFormFile omzetten in de BLL laag en dat zo meegeven
+                    var results = mapper.Map<Company>(companyViewModel);
 
+                    bool addedCompany = await Task.FromResult(companyService.Add(results));
+                    logger.LogInformation($"A new company {results.Id} has been added to the database");
+                    return RedirectToAction(nameof(Index));
+                }
+            
 
             }
-            catch
-            {
-                return View();
-            }
+
+            
+            return View();
+            
         }
 
         // GET: CompaniesController/Edit/5

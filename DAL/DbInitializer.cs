@@ -76,7 +76,7 @@ namespace DAL
                 EmailConfirmed = true,
                 PhoneNumber = "0472741605",
                 PhoneNumberConfirmed = true,
-                PasswordHash = "f3b28ccae31636b3a12540bf58f40e378b2d9e5524311055f8cbde329d723b3b", 
+                PasswordHash = "AQAAAAEAACcQAAAAEIax7H7DzHjegN3XlltL9XIErMsMRylOr6bTtNRUb3CEMvwSEXO2Xw9sTMoL6HKMTQ==", 
                 Gender = true, 
                 TwoFactorEnabled = false, 
                 AccessFailedCount = 0, 

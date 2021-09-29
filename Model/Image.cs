@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VisitorRegistrationApp.Data;
+using VisitorRegistrationApp.Data.Entities;
 
 namespace Model
 {
@@ -17,5 +19,11 @@ namespace Model
         public string OriginalFormat { get; set; }
 
         public byte[] ImageFile { get; set; }
+
+        public virtual Company Company { get; set; }
+
+        public virtual Employee Employee { get; set; }
+
+        public virtual ApplicationUser ApplicationUser { get; set; }
     }
 }
