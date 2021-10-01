@@ -48,12 +48,12 @@ namespace DAL
             context.SaveChanges();
             var Employees = new Employee[]
             {
-                new Employee { Name = "Arno Slabbinck", Job = "Junior Developer",  BirthDay = new DateTime(1994, 09, 29), Company = Companies[0], AtWorkStatus = true, Salary = 2000  },
-                new Employee { Name = "Joeri Ceulemans", Job = "Junior Developer",  BirthDay = new DateTime(1985, 01, 01), Company = Companies[0], AtWorkStatus = true, Salary = 2000  },
-                new Employee { Name = "Roel VaneerdeWegh", Job = "CEO",  BirthDay = new DateTime(1980, 01, 01), Company = Companies[0], AtWorkStatus = true, Salary = 2000  },
-                new Employee { Name = "Dorus Schauwaegers", Job = "CFO",  BirthDay = new DateTime(1985, 01, 01), Company = Companies[0], AtWorkStatus = true, Salary = 2000  },
-                new Employee { Name = "Angelo Dajaeghere", Job = "RUM Gent",  BirthDay = new DateTime(1980, 01, 01), Company = Companies[0], AtWorkStatus = true, Salary = 2000  },
-                new Employee { Name = "Wim Simons", Job = "RUM Westerlo",  BirthDay = new DateTime(1980, 01, 01), Company = Companies[0], AtWorkStatus = true, Salary = 2000  }
+                new Employee { Name = "Arno Slabbinck", Job = "Junior Developer",  BirthDay = new DateTime(1994, 09, 29), Company = Companies[0], Salary = 2000  },
+                new Employee { Name = "Joeri Ceulemans", Job = "Junior Developer",  BirthDay = new DateTime(1985, 01, 01), Company = Companies[0], Salary = 2000  },
+                new Employee { Name = "Roel VaneerdeWegh", Job = "CEO",  BirthDay = new DateTime(1980, 01, 01), Company = Companies[0],  Salary = 2000  },
+                new Employee { Name = "Dorus Schauwaegers", Job = "CFO",  BirthDay = new DateTime(1985, 01, 01), Company = Companies[0],  Salary = 2000  },
+                new Employee { Name = "Angelo Dajaeghere", Job = "RUM Gent",  BirthDay = new DateTime(1980, 01, 01), Company = Companies[0], Salary = 2000  },
+                new Employee { Name = "Wim Simons", Job = "RUM Westerlo",  BirthDay = new DateTime(1980, 01, 01), Company = Companies[0],  Salary = 2000  }
             };
 
 

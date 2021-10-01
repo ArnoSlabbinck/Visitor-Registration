@@ -14,6 +14,8 @@ namespace VisitorRegistrationApp.Controllers
 {
     public class CompaniesController : Controller
     {
+        //Niet naar buiten brengen van models vanuit services. View kent Models niet
+
         private readonly IMapper mapper;
         private readonly ICompanyService companyService;
         private readonly ILogger<CompaniesController> logger;

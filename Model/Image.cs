@@ -15,8 +15,9 @@ namespace Model
         [Required]
         [StringLength(40, ErrorMessage = "Image name can't be more than 40 characters long")]
         public string ImageName { get; set; }
-        [Required]
+        
         public string OriginalFormat { get; set; }
+        [Required(ErrorMessage ="Image needs byte array")]
 
         public byte[] ImageFile { get; set; }
 

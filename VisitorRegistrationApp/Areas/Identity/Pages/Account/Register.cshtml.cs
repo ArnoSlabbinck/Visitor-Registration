@@ -66,7 +66,8 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 
         public JsonResult OnGetEmployees(string selectedCompany)
         {
-
+            Input.AllEmployeesOfCompany = null;
+            
 
             Input.AllEmployeesOfCompany = employeeRepository.GetAll().Result
                 .Where(e => e.Company.Name == selectedCompany)
@@ -92,8 +93,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 
         public void SeedAllCompanies()
         {
-
-
+           
             Input.AllCompanies = companyRepository.GetAll().Result.Select(c =>
                  new SelectListItem
                  {
@@ -102,7 +102,21 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
                      Selected = c.Name.Contains("Allphi")
 
                  });
+        
         }
+        
+        public JsonResult OnGetReloadPage()
+        {
+            var AllphiCompany = companyRepository.GetEmployeesFromCompany("Allphi").Result;
+            // Ik moet alleen maar de Allphi employees vullen
+            Input.AllEmployeesOfCompany = AllphiCompany.Employees.AsEnumerable().Select(p => new SelectListItem
+            {
+                Text = p.Name,
+                Value = p.Name
+            });
+            return new JsonResult(Input.AllEmployeesOfCompany);
+        }
+
 
         public InputModel GiveDefaultValueToAppointedEmployeeWhenNotGiven(InputModel input)
         {
@@ -117,7 +131,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-
+            
 
             [Required(ErrorMessage ="You need to fill your Firstname")]
             [StringLength(maximumLength: 50, MinimumLength = 0,
@@ -160,9 +174,11 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             
 
             [Required(ErrorMessage = "You need to give a starttime for your visit")]
+            [Display(Name = "Visit Starttime")]
             //[Range(typeof(DateTime), DateTime.Now.ToString(), DateTime]
             public string Starttime { get; set; } = DateTime.Now.ToString("HH:mm");
             [Required(ErrorMessage = "You need to give a endTime for your visit")]
+            [Display(Name = "Visit Endtime")]
             public string EndTime { get; set; } = DateTime.Now.ToString("HH:mm");
             [Required(ErrorMessage = "You need to give registration day")]
             [Display(Name = "Day Of Visit")]

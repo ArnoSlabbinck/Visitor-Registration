@@ -19,35 +19,35 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark  " style="background-color: #2C3E50 ">
+        <nav class="navbar navbar-expand-lg navbar-dark  " style="background-color: #2C3E50; height:10vh; ">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">4 Wings</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">VisitorNorth</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse " id="navbarColor02">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                        <li class="nav-item text-lg-right">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         @if (User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Companies" asp-action="Index">Companies</a>
+                                <a class="nav-link text-white text-lg-right" asp-controller="Companies" asp-action="Index">Companies</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Employees" asp-action="Index">Employees</a>
+                                <a class="nav-link text-white text-lg-right"  asp-controller="Employees" asp-action="Index">Employees</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Visitors" asp-action="Index">Visitors</a>
+                                <a class="nav-link text-white text-lg-right" asp-controller="Visitors" asp-action="Index">Visitors</a>
                             </li>
 
                         }
                         else if (User.IsInRole("Visitor"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Home" asp-action="Index">Visitors</a>
+                                <a class="nav-link text-white text-lg-right" asp-controller="Home" asp-action="Index">Visitors</a>
                             </li>
                         }
 
@@ -60,23 +60,23 @@
 
 
     </header>
-    <div class="container" style="height:800px">
-        <main role="main" class="pb-3">
+    <div class="container" >
+        <main role="main" class="pb-3"  >
             @RenderBody()
         </main>
     </div>
   
     <!-- Footer -->
-    <footer class="border-top footer text-center text-white" style="background-color: #0a4275;">
+    <footer class="border-top footer text-center text-white" style="background-color: #0a4275; margin-top:100px;">
         <!-- Grid container -->
         <div class="container p-4 pb-0">
             <!-- Section: CTA -->
             <section class="">
                 <p class="d-flex justify-content-center align-items-center">
-                    <span class="me-3">Register for free</span>
-                    <button type="button" class="btn btn-outline-light btn-rounded">
-                        Sign up!
-                    </button>
+                    <span class="me-3">Do you want to stay in touch? </span>
+                    <a asp-controller="Home" asp-action="Contact" type="button" class="btn btn-outline-light btn-rounded">
+                        Contact Us
+                    </a>
                 </p>
             </section>
             <!-- Section: CTA -->

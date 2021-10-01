@@ -138,6 +138,9 @@ namespace VisitorRegistrationApp.Controllers
         [AutoValidateAntiforgeryToken]
         public IActionResult Search([FromForm] string searchInput, string logout)
         {
+            //Custom mapper ==> loskoppelen van data tussen viewmodel en model 
+            // functioneel mappen => name convention based
+
             List<VisitorViewModel> VisitorsList = new List<VisitorViewModel>();
             if (!string.IsNullOrEmpty(logout))// When a visitor signs out
             {

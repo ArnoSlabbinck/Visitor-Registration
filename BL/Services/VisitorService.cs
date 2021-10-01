@@ -1,5 +1,6 @@
 ﻿using BLL.Helper;
 using DAL.Repositories;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -15,13 +16,16 @@ namespace BL.Services
     {
         public readonly UserManager<ApplicationUser> userManager;
         private readonly IVisitorRepository visitorRepository;
-  
-        public VisitorService(UserManager<ApplicationUser> userManager, 
-            IVisitorRepository visitorRepository
+        private readonly IValidator<ApplicationUser> validator;
+
+        public VisitorService(UserManager<ApplicationUser> userManager,
+            IVisitorRepository visitorRepository,
+            IValidator<ApplicationUser> validator
             )
         {
             this.userManager = userManager;
             this.visitorRepository = visitorRepository;
+            this.validator = validator;
 
         }
    

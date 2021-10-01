@@ -25,6 +25,7 @@ namespace VisitorRegistrationApp.Data
        
         [Required(ErrorMessage = "Please Provide Gender")]
         public bool Gender { get; set; } // true male, false female
+ 
 
         public string Fullname { get { return FirstName + " " + LastName; } }
         [Required(ErrorMessage ="A visitor needs to visit a company if he/she wants to have access to the building")]
@@ -35,12 +36,15 @@ namespace VisitorRegistrationApp.Data
         
 
         [Display(Name = "Check-In")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? CheckIn { get; set; } = DateTime.Now; // Van zodra een user inlogt
 
-        [Display(Name ="Check-Out")]
-        public DateTime? CheckOut { get; set; }
+        [Display(Name = "Check-Out")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
+        public DateTime? CheckOut { get; set; } = DateTime.Now;
 
         [Display(Name = "VisitDay")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? VisitDay { get; set; }
 
 
@@ -64,6 +68,8 @@ namespace VisitorRegistrationApp.Data
         ExpectedArrival, 
         CheckOut, 
         Admin, 
-        Employee
+        Employee, 
+        Manager, 
+        Constractor
     }
 }

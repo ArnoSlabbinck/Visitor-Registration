@@ -23,7 +23,7 @@
     You need to pick the right date for your meeting. Can not select start date before today
 </div>
 
-<form class="row g-3" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+<form class="row g-3" name="myForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="col-md-6">
         <label asp-for="Input.Email"></label>
@@ -48,8 +48,8 @@
 
     <div class="col-md-6">
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="Male" value="true" asp-for="Input.Gender">
-            <label class="form-check-label" for="male">Male</label><br>
+            <input class="form-check-input" id="sexCheckBox" type="radio" name="gender" value="true" asp-for="Input.Gender">
+            <label id="sexLabel" for="sexCheckBox" class="form-check-label">Male</label><br>
             <span asp-validation-for="Input.Gender" class="text-danger"></span>
         </div>
 
@@ -57,8 +57,8 @@
     </div>
     <div class="col-md-6">
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="Female" value="false" asp-for="Input.Gender">
-            <label class="form-check-label" for="female">Female</label><br>
+            <input class="form-check-input" id="sexCheckBox" type="radio" name="gender" value="false" asp-for="Input.Gender">
+            <label id="sexLabel" for="sexCheckBox" class="form-check-label">Female</label><br>
             <span asp-validation-for="Input.Gender" class="text-danger"></span>
         </div>
 
@@ -75,17 +75,17 @@
     </div>
     <div class="col-md-4">
         <label asp-for="Input.RegistrationDay"></label>
-        <input id="day" type="datetime-local" required pattern="\d{4}-\d{2}-\d{2}" asp-for="Input.RegistrationDay" class="form-control" placeholder="ernest.simmons@company.com" />
+        <input id="day" type="date" required pattern="\d{4}-\d{2}-\d{2}" asp-for="Input.RegistrationDay" class="form-control" placeholder="ernest.simmons@company.com" />
         <span asp-validation-for="Input.RegistrationDay" class="text-danger"></span>
     </div>
     <div class="col-md-4">
         <label asp-for="Input.Starttime"></label>
-        <input type="time" asp-for="Input.Starttime" min="09:00" max="18:00" class="form-control" />
+        <input id="starttime" type="time" asp-for="Input.Starttime" min="09:00" max="18:00" placeholder="9:00" class="form-control" />
         <span asp-validation-for="Input.Starttime" class="text-danger"></span>
     </div>
     <div class="col-md-4">
         <label asp-for="Input.EndTime"></label>
-        <input type="time" asp-for="Input.EndTime" min="09:00" max="18:00" class="form-control" />
+        <input id="endtime" type="time" asp-for="Input.EndTime" min="09:00" max="18:00" placeholder="18:00" class="form-control" />
         <span asp-validation-for="Input.EndTime" class="text-danger"></span>
     </div>
     <div class="col-12">
@@ -111,7 +111,42 @@
 
 
 <script>
+    document.getElementById("starttime").defaultValue = "09:00";
+    document.getElementById("endtime").defaultValue = "18:00";
+    var employees = document.getElementById("selectedEmployee");
+
+    //Gender checked and upchecked
+    var gen = document.forms["myForm"]["gender"];
+    if (gen[0].checked == true) {
+        gen[1].checked = false;
+    }
+    else if (gen[1] == true) {
+        gen[0].checked = false;
+    }
+
+    //Fill the first company with Employees
+    $(window).on('load', function () {
+        
+        $.ajax({
+            type: 'GET',
+            url: '/Identity/Account/Register?handler=ReloadPage',
+            success: function (data) {
+                
+                if (data != null) {
+                    postSelectedEmployees(data, employees);
+                }
+                
+            },
+            error: function (error) {
+                console.log('my message' + error);
+            }
+        });
+        
+    });
+
+    //Bind the selectedEmployee to the Inputmodel
     $('#selectedEmployee').change(function () {
+        
         var data = { employee: $("#selectedEmployee option:selected").text() }
         $.ajax({
             type: 'GET',
@@ -126,11 +161,15 @@
             }
         });
     });
+
+    //Bind the selectedCompany to the Inputmodel
     $("#selectedCompany").change(function (e) {
-        var employees = document.getElementById("selectedEmployee");
+        $("#selectedEmployee").empty();
+
+     
         e.preventDefault();
         var selectedCompany = $(this).val();
-
+        
         var data = $.ajax({
             method: "GET",
             url: '/Identity/Account/Register?handler=Employees',
@@ -143,10 +182,10 @@
             success: function () {
 
                 if (typeof data != "undefined") {
-                    // variable is undefined
-                    console.log(data);
+                   
                     postSelectedEmployees(data.responseJSON, employees);
                     //Binden van selected Data aan mijn input model
+                    
 
                 }
 
@@ -176,14 +215,14 @@
 
     }
 
-
+ 
 
     //Maken van een validation voor opgegeven uren en datum
     $("#day").change(function (e) {
         // Breng in a datetime en vergelijk of de opgegeven value kleiner is dan de value gegeven
         var today = Date.now();
         var selectedDate = Date.parse($(this).val());
-        if (selectedDate < today) {
+        if (selectedDate < today ) {
             document.getElementById("day").value = "";
             document.getElementsByClassName("alert")[0].style.display = "inline";
             setTimeout(function () {
@@ -195,7 +234,6 @@
         }
         // Als dat zo is geef een alert en reset de value tot  dag van vandaag
     });
-
 
 
 </script>

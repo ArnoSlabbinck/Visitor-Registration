@@ -92,7 +92,7 @@ namespace VisitorRegistrationApp.Controllers
 
             Employee employee = new Employee
             {
-                AtWorkStatus = employeeView.AtWorkStatus,
+               
                 BirthDay = employeeView.BirthDay,
                 Company = employeeView.Company,
                 Name = employeeView.Name,

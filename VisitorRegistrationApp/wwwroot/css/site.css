@@ -244,7 +244,7 @@ a{
     margin-top: 200px;
     background-color: transparent;
     position: absolute;
-    width: auto;
+    width:200px;
     height: 50vh;
     z-index: 9999;
     margin: auto;
@@ -252,7 +252,7 @@ a{
     left: 0;
     right: 0;
     margin-left: auto;
-    margin-right: auto;
+    margin-right: 200px;
 }
 
 #picture-intro {

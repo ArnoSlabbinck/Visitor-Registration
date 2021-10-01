@@ -19,6 +19,9 @@ using BL.Services;
 using BLL.Helper;
 using DAL.Repositories;
 using VisitorRegistrationApp.Helper;
+using BLL.Validators;
+using FluentValidation;
+using VisitorRegistrationApp.Data.Entities;
 
 namespace VisitorRegistrationApp
 {
@@ -53,6 +56,14 @@ namespace VisitorRegistrationApp
             services.AddScoped<IEmployeeRespository, EmployeeRepository>();
 
             services.AddScoped<IVisitorRepository, VisitorRespository>();
+
+            services.AddScoped<IValidator<Company>, CompanyValidator>();
+
+            services.AddScoped<IValidator<Employee>, EmployeeValidator>();
+
+            services.AddScoped<IValidator<ApplicationUser>, VisitorValidator>();
+
+            services.AddScoped<IValidator<Image>, ImageValidator>();
 
 
 

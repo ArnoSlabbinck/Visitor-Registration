@@ -1,4 +1,5 @@
 ﻿
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,15 +12,19 @@ namespace BL.Services
     // This layer is for validating entity so they can be passed down to the view or to the data access
     public class EmployeeService : IEmployeeService
     {
+        //Maken van validation rules en checken daar op via Guard 
         private readonly IEmployeeRespository employeeRespository;
         private readonly ICompanyRespository companyRespository;
+        private readonly IValidator<Employee> validator;
        
-
+        //Validation doen op basis van uw data annotations op uw models 
         public EmployeeService(IEmployeeRespository employee, 
-            ICompanyRespository companyRespository)
+            ICompanyRespository companyRespository, 
+            IValidator<Employee> validator)
         {
             employeeRespository = employee;
             this.companyRespository = companyRespository;
+            this.validator = validator;
             
         }
 

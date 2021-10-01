@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Data.Repository;
 using VisitorRegistrationApp.Helper;
+using FluentValidation;
 
 namespace BL.Services
 {
     public class CompanyService : ICompanyService 
     {
         private readonly ICompanyRespository companyRes;
-     
+        private readonly IValidator<Company> validator;
 
 
-        public CompanyService(ICompanyRespository companyRes)
+        public CompanyService(ICompanyRespository companyRes, IValidator<Company> validator)
         {
             this.companyRes = companyRes;
+            this.validator = validator;
        
         }
         public Building GetBuilding()
@@ -38,7 +40,7 @@ namespace BL.Services
         
         public async Task<Company> Get(int Id)
         {
-            Guard.AgainstNull(Id, nameof(Id));
+            Guard.AgainstNull(Id, nameof(Id), new Company());
             return await companyRes.GetCompanyWithImageAndEmployees(Id);
         }
 
@@ -46,7 +48,7 @@ namespace BL.Services
 
         public  bool Update(Company company)
         {
-            Guard.AgainstNull(company, nameof(company));
+            Guard.AgainstNull(company, nameof(company), new Company());
             companyRes.Update(company);
             return true;
         }
@@ -64,7 +66,7 @@ namespace BL.Services
 
         public  bool Delete(int id)
         {
-            Guard.AgainstNull(id, nameof(id));
+            Guard.AgainstNull(id, nameof(id), new Company());
             companyRes.Delete(id);
             return true;
             
@@ -72,7 +74,7 @@ namespace BL.Services
 
         public IEnumerable<Company> SearchByName(string searchTerm)
         {
-            Guard.AgainstNull(searchTerm, nameof(searchTerm));
+            Guard.AgainstNull(searchTerm, nameof(searchTerm), new Company());
             return companyRes.GetOrderedCompanies().Where(o => o.Name.ToLower() == searchTerm.Trim().ToLower());
             
             
