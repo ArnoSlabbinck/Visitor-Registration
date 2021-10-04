@@ -1,7 +1,10 @@
 ﻿
 using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Data.Repository;
@@ -16,23 +19,34 @@ namespace BL.Services
         private readonly IEmployeeRespository employeeRespository;
         private readonly ICompanyRespository companyRespository;
         private readonly IValidator<Employee> validator;
-       
+        private readonly ILogger<EmployeeService> logger;
+        private IList<string> Errors;
+        
+
         //Validation doen op basis van uw data annotations op uw models 
         public EmployeeService(IEmployeeRespository employee, 
             ICompanyRespository companyRespository, 
-            IValidator<Employee> validator)
+            IValidator<Employee> validator, 
+            ILogger<EmployeeService> logger)
         {
             employeeRespository = employee;
             this.companyRespository = companyRespository;
             this.validator = validator;
+            this.logger = logger;
             
         }
 
-        public  int Add(Employee employee)
+        public async Task<IList<string>> Add(Employee employee)
         {
-            
-            employeeRespository.Add(employee);
-            return 0;
+            ValidationResult validationResult = validator.Validate(employee);
+            Errors = Guard.AgainstErrors(validationResult);
+            if (Errors == null)
+            {
+                var employeeAdded = await employeeRespository.Add(employee);
+                logger.LogInformation($"A new employee has been added with id {employeeAdded.Id}, {employeeAdded.Name}, {employeeAdded.Company.Name}");
+            }
+           
+            return Errors;
 
         }
 
@@ -41,6 +55,7 @@ namespace BL.Services
             try
             {
                 var result = await employeeRespository.Delete(id);
+                logger.LogInformation($"The employee with Id {result.Id} has been deleted");
                 return true;
             }
             catch(Exception e)
@@ -57,27 +72,31 @@ namespace BL.Services
 
         public Task<IEnumerable<Employee>> getAll()
         {
-            throw new System.NotImplementedException();
+            return employeeRespository.GetAll();
         }
 
         public IEnumerable<Employee> GetEmployeesFromCompany(int id)
         {
             //verkrijg alle employees van de Company
-
+            Errors.Add(Guard.AgainstNull(id, nameof(id), new Employee())); 
+            
             var employees = companyRespository.GetEmployeesFromCompany(id).Result.Employees;
 
             return employees;
-
-            
-            // Krijg de company van de 
-
             
         }
 
-        public async Task<Employee> Update(Employee employee)
+        public async Task<IList<string>> Update(Employee employee)
         {
-            await employeeRespository.Update(employee);
-            return employee;
+
+            ValidationResult validationResult = validator.Validate(employee);
+            Errors = Guard.AgainstErrors(validationResult);
+            if(Errors == null)
+            {
+                await employeeRespository.Update(employee);
+                logger.LogInformation($"The employee has been updated with id {employee.Id}, {employee.Name}, {employee.Company.Name}");
+            }
+            return Errors;
         }
     }
 
@@ -87,9 +106,9 @@ namespace BL.Services
 
         Task<Employee> Get(int Id);
 
-        Task<Employee> Update(Employee employee);
+        Task<IList<string>> Update(Employee employee);
 
-        int Add(Employee employee);
+        Task<IList<string>> Add(Employee employee);
 
         Task<bool> Delete(int id);
 

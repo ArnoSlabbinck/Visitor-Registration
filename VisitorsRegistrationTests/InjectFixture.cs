@@ -2,8 +2,10 @@
 using BLL.Helper;
 using Bogus;
 using DAL.Repositories;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -25,9 +27,17 @@ namespace VisitorsRegistrationTests
         public readonly UserManager<ApplicationUser> userManager;
         public readonly ApplicationDbContext applicationDbContext;
         public readonly ApplicationDbContext DbContext;
+        public readonly Mock<ILogger<CompanyService>> loggerCom;
+        public readonly Mock<ILogger<EmployeeService>> loggerEmp;
+        public readonly Mock<ILogger<VisitorService>> loggerVis;
+
+
 
         public readonly VisitorService visitorService;
         public readonly Mock<IVisitorRepository> _visitorRepoMock = new Mock<IVisitorRepository>();
+        public readonly Mock<IValidator<Company>> companyValidatorMock = new Mock<IValidator<Company>>();
+        public readonly Mock<IValidator<Employee>> employeeValidatorMock = new Mock<IValidator<Employee>>();
+        public readonly Mock<IValidator<ApplicationUser>> visitorValidatorMock = new Mock<IValidator<ApplicationUser>>();
 
 
         public readonly IEnumerable<Company> secondCompanies = new List<Company>() {
@@ -72,8 +82,8 @@ namespace VisitorsRegistrationTests
             fakeUserManager.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>()))
                 .ReturnsAsync(IdentityResult.Success);
 
-            companyService = new CompanyService(_companyRepoMock.Object);
-            visitorService = new VisitorService(fakeUserManager.Object,_visitorRepoMock.Object);
+            companyService = new CompanyService(_companyRepoMock.Object, companyValidatorMock.Object, loggerCom.Object);
+            visitorService = new VisitorService(fakeUserManager.Object,_visitorRepoMock.Object, visitorValidatorMock.Object, loggerVis.Object);
         }
         public void Dispose()
         {

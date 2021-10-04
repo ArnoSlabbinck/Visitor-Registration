@@ -2,6 +2,7 @@
 using DAL.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +18,18 @@ namespace BL.Services
         public readonly UserManager<ApplicationUser> userManager;
         private readonly IVisitorRepository visitorRepository;
         private readonly IValidator<ApplicationUser> validator;
+        private readonly ILogger<VisitorService> logger; 
 
         public VisitorService(UserManager<ApplicationUser> userManager,
             IVisitorRepository visitorRepository,
-            IValidator<ApplicationUser> validator
+            IValidator<ApplicationUser> validator, 
+            ILogger<VisitorService> logger
             )
         {
             this.userManager = userManager;
             this.visitorRepository = visitorRepository;
             this.validator = validator;
+            this.logger = logger;
 
         }
    

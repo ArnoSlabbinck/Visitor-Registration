@@ -7,6 +7,8 @@ using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Data.Repository;
 using VisitorRegistrationApp.Helper;
 using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.Extensions.Logging;
 
 namespace BL.Services
 {
@@ -14,12 +16,17 @@ namespace BL.Services
     {
         private readonly ICompanyRespository companyRes;
         private readonly IValidator<Company> validator;
+        private readonly ILogger<CompanyService> logger;
+        private IList<string> Errors;
 
 
-        public CompanyService(ICompanyRespository companyRes, IValidator<Company> validator)
+        public CompanyService(ICompanyRespository companyRes,
+            IValidator<Company> validator, 
+            ILogger<CompanyService> logger)
         {
             this.companyRes = companyRes;
             this.validator = validator;
+            this.logger = logger;
        
         }
         public Building GetBuilding()
@@ -40,35 +47,69 @@ namespace BL.Services
         
         public async Task<Company> Get(int Id)
         {
-            Guard.AgainstNull(Id, nameof(Id), new Company());
-            return await companyRes.GetCompanyWithImageAndEmployees(Id);
+            Errors.Add(Guard.AgainstNull(Id, nameof(Id), new Company()));
+            if(Errors != null)
+                return await companyRes.GetCompanyWithImageAndEmployees(Id);
+            return null;
         }
 
         //Update van een company
 
-        public  bool Update(Company company)
+        public async Task<IList<string>>  Update(Company company)
         {
-            Guard.AgainstNull(company, nameof(company), new Company());
-            companyRes.Update(company);
-            return true;
+
+            ValidationResult validationResult = validator.Validate(company);
+            Errors = Guard.AgainstErrors(validationResult);
+            if(Errors == null)
+            {
+                var companyAdded  = await companyRes.Update(company);
+                logger.LogInformation($"The company has been updated with id {companyAdded.Id}, {companyAdded.Name}");
+            }    
+                
+            return Errors;
         }
 
         // Creeeren van company
 
-        public  bool Add(Company company)
+        public async Task<IList<string>> Add(Company company)
         {
-         
-            companyRes.Add(company);
-            return true;
+
+            ValidationResult validationResult = validator.Validate(company);
+            Errors = Guard.AgainstErrors(validationResult);
+            if (Errors == null)
+            {
+                var companyAdded = await Task.FromResult(companyRes.Add(company));
+                logger.LogInformation($"The company has been added with id {companyAdded.Result.Id}, {companyAdded.Result.Name}");
+                return Errors;
+            }
+            else
+            {
+                var errorSummary  = Guard.AllLoggingErrors(Errors);
+                logger.LogError(errorSummary);
+                return Errors;
+
+            }
+           
         }
 
         //Verwijderen van een company
 
-        public  bool Delete(int id)
+        public async Task<IList<string>> Delete(int id)
         {
-            Guard.AgainstNull(id, nameof(id), new Company());
-            companyRes.Delete(id);
-            return true;
+            Errors.Add(Guard.AgainstNull(id, nameof(id), new Company()));
+            if(Errors == null)
+            {
+                var company = await Task.FromResult(companyRes.Delete(id));
+                logger.LogInformation($"The company {company.Result.Id}, {company.Result.Name} has been deleted");
+                return Errors;
+            }
+            else
+            {
+                var errorSummary = Guard.AllLoggingErrors(Errors);
+                logger.LogError(errorSummary);
+                return Errors;
+            }
+            
             
         }
 
@@ -89,11 +130,11 @@ namespace BL.Services
 
         Task<Company> Get(int Id);
 
-        bool Update(Company company);
+        Task<IList<string>> Update(Company company);
 
-        bool Add(Company company);
+        Task<IList<string>> Add(Company company);
 
-        bool Delete(int id);
+        Task<IList<string>> Delete(int id);
 
         IEnumerable<Company> SearchByName(string searchTerm);
     }

@@ -18,15 +18,16 @@ namespace VisitorRegistrationApp.Controllers
 
         private readonly IMapper mapper;
         private readonly ICompanyService companyService;
-        private readonly ILogger<CompaniesController> logger;
+       
+        private IList<string> Errors;
         public CompaniesController(IMapper mapper,
-            ICompanyService companyService, 
-            ILogger<CompaniesController> logger)
+            ICompanyService companyService
+           )
         {
          
             this.mapper = mapper;
             this.companyService = companyService;
-            this.logger = logger;
+          
            
         }
         // GET: CompaniesController
@@ -84,8 +85,8 @@ namespace VisitorRegistrationApp.Controllers
 
                     var results = mapper.Map<Company>(companyViewModel);
 
-                    bool addedCompany = await Task.FromResult(companyService.Add(results));
-                    logger.LogInformation($"A new company {results.Id} has been added to the database");
+                    Errors = await Task.FromResult(await companyService.Add(results));
+                   
                     return RedirectToAction(nameof(Index));
                 }
             
@@ -113,10 +114,9 @@ namespace VisitorRegistrationApp.Controllers
             try
             {
                 var result = mapper.Map<Company>(companyView);
-                await Task.FromResult(companyService.Update(result));
+                Errors = await Task.FromResult(await companyService.Update(result));
 
-                // Omvormen van View Model naar Company 
-                logger.LogInformation($"The Company {result.Id} has been updated");
+                
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -144,7 +144,7 @@ namespace VisitorRegistrationApp.Controllers
             try
             {
                 await Task.FromResult(companyService.Delete((int)id));
-                logger.LogInformation($"The Company with {id} has been deleted");
+               
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -156,8 +156,7 @@ namespace VisitorRegistrationApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Search(string searchTerm)
         {
-            //Simpel op zoeken van de companies bij naam 
-            // Terug geven van naam via Order by ascending or descending
+            
             if (string.IsNullOrEmpty(searchTerm))
             {
                 return RedirectToAction(nameof(NotFound));

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation.Results;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,35 +8,30 @@ namespace VisitorRegistrationApp.Helper
 {
     public static class Guard 
     {
-        //Validations maken voor null references, stringlength
 
-
-        public static void AgainstNull(object property, string argumentName, object Model)
+       
+        public static string AgainstNull(object property, string argumentName, object Model)
         {
             Type typeOfModel = Model.GetType();
             if (property == null)
             {
-                throw new ArgumentNullException($"For the model of {typeOfModel.Name}, you need to give in a value for {argumentName}  ");
+               return $"For the model of {typeOfModel.Name}, you need to give in a value for {argumentName}  ";
 
             }
-          
+            return null;
         }
 
-        //public static void  AgainstNullOrWhiteSpace(object argument, string argumentName, object Model)
-        //{
-        //    Type typeOfModel = Model.GetType();
-        //    if(argument == null || string.IsNullOrWhiteSpace(argument.ToString()) )
-        //    {
-        //        throw new wh
-        //    }
-        //}
+        public static string AgainstNullOrWhiteSpace(object argument, string argumentName, object Model)
+        {
+            Type typeOfModel = Model.GetType();
+            if (argument == null || string.IsNullOrWhiteSpace(argument.ToString()))
+            {
+                return $"For the model of {typeOfModel.Name}, you need to give in a value for {argumentName}  ";
+            }
+            return null;
+        }
 
-        //public static void AgainstInvalidTerms(Term term, string argumentName)
-        //{
-        //    // note: currently there are only two enum options
-            
-        //}
-
+  
         public static void AgainstOutOfRange(int range, int length, string argumentName, object Model)
         {
             Type typeOfModel = Model.GetType();
@@ -47,6 +43,36 @@ namespace VisitorRegistrationApp.Helper
         }
 
 
+        public static IList<string> AgainstErrors(ValidationResult validationResult)
+        {
+            List<string> Errors = new List<string>(); 
+
+            if (!validationResult.IsValid)
+            {
+                foreach (var failure in validationResult.Errors)
+                {
+                    Errors.Add("Property " + failure.PropertyName + " failed validation. Error was: " + failure.ErrorMessage);
+                    //struct terug geven met errors en 
+
+
+                }
+                return Errors;
+            }
+
+            return Errors;
+        }
+
+
+        public static string AllLoggingErrors(IList<string> errors)
+        {
+            string errorSummary = string.Empty; 
+            foreach(var error in errors)
+            {
+                errorSummary += error;
+            }
+
+            return errorSummary;
+        }
        
 
     }

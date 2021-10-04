@@ -34,7 +34,7 @@ namespace VisitorRegistrationApp.Controllers
         // GET: VisitorsController/Details/5
         public async Task<ActionResult> Details(string name)
         {
-            Guard.AgainstNull(name, nameof(name));
+            Guard.AgainstNull(name, nameof(name), new ApplicationUser());
 
             var visitor = await Task.FromResult(visitorService.GetUserFromName(name));
             var visitorViewModel = mapper.Map<VisitorViewModel>(visitor);
@@ -46,7 +46,7 @@ namespace VisitorRegistrationApp.Controllers
         // GET: VisitorsController/Edit/5
         public async Task<ActionResult> Edit(string name)
         {
-            Guard.AgainstNull(name, nameof(name));
+            Guard.AgainstNull(name, nameof(name), new ApplicationUser());
             var visitor = await Task.FromResult(visitorService.GetUserFromName(name));
             var visitorViewModel = mapper.Map<VisitorViewModel>(visitor); 
             return View(visitorViewModel);
@@ -57,23 +57,21 @@ namespace VisitorRegistrationApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(string name, VisitorViewModel visitorViewModel)
         {
-            try
+            if(ModelState.IsValid)
             {
-                Guard.AgainstNull(name, nameof(name));
                 var visitor = mapper.Map<ApplicationUser>(visitorViewModel);
                 await visitorService.Update(visitor);
                 return RedirectToAction(nameof(Index));
+
             }
-            catch
-            {
-                return View();
-            }
+            return View();
+            
         }
 
         // GET: VisitorsController/Delete/5
         public async Task<ActionResult> Delete(string name)
         {
-            Guard.AgainstNull(name, nameof(name));
+            Guard.AgainstNull(name, nameof(name), new ApplicationUser());
             var visitor = await Task.FromResult(visitorService.GetUserFromName(name));
             var visitorViewModel = mapper.Map<VisitorViewModel>(visitor);
             return View(visitorViewModel);
@@ -84,18 +82,13 @@ namespace VisitorRegistrationApp.Controllers
         [ValidateAntiForgeryToken]
         public  ActionResult Delete(string name, VisitorViewModel visitorViewModel)
         {
-            try
+            if(ModelState.IsValid)
             {
-
-                Guard.AgainstNull(visitorViewModel, nameof(visitorViewModel));
                 var visitor = mapper.Map<ApplicationUser>(visitorViewModel);
                 visitorService.Delete(visitor.Id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(name);
         }
 
 

@@ -20,21 +20,21 @@ namespace VisitorRegistrationApp.Controllers
         private readonly IEmployeeRespository employeeRepository;
         private readonly ICompanyService companyService;
         private readonly IEmployeeService employeeService;
-        private readonly ILogger<EmployeesController> logger;
-       
+        private  IList<string> Errors;
+
 
         public EmployeesController(IMapper mapper, 
             IEmployeeRespository employeeRepository,
             ICompanyService companyService, 
-            IEmployeeService employeeService, 
-            ILogger<EmployeesController> logger
+            IEmployeeService employeeService
+          
            )
         {
             this.employeeRepository = employeeRepository;
             this.mapper = mapper;
             this.companyService = companyService;
             this.employeeService = employeeService;
-            this.logger = logger;
+           
     
         }
 
@@ -102,7 +102,7 @@ namespace VisitorRegistrationApp.Controllers
             };
 
             
-            await Task.FromResult(employeeService.Add(employee));
+            Errors = await Task.FromResult(await employeeService.Add(employee));
 
 
             return RedirectToAction(nameof(Index), new {id = id});
@@ -162,14 +162,7 @@ namespace VisitorRegistrationApp.Controllers
 
                 bool deletedEmployee  = await employeeService.Delete((int)id);
 
-                if (deletedEmployee == true)
-                    logger.LogInformation("The employee has been deleted");
-                else
-                {
-                    logger.LogInformation("The employee hasn't been deleted");
-                    throw new Exception();
-                }
-                    
+ 
                 // Als de employee gedelete is terug opvragen van alle employees van de company
                 
                 return RedirectToAction(nameof(Index), new { id = (int)TempData["Id"] });

@@ -16,11 +16,12 @@ namespace VisitorRegistrationApp.Data.Entities
         {
             Employees = new List<Employee>();
         }
-        [DisplayName("CompanyId")]
+       
         public int Id { get; set; }
         [Required(ErrorMessage = "An Company needs to have a name")]
         public string Name { get; set; }
-        public string Description { get; set; }
+       
+        public string Description { get; set; } = "Nothing yet";
         public int? PictureId { get; set; }
         [Required(ErrorMessage ="A Company needs to have employees")]
 
