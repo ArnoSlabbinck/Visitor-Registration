@@ -224,7 +224,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             //De startuur mag niet vroeger zijn dan current time checken op de client side
             // Het minuten verschil moet tussen de 30 minuten zijn  => EndTime - StartTime  > 30
             //Je kan geen 
-            IdentityResult roleResult;
+         
 
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -240,45 +240,19 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
                 {
                      Input = GiveDefaultValueToAppointedEmployeeWhenNotGiven(Input);
                 }
-                
+                MultipleAppointmentsWith.Add(Input.ApppointmentWith);
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName,
-                    LastName = Input.LastName ,Gender = Input.Gender, 
+                    LastName = Input.LastName ,Gender = Input.Gender,
                     AppointmenrWith = MultipleAppointmentsWith
                 };
 
-                var visitor = mapper.Map<VisitorViewModel>(user);
-                HttpContext.Session.SetObject("CurrentVisitor", visitor); 
-
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
-                {
-                    var roleName = "Visitor";
-                    // Creeren van nieuwe rol voor de user => Default is dat User
-                    var roleExist = await roleManager.RoleExistsAsync(roleName);
-                    if (roleExist.Equals(false))
-                    {
-                        roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
-                        await _userManager.AddToRoleAsync(user, roleName);
-                        _logger.LogInformation("Visitor can now visit the building.");
 
 
-                        return RedirectToAction("SignIn", "Home");
+                HttpContext.Session.SetObject("CurrentVisitor", user);
+                HttpContext.Session.SetString("Password", Input.Password);
+                return RedirectToAction("Picture", "Home");
 
 
-
-
-                    }
-                    await _userManager.AddToRoleAsync(user, roleName);
-                    _logger.LogInformation("Visitor can now visit the building.");
-
-
-                    return RedirectToAction("SignIn", "Home");
-
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
             }
 
             // If we got this far, something failed, redisplay form

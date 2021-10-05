@@ -18,18 +18,27 @@ namespace BL.Services
         public readonly UserManager<ApplicationUser> userManager;
         private readonly IVisitorRepository visitorRepository;
         private readonly IValidator<ApplicationUser> validator;
-        private readonly ILogger<VisitorService> logger; 
+        private readonly ILogger<VisitorService> logger;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly RoleManager<IdentityRole> roleManager;
+
+       
 
         public VisitorService(UserManager<ApplicationUser> userManager,
             IVisitorRepository visitorRepository,
             IValidator<ApplicationUser> validator, 
-            ILogger<VisitorService> logger
+            ILogger<VisitorService> logger,
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager
             )
         {
             this.userManager = userManager;
             this.visitorRepository = visitorRepository;
             this.validator = validator;
             this.logger = logger;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            this.signInManager = signInManager;
 
         }
    
@@ -165,6 +174,40 @@ namespace BL.Services
         {
             visitorRepository.DeleteUserWithUserId(userId);
         }
+
+        public async Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password)
+        {
+            IdentityResult roleResult;
+            visitor.Picture = new Model.Image() { ImageName = $"{visitor.Fullname}Picture", ImageFile = ImgToByteConverter.Base64StringToByteArray(imageBase64) }; 
+            var result = await userManager.CreateAsync(visitor, password);
+            if (result.Succeeded)
+            {
+                var roleName = "Visitor";
+                // Creeren van nieuwe rol voor de user => Default is dat User
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
+                if (roleExist.Equals(false))
+                {
+                    roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                    await userManager.AddToRoleAsync(visitor, roleName);
+                    logger.LogInformation("Visitor can now visit the building.");
+
+
+                    return true;
+
+
+
+
+                }
+                await userManager.AddToRoleAsync(visitor, roleName);
+                logger.LogInformation("Visitor can now visit the building.");
+
+                return true;
+
+
+            }
+
+            return false;
+        }
     }
 
     public interface IVisitorService
@@ -188,6 +231,8 @@ namespace BL.Services
         Task<bool> Delete(int id);
 
         void Delete(string userId);
+
+        Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password);
 
 
 

@@ -31,6 +31,9 @@ namespace VisitorRegistrationApp.Models
 
         public virtual IList<Employee> AppointmentPeople { get; set; }
 
+        public virtual ICollection<Employee> AppointmenrWith { get; set; }
+
+
         public VisitStatus VisitStatus { get; set; }
 
         //Each registration must have a start and end date

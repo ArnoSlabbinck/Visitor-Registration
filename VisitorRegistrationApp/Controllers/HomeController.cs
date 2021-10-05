@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data;
 using VisitorRegistrationApp.Data.Helper;
+using VisitorRegistrationApp.Helper;
 using VisitorRegistrationApp.Models;
 
 
@@ -30,20 +31,17 @@ namespace VisitorRegistrationApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IMapper mapper;
         private readonly IVisitorService visitorService;
-     
-        private readonly UserManager<ApplicationUser> userManager;
+        
 
 
         public HomeController(ILogger<HomeController> logger, 
-            UserManager<ApplicationUser> userManager, 
             IMapper mapper, 
             IVisitorService visitorService)
         {
             _logger = logger;
             this.mapper = mapper;
             this.visitorService = visitorService;
-            this.userManager = userManager;
-           
+        
             
         }
 
@@ -72,7 +70,7 @@ namespace VisitorRegistrationApp.Controllers
         }
         [Authorize]
         [HttpGet]
-        public IActionResult SignIn()
+        public IActionResult ThankYou()
         {
             return View();
         }
@@ -110,11 +108,6 @@ namespace VisitorRegistrationApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        public IActionResult ThankYou()
-        {
-            return View();
         }
 
         public IActionResult ConfirmSignOut(string name)
@@ -169,6 +162,28 @@ namespace VisitorRegistrationApp.Controllers
 
         }
 
+        public async Task<IActionResult> SignIn()
+        {
+            // Uit session halen van object
+            // Deserialize
+            // Encoded password for security
+            
+            var visitorView = HttpContext.Session.GetObject<ApplicationUser>("CurrentVisitor");
+            var password = HttpContext.Session.GetString("Password");
+            var imageBase64 = HttpContext.Session.GetString("ImageBase64");
+            var user = mapper.Map<ApplicationUser>(visitorView);
+
+            var checkSignedIn = await Task.FromResult(visitorService.SignIn(user, imageBase64, password));
+            
+            if(checkSignedIn.Result == true)
+            {
+                return RedirectToAction("ThankYou ", "Home");
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
         public  IActionResult SignOut(IEnumerable<VisitorViewModel> visitorViews, bool firstTime = true)
         {
             //
@@ -203,19 +218,27 @@ namespace VisitorRegistrationApp.Controllers
         {
             return View();
         }
-        
+        [HttpGet]
         public IActionResult Summary()
         {
-            // Toch laten registeren
-            // Alle info laten ophalen 
-            // Als de user terug wil of er is een probleem dan display info nog eens 
-            // En dan in orde brengen
-            // Een beetje een omweg => Mogelijke oplossing partial view via modal 
+            //Uit session gaan halen van VisitorViewModel
+            // Displayen aan de user 
+            var visitor = HttpContext.Session.GetObject<ApplicationUser>("CurrentVisitor");
+            var visitorView = mapper.Map<VisitorViewModel>(visitor);
+            visitorView.ChosenPurpose = "Visitor"; 
 
-            return View();
+
+            return View(visitorView);
         }
 
-      
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult Summary(bool correctUserData)
+        {
+            
+            // Hier krijg ik de bevestiging binnen dat alle gegevens correct zijn
+            return RedirectToAction(nameof(SignIn));
+        }
 
         [HttpPost]
 
@@ -226,23 +249,10 @@ namespace VisitorRegistrationApp.Controllers
             {
                 return BadRequest();
             }
-            //using (var memoryStream = new MemoryStream())
-            //{
-            //    //convert uploaded image as image xobject like given below
-            //    await base64Image.CopyToAsync(memoryStream);
-            //    using (var img = Image.FromStream(memoryStream, true, true))
-            //    {
-            //        string base64String = Base64ImageConverter.ImageToBase64(img, System.Drawing.Imaging.ImageFormat.Jpeg);
-            //        // TODO: ResizeImage(img, 100, 100);
-            //    }
-            //}
-            
-        
-           
-            //'System.Drawing.Imaging.ImageFormat.Jpeg' is the image extension
+            HttpContext.Session.SetString("ImageBase64", data.ImageUrl);
 
 
-            return View();
+            return RedirectToAction(nameof(Summary));
         }
 
        
