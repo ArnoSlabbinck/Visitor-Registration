@@ -204,13 +204,18 @@ namespace VisitorRegistrationApp.Controllers
             return View();
         }
         
-        public class RedirectToVisitorProfileData
+        public IActionResult Summary()
         {
-            public string DateImage { get; set; }
+            // Toch laten registeren
+            // Alle info laten ophalen 
+            // Als de user terug wil of er is een probleem dan display info nog eens 
+            // En dan in orde brengen
+            // Een beetje een omweg => Mogelijke oplossing partial view via modal 
 
-            public string ImageUrl { get; set; }
+            return View();
         }
 
+      
 
         [HttpPost]
 
@@ -246,6 +251,12 @@ namespace VisitorRegistrationApp.Controllers
 
             return mapper.Map<List<VisitorViewModel>>(applicationUsers);
         }
+    }
+    public class RedirectToVisitorProfileData
+    {
+        public string DateImage { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 
     internal class VisitorViewModelListConverter : JsonConverter

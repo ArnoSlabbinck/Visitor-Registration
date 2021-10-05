@@ -4,63 +4,65 @@ for details on configuring this project to bundle and minify static web assets. 
 @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
 
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #0366d6;
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
+}
 
-}
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
@@ -74,6 +76,7 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
+
 .footer {
     margin-top: 100px;
     position: absolute;
@@ -83,16 +86,16 @@ body {
     line-height: 60px; /* Vertically center the text there */
 }
 
-main{
-    margin-top:100px;
-    margin-bottom:100px;
+main {
+    margin-top: 100px;
+    margin-bottom: 100px;
 }
 
-a{
-    text-decoration:none;
+a {
+    text-decoration: none;
 }
+
 .block-island {
-
 }
 
 /* Self Custom
@@ -124,7 +127,7 @@ a{
     margin-top: 200px;
     display: block;
     position: relative;
-    width: auto;
+    width: 40rem;
     height: 50vh;
     z-index: 999;
     pointer-events: none;
@@ -137,7 +140,7 @@ a{
     top: 0;
     left: 0;
     right: 0;
-    width: 50vw;
+    width: 100vw;
     height: 50vh;
     z-index: 2000;
     visibility: hidden;
@@ -240,19 +243,20 @@ a{
 }
 
 #canvas {
+    padding-top: 90px;
     margin-bottom: 250px;
     margin-top: 200px;
     background-color: transparent;
     position: absolute;
-    width:200px;
-    height: 50vh;
+    width: 40rem;
+    height: 43vh;
     z-index: 9999;
     margin: auto;
     top: 0;
     left: 0;
     right: 0;
     margin-left: auto;
-    margin-right: 200px;
+    margin-right: 100px;
 }
 
 #picture-intro {
@@ -383,7 +387,6 @@ a{
 .wrapper {
     display: flex;
     justify-content: end;
-
 }
 
 .countdown-container > div {
@@ -425,5 +428,3 @@ a{
             letter-spacing: 1rem;
         }
 }
-
-  

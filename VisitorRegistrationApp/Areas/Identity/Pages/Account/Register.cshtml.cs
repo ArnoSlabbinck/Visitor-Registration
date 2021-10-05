@@ -173,25 +173,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             
             
 
-            [Required(ErrorMessage = "You need to give a starttime for your visit")]
-            [Display(Name = "Visit Starttime")]
-            //[Range(typeof(DateTime), DateTime.Now.ToString(), DateTime]
-            public string Starttime { get; set; } = DateTime.Now.ToString("HH:mm");
-            [Required(ErrorMessage = "You need to give a endTime for your visit")]
-            [Display(Name = "Visit Endtime")]
-            public string EndTime { get; set; } = DateTime.Now.ToString("HH:mm");
-            [Required(ErrorMessage = "You need to give registration day")]
-            [Display(Name = "Day Of Visit")]
-            //[Range(typeof(DateTime), DateTime.Now.ToString(), DateTime.Today.AddDays(((int)DateTime.Today.DayOfWeek - (int)DayOfWeek.Monday) + 7).ToString(), ErrorMessage = "You can't plan your meeting more than one week in advance" ]
-
-            private DateTime? registrationDate = DateTime.Now.Date;
-            public DateTime? RegistrationDay {
-                get { return registrationDate; }
-                set {
-                    registrationDate = value;                  
-                } 
-            } 
-
+       
     
   
 
@@ -205,34 +187,13 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             
             public Employee ApppointmentWith { get; set; }
 
-            private int visitedDifference;
-            [Range(0, 300, ErrorMessage = "Your meeting can't be over 5 hours long")]
-            public int VisitedDifference { 
-                get { return visitedDifference; } 
-                set { visitedDifference = (Convert.ToDateTime(EndTime).Minute * Convert.ToDateTime(EndTime).Hour) - (Convert.ToDateTime(Starttime).Minute * Convert.ToDateTime(EndTime).Hour);  } 
-               }
 
             
             
 
             public IEnumerable<SelectListItem> AllEmployeesOfCompany { get; set; }
 
-            private string CalculateOneWeekFromNow()
-            {
-                int day = DateTime.Now.Day;
-                int month = DateTime.Now.Month;
-                int year = DateTime.Now.Year;
-
-                if (day + 7 <= DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))
-                    day += 7;
-                else
-                {
-                    day = day + 7 - DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
-                    month += 1;
-                }
-                return $"{day}/{month}/{year}";
-            }
-
+        
 
 
         }
@@ -274,7 +235,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
                 }
                 
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName,
-                    LastName = Input.LastName ,Gender = Input.Gender, VisitDay = Input.RegistrationDay, CheckIn = Convert.ToDateTime(Input.Starttime), CheckOut = Convert.ToDateTime(Input.EndTime), 
+                    LastName = Input.LastName ,Gender = Input.Gender, 
                     AppointmenrWith = MultipleAppointmentsWith
                 };
         

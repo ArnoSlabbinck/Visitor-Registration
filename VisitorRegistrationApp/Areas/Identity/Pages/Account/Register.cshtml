@@ -73,21 +73,7 @@
         <select id="selectedEmployee" asp-items="Model.Input.AllEmployeesOfCompany" asp-for="Input.ApppointmentWith" class="form-control"></select>
         <span asp-validation-for="Input.AllEmployeesOfCompany" class="text-danger"></span>
     </div>
-    <div class="col-md-4">
-        <label asp-for="Input.RegistrationDay"></label>
-        <input id="day" type="date" required pattern="\d{4}-\d{2}-\d{2}" asp-for="Input.RegistrationDay" class="form-control" placeholder="ernest.simmons@company.com" />
-        <span asp-validation-for="Input.RegistrationDay" class="text-danger"></span>
-    </div>
-    <div class="col-md-4">
-        <label asp-for="Input.Starttime"></label>
-        <input id="starttime" type="time" asp-for="Input.Starttime" min="09:00" max="18:00" placeholder="9:00" class="form-control" />
-        <span asp-validation-for="Input.Starttime" class="text-danger"></span>
-    </div>
-    <div class="col-md-4">
-        <label asp-for="Input.EndTime"></label>
-        <input id="endtime" type="time" asp-for="Input.EndTime" min="09:00" max="18:00" placeholder="18:00" class="form-control" />
-        <span asp-validation-for="Input.EndTime" class="text-danger"></span>
-    </div>
+    
     <div class="col-12">
         <div class="form-check">
             <input class="form-check-input"
@@ -111,8 +97,7 @@
 
 
 <script>
-    document.getElementById("starttime").defaultValue = "09:00";
-    document.getElementById("endtime").defaultValue = "18:00";
+    
     var employees = document.getElementById("selectedEmployee");
 
     //Gender checked and upchecked

@@ -12,7 +12,13 @@ h3Element.innerHTML = "Be Ready. The Camera will start right away. Smile at the 
 var h4Element = document.createElement("h4");
 h4Element.innerHTML = "Is this snapshot good enough or do you want to try again?";
 
+var timerInUseCounter = 0;
 
+
+$(document).ready(function () {
+    // document is loaded and DOM is ready
+    timerInUseCounter++;
+});
 
 
 function SetupCamera() {
@@ -26,7 +32,15 @@ function SetupCamera() {
 
     }, 5000);
 
-    startCountDown(5);
+    if (timerInUseCounter == 1) {
+        startCountDown(5);
+    }
+    else {
+        timerInUseCounter++;
+        afterTakePhoto();
+        h3.innerHTML = "Please take the picture yourself";
+    }
+    
 
 }
 
@@ -39,11 +53,12 @@ function startCountDown(seconds) {
         countDown.innerHTML = counter;
         counter--;
 
-        if (counter <= 0) {
+        if (counter <= -1) {
 
             clearInterval(interval);
-            TakePicture();
             pictureGuide.style.display = "none";
+            TakePicture();
+          
         }
 
     }, 1000);
@@ -76,6 +91,7 @@ function TakePicture() {
     let picture = webcam.snap();
     pictureUrl = picture
     document.querySelector('#download-photo').href = picture;
+    
     afterTakePhoto();
 }
 
@@ -151,7 +167,6 @@ function beforeTakePhoto() {
 }
 
 function afterTakePhoto() {
-    webcam.stop();
     $('#canvas').removeClass('d-none');
     $('#take-photo').addClass('d-none');
     $('#exit-app').removeClass('d-none');
@@ -168,7 +183,7 @@ $("#resume-camera").click(function () {
         .then(facingMode => {
             removeCapture();
         });
-    SetupCamera();
+    
 });
 
 $("#exit-app").click(function () {
