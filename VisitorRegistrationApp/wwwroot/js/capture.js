@@ -8,7 +8,6 @@ var countDown = document.getElementById("counter");
 var h3Element = document.createElement("h3");
 var profileInfo = document.querySelector(".picture-intro");
 var pictureGuide = document.getElementById("guide-picture");
-h3Element.innerHTML = "Be Ready. The Camera will start right away. Smile at the camera";
 var h4Element = document.createElement("h4");
 h4Element.innerHTML = "Is this snapshot good enough or do you want to try again?";
 
@@ -33,12 +32,14 @@ function SetupCamera() {
     }, 5000);
 
     if (timerInUseCounter == 1) {
+        h3Element.innerHTML = "Be Ready. The Camera will start right away. Smile at the camera";
         startCountDown(5);
     }
     else {
         timerInUseCounter++;
+        h3Element.innerHTML = "Please take the picture yourself";
         afterTakePhoto();
-        h3.innerHTML = "Please take the picture yourself";
+       
     }
     
 
@@ -50,6 +51,7 @@ function startCountDown(seconds) {
 
 
     const interval = setInterval(() => {
+       
         countDown.innerHTML = counter;
         counter--;
 
@@ -173,6 +175,9 @@ function afterTakePhoto() {
     $('#download-photo').removeClass('d-none');
     $('#resume-camera').removeClass('d-none');
     $('#cameraControls').removeClass('d-none');
+
+    timerInUseCounter++;
+    
 }
 
 $("#resume-camera").click(function () {

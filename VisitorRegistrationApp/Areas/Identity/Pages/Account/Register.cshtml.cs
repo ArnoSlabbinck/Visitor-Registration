@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,6 +15,8 @@ using Microsoft.Extensions.Logging;
 using VisitorRegistrationApp.Data;
 using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Data.Repository;
+using VisitorRegistrationApp.Helper;
+using VisitorRegistrationApp.Models;
 
 namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 {
@@ -26,6 +30,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
         private readonly ICompanyRespository companyRepository;
         private readonly IEmployeeRespository employeeRepository;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IMapper mapper;
        
 
 
@@ -36,12 +41,14 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             ICompanyRespository companyRepository,
             IEmployeeRespository employeeRepository, 
-            RoleManager<IdentityRole> roleManager 
+            RoleManager<IdentityRole> roleManager, 
+            IMapper mapper
             )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            this.mapper = mapper;
            
             this.companyRepository = companyRepository;
             this.employeeRepository = employeeRepository;
@@ -238,7 +245,10 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
                     LastName = Input.LastName ,Gender = Input.Gender, 
                     AppointmenrWith = MultipleAppointmentsWith
                 };
-        
+
+                var visitor = mapper.Map<VisitorViewModel>(user);
+                HttpContext.Session.SetObject("CurrentVisitor", visitor); 
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -275,8 +285,6 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             SeedAllCompanies(); 
             return Page();
         }
-
-        //Bereken van 1 Week later
 
     
     }

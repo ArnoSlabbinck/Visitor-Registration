@@ -1,14 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using VisitorRegistrationApp.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -16,12 +11,11 @@ using System.Reflection;
 using VisitorRegistrationApp.Data.Repository;
 using Model;
 using BL.Services;
-using BLL.Helper;
 using DAL.Repositories;
-using VisitorRegistrationApp.Helper;
 using BLL.Validators;
 using FluentValidation;
 using VisitorRegistrationApp.Data.Entities;
+using Microsoft.AspNetCore.Session;
 
 namespace VisitorRegistrationApp
 {
@@ -85,13 +79,9 @@ namespace VisitorRegistrationApp
 
 
 
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromSeconds(60);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-                
-            });
+            services.AddSession();
+
+            services.AddMemoryCache();
 
 
 
@@ -101,7 +91,7 @@ namespace VisitorRegistrationApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-           
+
             app.UseExceptionHandler("/Home/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
@@ -112,12 +102,13 @@ namespace VisitorRegistrationApp
             options.DefaultFileNames.Add("Register.cshtml");
             app.UseDefaultFiles(options);
             app.UseStaticFiles();
-    
+            app.UseSession();
+
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseSession();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
