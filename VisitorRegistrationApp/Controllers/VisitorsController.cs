@@ -92,5 +92,18 @@ namespace VisitorRegistrationApp.Controllers
         }
 
 
+        public IActionResult SignedIn()
+        {
+            var visitors = visitorService.GetSignedInVisitors();
+            var visitorsView = mapper.Map<IEnumerable<VisitorViewModel>>(visitors);
+            return View(visitorsView);
+        }
+
+        public IActionResult SignedOut()
+        {
+            var visitors = visitorService.GetSignedOutVisitors();
+            var visitorsView = mapper.Map<IEnumerable<VisitorViewModel>>(visitors);
+            return View(visitorsView);
+        }
     }
 }

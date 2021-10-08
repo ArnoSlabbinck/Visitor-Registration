@@ -32,7 +32,7 @@ namespace VisitorRegistrationApp.Data.Helper
                 PlainTextContent = Message,
                 HtmlContent = Message
             };
-            msg.AddTo(new EmailAddress(_email));
+            msg.AddTo(new EmailAddress(email));
 
             msg.SetClickTracking(false, false);
             await client.SendEmailAsync(msg);

@@ -40,7 +40,7 @@ namespace BL.Services
         {
             ValidationResult validationResult = validator.Validate(employee);
             Errors = Guard.AgainstErrors(validationResult);
-            if (Errors == null)
+            if (Errors.Any() == false)
             {
                 var employeeAdded = await employeeRespository.Add(employee);
                 logger.LogInformation($"A new employee has been added with id {employeeAdded.Id}, {employeeAdded.Name}, {employeeAdded.Company.Name}");
@@ -93,7 +93,7 @@ namespace BL.Services
 
             ValidationResult validationResult = validator.Validate(employee);
             Errors = Guard.AgainstErrors(validationResult);
-            if(Errors == null)
+            if(Errors.Any() == false)
             {
                 await employeeRespository.Update(employee);
                 logger.LogInformation($"The employee has been updated with id {employee.Id}, {employee.Name}, {employee.Company.Name}");

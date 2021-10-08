@@ -212,6 +212,17 @@ namespace BL.Services
 
             return false;
         }
+
+        public IEnumerable<ApplicationUser> GetSignedInVisitors()
+        {
+            //All visitors who have signed in 
+            return visitorRepository.GetAll().Result.Where(vi => vi.VisitStatus == VisitStatus.CheckIn);
+        }
+
+        public IEnumerable<ApplicationUser> GetSignedOutVisitors()
+        {
+            return visitorRepository.GetAll().Result.Where(vi => vi.VisitStatus == VisitStatus.CheckOut);
+        }
     }
 
     public interface IVisitorService
@@ -238,6 +249,9 @@ namespace BL.Services
 
         Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password);
 
+
+        IEnumerable<ApplicationUser> GetSignedInVisitors();
+        IEnumerable<ApplicationUser> GetSignedOutVisitors();
 
 
 
