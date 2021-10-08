@@ -34,7 +34,7 @@ namespace VisitorRegistrationApp.Controllers
         // GET: VisitorsController/Details/5
         public async Task<ActionResult> Details(string name)
         {
-            Guard.AgainstNull(name, nameof(name), new ApplicationUser());
+            Guard.AgainstNull(name, nameof(name));
 
             var visitor = await Task.FromResult(visitorService.GetUserFromName(name));
             var visitorViewModel = mapper.Map<VisitorViewModel>(visitor);
@@ -46,7 +46,7 @@ namespace VisitorRegistrationApp.Controllers
         // GET: VisitorsController/Edit/5
         public async Task<ActionResult> Edit(string name)
         {
-            Guard.AgainstNull(name, nameof(name), new ApplicationUser());
+            Guard.AgainstNull(name, nameof(name));
             var visitor = await Task.FromResult(visitorService.GetUserFromName(name));
             var visitorViewModel = mapper.Map<VisitorViewModel>(visitor); 
             return View(visitorViewModel);
@@ -71,7 +71,7 @@ namespace VisitorRegistrationApp.Controllers
         // GET: VisitorsController/Delete/5
         public async Task<ActionResult> Delete(string name)
         {
-            Guard.AgainstNull(name, nameof(name), new ApplicationUser());
+            Guard.AgainstNull(name, nameof(name));
             var visitor = await Task.FromResult(visitorService.GetUserFromName(name));
             var visitorViewModel = mapper.Map<VisitorViewModel>(visitor);
             return View(visitorViewModel);

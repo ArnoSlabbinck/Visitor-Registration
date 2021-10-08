@@ -10,9 +10,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data;
+using VisitorRegistrationApp.Helper;
 
 namespace BL.Services
 {
+    //Nog toevoegen van Fluentvalidation
     public class VisitorService : IVisitorService
     {
         public readonly UserManager<ApplicationUser> userManager;
@@ -21,8 +23,9 @@ namespace BL.Services
         private readonly ILogger<VisitorService> logger;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private IList<string> Errors;
 
-       
+
 
         public VisitorService(UserManager<ApplicationUser> userManager,
             IVisitorRepository visitorRepository,
@@ -140,7 +143,11 @@ namespace BL.Services
 
         public Task<ApplicationUser> Get(int Id)
         {
-            return visitorRepository.Get(Id);
+            Errors = new List<string>() { Guard.AgainstNull(Id, nameof(Id)) };
+            if (Errors.All(x => string.IsNullOrEmpty(x)) == true)
+                return visitorRepository.Get(Id);
+            return null;
+        
         }
 
         public Task<ApplicationUser> Update(ApplicationUser applicationUser)
@@ -193,9 +200,6 @@ namespace BL.Services
 
 
                     return true;
-
-
-
 
                 }
                 await userManager.AddToRoleAsync(visitor, roleName);

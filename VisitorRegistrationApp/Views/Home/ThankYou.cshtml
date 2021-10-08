@@ -1,4 +1,5 @@
-﻿@*
+﻿@model VisitorViewModel 
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -8,8 +9,7 @@
 <div class=content>
 <div class="wrapper-1">
     <div class="wrapper-2">
-        <h1>Thank you !</h1>
-        <p>Thanks for completing your registration.   </p>
+        <h1>Thank you @Model.Fullname , for signing in.</h1>
         <p>Next time you can simply sign up by scanning the QR code </p>
         <a class="go-home" asp-controller="Home" asp-action="Index">
             Go Home

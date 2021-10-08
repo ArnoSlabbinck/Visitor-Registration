@@ -39,7 +39,7 @@ namespace VisitorRegistrationApp.Models
         
         public int CompanyId { get; set; }
         [Required(ErrorMessage ="An Employee works for a company")]
-        public virtual Company Company { get; set; }
+        public virtual CompanyViewModel Company { get; set; }
 
         public virtual Model.Image Picture { get; set; }
     }

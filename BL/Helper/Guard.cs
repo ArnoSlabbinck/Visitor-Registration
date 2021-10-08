@@ -10,34 +10,34 @@ namespace VisitorRegistrationApp.Helper
     {
 
        
-        public static string AgainstNull(object property, string argumentName, object Model)
+        public static string AgainstNull(object property, string argumentName)
         {
-            Type typeOfModel = Model.GetType();
+            
             if (property == null)
             {
-               return $"For the model of {typeOfModel.Name}, you need to give in a value for {argumentName}  ";
+               return $"you need to give in a value for {argumentName}  ";
 
             }
             return null;
         }
 
-        public static string AgainstNullOrWhiteSpace(object argument, string argumentName, object Model)
+        public static string AgainstNullOrWhiteSpace(object argument, string argumentName)
         {
-            Type typeOfModel = Model.GetType();
+           
             if (argument == null || string.IsNullOrWhiteSpace(argument.ToString()))
             {
-                return $"For the model of {typeOfModel.Name}, you need to give in a value for {argumentName}  ";
+                return $"you need to give in a value for {argumentName}  ";
             }
             return null;
         }
 
   
-        public static void AgainstOutOfRange(int range, int length, string argumentName, object Model)
+        public static void AgainstOutOfRange(int range, int length, string argumentName)
         {
-            Type typeOfModel = Model.GetType();
+     
             if (length < range && length > range)
             {
-                throw new ArgumentOutOfRangeException($"For the model of {typeOfModel.Name},,Invalid range for the propery {argumentName}. The value needs to be between 0 and {range }");
+                throw new ArgumentOutOfRangeException($"Invalid range for the propery {argumentName}. The value needs to be between 0 and {range }");
             }
 
         }

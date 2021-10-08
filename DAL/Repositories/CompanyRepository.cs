@@ -49,6 +49,11 @@ namespace VisitorRegistrationApp.Data.Repository
         {
             return await Task.FromResult(await applicationDbContext.Companies.Where(c => c.Name == companyName).Include(e => e.Employees).FirstOrDefaultAsync());
         }
+
+        public async Task<Company> GetCompanyByName(string companyName)
+        {
+            return await Task.FromResult(await applicationDbContext.Companies.Where(c => c.Name == companyName).FirstOrDefaultAsync());
+        }
     }
 
     public interface ICompanyRespository : IRepository<Company>
@@ -64,5 +69,7 @@ namespace VisitorRegistrationApp.Data.Repository
         Task<Company> GetCompanyWithImageAndEmployees(int id);
 
         Task<Company> GetEmployeesFromCompany(string companyName);
+
+        Task<Company> GetCompanyByName(string companyName);
     }
 }

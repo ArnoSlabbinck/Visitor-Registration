@@ -16,6 +16,9 @@ using BLL.Validators;
 using FluentValidation;
 using VisitorRegistrationApp.Data.Entities;
 using Microsoft.AspNetCore.Session;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using VisitorRegistrationApp.Data.Helper;
 
 namespace VisitorRegistrationApp
 {
@@ -59,6 +62,7 @@ namespace VisitorRegistrationApp
 
             services.AddScoped<IValidator<Image>, ImageValidator>();
 
+            services.AddTransient<IEmailSender, EmailSender>();
 
 
 
@@ -92,10 +96,17 @@ namespace VisitorRegistrationApp
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
-            
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
             app.UseHttpsRedirection();
             DefaultFilesOptions options = new DefaultFilesOptions();
             options.DefaultFileNames.Clear();

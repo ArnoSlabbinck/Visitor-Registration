@@ -111,6 +111,11 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
                  });
         
         }
+
+        public async Task<string> GetFirstCompanyInDb()
+        {
+            return await Task.FromResult(companyRepository.GetAll().Result.FirstOrDefault().Name);
+        }
         
         public JsonResult OnGetReloadPage()
         {
@@ -177,17 +182,17 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             [Required]
             [Phone]
             public string PhoneNumber { get; set; }
-            
-            
 
-       
-    
-  
+
+
+
+
+
 
             [Required(ErrorMessage = "You need to select a company")]
             [BindProperty]
             [Display(Name = "Visit Company")]
-            public string VisitedCompany { get; set; } // Get the company visit
+            public string VisitedCompany { get; set; } = "Apphi";
 
       
             public IEnumerable<SelectListItem> AllCompanies { get; set; }
@@ -224,7 +229,10 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             //De startuur mag niet vroeger zijn dan current time checken op de client side
             // Het minuten verschil moet tussen de 30 minuten zijn  => EndTime - StartTime  > 30
             //Je kan geen 
-         
+            if(Input.VisitedCompany == null)
+            {
+                Input.VisitedCompany = GetFirstCompanyInDb().Result;
+            }
 
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -235,20 +243,25 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+
                 
-                if(Input.ApppointmentWith == null)// If there's no employee selected from the list
+                if (Input.ApppointmentWith == null)// If there's no employee selected from the list
                 {
                      Input = GiveDefaultValueToAppointedEmployeeWhenNotGiven(Input);
+                    
+                     
                 }
+                var company = await companyRepository.GetCompanyByName(Input.VisitedCompany);
+
                 MultipleAppointmentsWith.Add(Input.ApppointmentWith);
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName,
-                    LastName = Input.LastName ,Gender = Input.Gender,
+                    LastName = Input.LastName, Gender = Input.Gender, VisitingCompany = company,
                     AppointmenrWith = MultipleAppointmentsWith
                 };
+                var visitor = mapper.Map<VisitorViewModel>(user);
 
 
-
-                HttpContext.Session.SetObject("CurrentVisitor", user);
+                HttpContext.Session.SetObject("CurrentVisitor", visitor );
                 HttpContext.Session.SetString("Password", Input.Password);
                 return RedirectToAction("Picture", "Home");
 

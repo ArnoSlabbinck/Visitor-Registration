@@ -7,9 +7,9 @@ using VisitorRegistrationApp.Models;
 
 namespace VisitorRegistrationApp.Data.Profile
 {
-    public class UserDto : AutoMapper.Profile
+    public class VisistorDto : AutoMapper.Profile
     {
-        public UserDto() 
+        public VisistorDto() 
         {
             this.CreateMap<ApplicationUser, VisitorViewModel>();
         }

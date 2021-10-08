@@ -17,7 +17,7 @@ namespace VisitorRegistrationApp.Models
         public string Name { get; set; }
  
 
-        public virtual ICollection<Employee> Employees { get; set; }
+        public virtual ICollection<EmployeeViewModel> Employees { get; set; }
 
         public virtual Building Building { get; set; }
         public virtual Model.Image Picture { get; set; } 

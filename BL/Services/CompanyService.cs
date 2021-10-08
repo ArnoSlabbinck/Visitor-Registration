@@ -47,8 +47,8 @@ namespace BL.Services
         
         public async Task<Company> Get(int Id)
         {
-            Errors.Add(Guard.AgainstNull(Id, nameof(Id), new Company()));
-            if(Errors != null)
+            Errors = new List<string>() { Guard.AgainstNull(Id, nameof(Id)) };
+            if(Errors.All(x => string.IsNullOrEmpty(x)) == true)
                 return await companyRes.GetCompanyWithImageAndEmployees(Id);
             return null;
         }
@@ -76,10 +76,10 @@ namespace BL.Services
 
             ValidationResult validationResult = validator.Validate(company);
             Errors = Guard.AgainstErrors(validationResult);
-            if (Errors == null)
+            if (Errors.Count() == 0)
             {
-                var companyAdded = await Task.FromResult(companyRes.Add(company));
-                logger.LogInformation($"The company has been added with id {companyAdded.Result.Id}, {companyAdded.Result.Name}");
+                await Task.FromResult(companyRes.Add(company));
+                logger.LogInformation($"The company has been added with id {company.Id}, {company.Name}");
                 return Errors;
             }
             else
@@ -96,8 +96,8 @@ namespace BL.Services
 
         public async Task<IList<string>> Delete(int id)
         {
-            Errors.Add(Guard.AgainstNull(id, nameof(id), new Company()));
-            if(Errors == null)
+            Errors = new List<string>() { Guard.AgainstNull(id, nameof(id)) };
+            if (Errors.All(x => string.IsNullOrEmpty(x)) == true)
             {
                 var company = await Task.FromResult(companyRes.Delete(id));
                 logger.LogInformation($"The company {company.Result.Id}, {company.Result.Name} has been deleted");
@@ -115,7 +115,7 @@ namespace BL.Services
 
         public IEnumerable<Company> SearchByName(string searchTerm)
         {
-            Guard.AgainstNull(searchTerm, nameof(searchTerm), new Company());
+            Guard.AgainstNull(searchTerm, nameof(searchTerm));
             return companyRes.GetOrderedCompanies().Where(o => o.Name.ToLower() == searchTerm.Trim().ToLower());
             
             

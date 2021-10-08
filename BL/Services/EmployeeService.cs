@@ -67,7 +67,10 @@ namespace BL.Services
 
         public Task<Employee> Get(int Id)
         {
-            return employeeRespository.Get(Id);
+            Errors = new List<string>() { Guard.AgainstNull(Id, nameof(Id)) };
+            if (Errors.All(x => string.IsNullOrEmpty(x)) == true)
+                return employeeRespository.Get(Id);
+            return null;
         }
 
         public Task<IEnumerable<Employee>> getAll()
@@ -77,12 +80,11 @@ namespace BL.Services
 
         public IEnumerable<Employee> GetEmployeesFromCompany(int id)
         {
-            //verkrijg alle employees van de Company
-            Errors.Add(Guard.AgainstNull(id, nameof(id), new Employee())); 
-            
-            var employees = companyRespository.GetEmployeesFromCompany(id).Result.Employees;
+            Errors = new List<string>() { Guard.AgainstNull(id, nameof(id)) };
+            if (Errors.All(x => string.IsNullOrEmpty(x)) == true)
+                return companyRespository.GetEmployeesFromCompany(id).Result.Employees;
 
-            return employees;
+            return null; 
             
         }
 

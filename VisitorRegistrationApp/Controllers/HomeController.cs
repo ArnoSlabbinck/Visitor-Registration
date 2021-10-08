@@ -223,12 +223,11 @@ namespace VisitorRegistrationApp.Controllers
         {
             //Uit session gaan halen van VisitorViewModel
             // Displayen aan de user 
-            var visitor = HttpContext.Session.GetObject<ApplicationUser>("CurrentVisitor");
-            var visitorView = mapper.Map<VisitorViewModel>(visitor);
-            visitorView.ChosenPurpose = "Visitor"; 
+            var visitor = HttpContext.Session.GetObject<VisitorViewModel>("CurrentVisitor");
+         
 
 
-            return View(visitorView);
+            return View(visitor);
         }
 
         [HttpPost]
@@ -245,7 +244,7 @@ namespace VisitorRegistrationApp.Controllers
         public async Task<IActionResult> RedirectToVisitorProfile([FromBody] RedirectToVisitorProfileData data)
         {
 
-            if (data == null || data.ImageUrl == null || data.ImageUrl.Length == 0)
+            if (data.ImageUrl == null || data.ImageUrl.Length == 0)
             {
                 return BadRequest();
             }
@@ -262,54 +261,13 @@ namespace VisitorRegistrationApp.Controllers
             return mapper.Map<List<VisitorViewModel>>(applicationUsers);
         }
     }
-    public class RedirectToVisitorProfileData
+    public struct RedirectToVisitorProfileData
     {
         public string DateImage { get; set; }
 
         public string ImageUrl { get; set; }
     }
 
-    internal class VisitorViewModelListConverter : JsonConverter
-    {
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override bool CanConvert(Type objectType)
-        {
-            return typeof(IEnumerable<VisitorViewModel>).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo());
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.StartObject)
-            {
-                JObject item = JObject.Load(reader);
-
-                if (item["visitors"] != null)
-                {
-                    var users = item["visitors"].ToObject<IList<VisitorViewModel>>(serializer);
-
-                  
-                    return new List<VisitorViewModel>(users);
-                }
-            }
-            else
-            {
-                JArray array = JArray.Load(reader);
-
-                var users = array.ToObject<IList<VisitorViewModel>>();
-
-                return new List<VisitorViewModel>(users);
-            }
-
-            // This should not happen. Perhaps better to throw exception at this point?
-            return null;
-        }
-
-      
-    }
-
+   
 
 }

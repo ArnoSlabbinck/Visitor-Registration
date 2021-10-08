@@ -19,19 +19,19 @@ namespace VisitorRegistrationApp.Models
         }
 
         public string FirstName { get; set; }
-        
+
         public string LastName { get; set; }
-       
+
         public string Fullname { get { return FirstName + " " + LastName; } }
 
 
         public string Email { get; set; }
 
-        public virtual Company VisitingCompany { get; set; }
+        public virtual CompanyViewModel VisitingCompany { get; set; }
 
-        public virtual IList<Employee> AppointmentPeople { get; set; }
+        public virtual IList<EmployeeViewModel> AppointmentPeople { get; set; }
 
-        public virtual ICollection<Employee> AppointmenrWith { get; set; }
+        public virtual ICollection<EmployeeViewModel> AppointmenrWith { get; set; }
 
 
         public VisitStatus VisitStatus { get; set; }
@@ -48,22 +48,23 @@ namespace VisitorRegistrationApp.Models
         //Omzetten naar bytearray
         // Omzetting onmiddelijk in de Viewmodel laten gebeure
         [Required(ErrorMessage = "You need to file in an image")]
-        
+
         public IFormFile file { get; set; }
-    
+
 
 
 
         public byte[] ImageFile { get; set; }
 
-        public List<SelectListItem> Purpose {
+        public List<SelectListItem> Purpose
+        {
             get;
             set;
         }
 
         public void SetPurposes()
         {
-            Purpose  = new List<SelectListItem>
+            Purpose = new List<SelectListItem>
             {
                      new SelectListItem { Text = "Visitor", Value = "Visitor" },
                      new SelectListItem { Text = "Making a Delivery", Value = "Delivery" },

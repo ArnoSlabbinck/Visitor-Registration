@@ -75,6 +75,7 @@ namespace VisitorRegistrationApp.Controllers
                 if (ModelState.IsValid)
                 {
                     companyViewModel.Picture = new Model.Image();
+                    //Builder pattern maken voor aanmaken vna image
                     //Omzetten van file naar byte array
                     companyViewModel.Picture.ImageFile = ImageConverter.fileToByteArray(companyViewModel.file);
                     companyViewModel.Picture.ImageName = $"{companyViewModel.Name} picture";
@@ -86,6 +87,9 @@ namespace VisitorRegistrationApp.Controllers
                     var results = mapper.Map<Company>(companyViewModel);
 
                     Errors = await Task.FromResult(await companyService.Add(results));
+                    
+                    
+
                    
                     return RedirectToAction(nameof(Index));
                 }
@@ -132,14 +136,15 @@ namespace VisitorRegistrationApp.Controllers
             {
                 return BadRequest();
             }
-            CompanyViewModel companyView = mapper.Map<CompanyViewModel>( await Task.FromResult(companyService.Get((int)id).Result));
+            var company = await Task.FromResult(companyService.Get((int)id).Result);
+            CompanyViewModel companyView = mapper.Map<CompanyViewModel>(company); 
             return View(companyView);
         }
 
         // POST: CompaniesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
@@ -167,6 +172,9 @@ namespace VisitorRegistrationApp.Controllers
             return RedirectToAction(nameof(Index), new { companyViews = companyViews});
         }
 
+
+
+        
         
     }
 }

@@ -85,16 +85,16 @@ namespace VisitorRegistrationApp.Controllers
         public async Task<ActionResult> Create(EmployeeViewModel employeeView)
         {
 
-            var id = (int)TempData["Id"]; // In session based => Need to be empty after a given time o
+            var id = (int)TempData["Id"]; // In session based => Need to be empty after requesting it once
 
 
-            employeeView.Company = await companyService.Get((id)).ConfigureAwait(false);
+            var company = await companyService.Get((id)).ConfigureAwait(false);
 
             Employee employee = new Employee
             {
                
                 BirthDay = employeeView.BirthDay,
-                Company = employeeView.Company,
+                Company = company,
                 Name = employeeView.Name,
                 Job = employeeView.Job, 
                 Salary = employeeView.Salary
