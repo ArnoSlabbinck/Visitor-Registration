@@ -1,6 +1,7 @@
 ﻿using BLL.Helper;
 using DAL.Repositories;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
@@ -75,9 +76,9 @@ namespace BL.Services
 
         }
 
-        public async Task<bool> CheckOut(string name)
+        public async Task<bool> ConfirmCheckOutForVisitor(string name)
         {
-            var splittedName = SplitFullnameInFirstAndLast(name);
+            var splittedName = SplitFullnameInFirstAndLastNameWithLowercase(name);
             var firstName = splittedName[0].Trim();
             var lastName = splittedName[1].Trim();
             var visitor = visitorRepository.getUserByName(firstName, lastName);
@@ -93,7 +94,7 @@ namespace BL.Services
 
 
 
-        public string[] SplitFullnameInFirstAndLast(string name)
+        public string[] SplitFullnameInFirstAndLastNameWithLowercase(string name)
         {
             string[] splittedName = new string[2]; 
             var Name = name.Trim().ToLower();
@@ -136,9 +137,9 @@ namespace BL.Services
           
         }
 
-        public Task<IEnumerable<ApplicationUser>> getAll()
+        public async  Task<IEnumerable<ApplicationUser>> getAll()
         {
-            return visitorRepository.GetAll(); 
+            return await Task.FromResult(visitorRepository.GetAll().AsEnumerable()); 
         }
 
         public Task<ApplicationUser> Get(int Id)
@@ -150,78 +151,134 @@ namespace BL.Services
         
         }
 
-        public Task<ApplicationUser> Update(ApplicationUser applicationUser)
+        public async Task<ApplicationUser> Update(ApplicationUser applicationUser)
         {
-            return visitorRepository.Update(applicationUser); 
+            ValidationResult validationResult = validator.Validate(applicationUser);
+            Errors = Guard.AgainstErrors(validationResult);
+            if (Errors == null)
+            {
+                var visitorAdded = await visitorRepository.Update(applicationUser);
+                logger.LogInformation($"The visitor has been updated with id {visitorAdded?.Id}, {visitorAdded?.Fullname}");
+                return visitorAdded;
+            }
+            return null;
+
+           
         }
 
-        public Task<ApplicationUser> Add(ApplicationUser applicationUser)
+        public async Task<ApplicationUser> Add(ApplicationUser applicationUser)
         {
-            return visitorRepository.Add(applicationUser);
+            ValidationResult validationResult = validator.Validate(applicationUser);
+            Errors = Guard.AgainstErrors(validationResult);
+            if (Errors == null)
+            {
+                var visitorAdded = await visitorRepository.Add(applicationUser);
+                logger.LogInformation($"The visitor has been updated with id {visitorAdded?.Id}, {visitorAdded?.Fullname}");
+                return visitorAdded;
+            }
+            return null;
+            
+
+            
         }
 
         public Task<bool> Delete(int id)
         {
-            
+            var error = Guard.AgainstNullOrWhiteSpace(id, nameof(id)) == null ? false : true;
+            if (error)
+                return Task.FromResult(false);
+
             visitorRepository.Delete(id);
             return Task.FromResult(true);
         }
 
         public ApplicationUser GetUserFromName(string name)
         {
-            var splitName = SplitFullnameInFirstAndLast(name);
+            var error = Guard.AgainstNullOrWhiteSpace(name, nameof(name)) == null ? false : true;
+            if (error)
+                return null;
+            var splitName = SplitFullnameInFirstAndLastNameWithLowercase(name);
             var firstName = splitName[0].Trim();
             var lastName = splitName[1].Trim();
 
-            return visitorRepository.getUserByName(firstName, lastName);
+            var visitor = visitorRepository.getUserByName(firstName, lastName);
+            int? pictureId = visitor.PictureId;
+            if(pictureId != null)
+                return visitorRepository.GetUserByNameWithImage(firstName, lastName, (int)pictureId);
+            return visitor;
 
         }
 
-        public void Delete(string userId)
+        public bool Delete(string userId)
         {
+            var error = Guard.AgainstNullOrWhiteSpace(userId, nameof(userId)) == null ? false : true;
+            if (error)
+                return false;
             visitorRepository.DeleteUserWithUserId(userId);
+            return true;
         }
 
         public async Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password)
         {
-            IdentityResult roleResult;
-            visitor.Picture = new Model.Image() { ImageName = $"{visitor.Fullname}Picture", ImageFile = ImgToByteConverter.Base64StringToByteArray(imageBase64) }; 
-            var result = await userManager.CreateAsync(visitor, password);
-            if (result.Succeeded)
+            IdentityResult roleResult = new IdentityResult();
+            visitor.Picture = new Model.Image() { ImageName = $"{visitor.Fullname}Picture", ImageFile = ImgToByteConverter.Base64StringToByteArray(imageBase64) };
+            
+            try
             {
-                var roleName = "Visitor";
-                // Creeren van nieuwe rol voor de user => Default is dat User
-                var roleExist = await roleManager.RoleExistsAsync(roleName);
-                if (roleExist.Equals(false))
+            
+                visitor.SecurityStamp = Guid.NewGuid().ToString();
+                roleResult = await userManager.CreateAsync(visitor, password);
+             
+                if (roleResult.Succeeded)
                 {
-                    roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                    var roleName = "Visitor";
+                    // Creeren van nieuwe rol voor de user => Default is dat User
+                    var roleExist = await roleManager.RoleExistsAsync(roleName);
+                    if (roleExist.Equals(false))
+                    {
+                        roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                        await userManager.AddToRoleAsync(visitor, roleName);
+                        logger.LogInformation("Visitor can now visit the building.");
+
+
+                        return true;
+
+                    }
                     await userManager.AddToRoleAsync(visitor, roleName);
                     logger.LogInformation("Visitor can now visit the building.");
 
-
                     return true;
 
+
                 }
-                await userManager.AddToRoleAsync(visitor, roleName);
-                logger.LogInformation("Visitor can now visit the building.");
-
-                return true;
-
 
             }
+            catch(Exception e)
+            {
+                Console.WriteLine(roleResult.Errors);
+                logger.LogError(e.Message);
+                return false;
+            }
+           
 
             return false;
         }
 
-        public IEnumerable<ApplicationUser> GetSignedInVisitors()
+        public async Task<IEnumerable<ApplicationUser>> GetSignedInVisitors(int pageIndex, int pageSize)
         {
-            //All visitors who have signed in 
-            return visitorRepository.GetAll().Result.Where(vi => vi.VisitStatus == VisitStatus.CheckIn);
+            // Houd vullen vna het ordenen van de logica moet in de service laag gebeuren
+            // Het ordenen, filteren En andere logica moet ik terug vinden in de service laag
+
+            var visitorsQuery = visitorRepository.GetAll();
+            var VisitorsForPage = await PagedList<ApplicationUser>.CreateAsync(visitorsQuery, pageIndex, pageSize);
+            return VisitorsForPage.Where(vi => vi.VisitStatus == VisitStatus.CheckIn);    
         }
 
-        public IEnumerable<ApplicationUser> GetSignedOutVisitors()
+        public async Task<IEnumerable<ApplicationUser>> GetSignedOutVisitors(int pageIndex, int pageSize)
         {
-            return visitorRepository.GetAll().Result.Where(vi => vi.VisitStatus == VisitStatus.CheckOut);
+            var visitorsQuery = visitorRepository.GetAll();
+            var VisitorsForPage = await PagedList<ApplicationUser>.CreateAsync(visitorsQuery, pageIndex, pageSize);
+            return VisitorsForPage.Where(vi => vi.VisitStatus == VisitStatus.CheckOut);
         }
     }
 
@@ -229,9 +286,9 @@ namespace BL.Services
     {
         List<ApplicationUser> SearchSpecificUsers(string searchInput);
 
-        Task<bool> CheckOut(string name);
+        Task<bool> ConfirmCheckOutForVisitor(string name);
 
-        string[] SplitFullnameInFirstAndLast(string name);
+        string[] SplitFullnameInFirstAndLastNameWithLowercase(string name);
 
         ApplicationUser GetUserFromName(string name);
 
@@ -245,13 +302,13 @@ namespace BL.Services
 
         Task<bool> Delete(int id);
 
-        void Delete(string userId);
+        bool Delete(string userId);
 
         Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password);
 
 
-        IEnumerable<ApplicationUser> GetSignedInVisitors();
-        IEnumerable<ApplicationUser> GetSignedOutVisitors();
+        Task<IEnumerable<ApplicationUser>> GetSignedInVisitors(int pageIndex, int pageSize);
+        Task<IEnumerable<ApplicationUser>> GetSignedOutVisitors(int pageIndex, int pageSize);
 
 
 

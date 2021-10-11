@@ -26,22 +26,22 @@
 <form class="row g-3" name="myForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="col-md-6">
-        <label asp-for="Input.Email"></label>
+        <label class="required" asp-for="Input.Email"></label>
         <input type="email" asp-for="Input.Email" class="form-control" placeholder="ernest.simmons@company.com" />
         <span asp-validation-for="Input.Email" class="text-danger"></span>
     </div>
     <div class="col-md-6">
-        <label asp-for="Input.PhoneNumber"></label>
+        <label class="required" asp-for="Input.PhoneNumber"></label>
         <input type="tel" asp-for="Input.PhoneNumber" class="form-control" placeholder="(04) ..." />
         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
     </div>
     <div class="col-md-6">
-        <label asp-for="Input.FirstName"></label>
+        <label class="required" asp-for="Input.FirstName"></label>
         <input type="text" asp-for="Input.FirstName" class="form-control" placeholder="Ernest" />
         <span asp-validation-for="Input.FirstName" class="text-danger"></span>
     </div>
     <div class="col-md-6">
-        <label asp-for="Input.LastName"></label>
+        <label class="required" asp-for="Input.LastName"></label>
         <input type="text" asp-for="Input.LastName" class="form-control" placeholder="Simmons" />
         <span asp-validation-for="Input.LastName" class="text-danger"></span>
     </div>
@@ -64,20 +64,21 @@
 
     </div>
     <div class="col-md-6">
-        <label asp-for="Input.VisitedCompany"></label>
+        <label class="required" asp-for="Input.VisitedCompany"></label>
         <select id="selectedCompany" asp-items="Model.Input.AllCompanies" asp-for="Input.VisitedCompany" class="form-control"></select>
         <span asp-validation-for="Input.VisitedCompany" class="text-danger"></span>
     </div>
     <div class="col-md-12">
-        <label asp-for="Input.ApppointmentWith"></label>
+        <label class="required" asp-for="Input.ApppointmentWith"></label>
         <select id="selectedEmployee" asp-items="Model.Input.AllEmployeesOfCompany" asp-for="Input.ApppointmentWith" class="form-control"></select>
         <span asp-validation-for="Input.AllEmployeesOfCompany" class="text-danger"></span>
     </div>
-    
+
     <div class="col-12">
         <div class="form-check">
             <input class="form-check-input"
                    type="checkbox"
+                   data-toggle="modal" data-target="#myModal"
                    value=""
                    id="invalidCheck2"
                    required />
@@ -93,11 +94,53 @@
 </form>
 
 
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    AGREEMENT TO TERMS
+
+                    These Terms and Conditions constitute a legally binding agreement made between you, whether personally or on behalf of an entity (“you”) and [business entity name] (“we,” “us” or “our”), concerning your access to and use of the [website name.com] website as well as any other media form, media channel, mobile website or mobile application related, linked, or otherwise connected thereto (collectively, the “Site”).
+
+                    You agree that by accessing the Site, you have read, understood, and agree to be bound by all of these Terms and Conditions. If you do not agree with all of these Terms and Conditions, then you are expressly prohibited from using the Site and you must discontinue use immediately.
+
+                    Supplemental terms and conditions or documents that may be posted on the Site from time to time are hereby expressly incorporated herein by reference. We reserve the right, in our sole discretion, to make changes or modifications to these Terms and Conditions at any time and for any reason.
+
+                    We will alert you about any changes by updating the “Last updated” date of these Terms and Conditions, and you waive any right to receive specific notice of each such change.
+
+                    It is your responsibility to periodically review these Terms and Conditions to stay informed of updates. You will be subject to, and will be deemed to have been made aware of and to have accepted, the changes in any revised Terms and Conditions by your continued use of the Site after the date such revised Terms and Conditions are posted.
+
+                    The information provided on the Site is not intended for distribution to or use by any person or entity in any jurisdiction or country where such distribution or use would be contrary to law or regulation or which would subject us to any registration requirement within such jurisdiction or country.
+
+                    Accordingly, those persons who choose to access the Site from other locations do so on their own initiative and are solely responsible for compliance with local laws, if and to the extent local laws are applicable.
+
+                    These terms and conditions were generated by Termly’s Terms and Conditions Generator.
+
+                    Option 1: The Site is intended for users who are at least 18 years old. Persons under the age of 18 are not permitted to register for the Site.
+
+                    Option 2: [The Site is intended for users who are at least 13 years of age.] All users who are minors in the jurisdiction in which they reside (generally under the age of 18) must have the permission of, and be directly supervised by, their parent or guardian to use the Site. If you are a minor, you must have your parent or guardian read and agree to these Terms and Conditions prior to you using the Site.
+
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 
 <script>
-    
+
     var employees = document.getElementById("selectedEmployee");
 
     //Gender checked and upchecked
@@ -111,27 +154,27 @@
 
     //Fill the first company with Employees
     $(window).on('load', function () {
-        
+
         $.ajax({
             type: 'GET',
             url: '/Identity/Account/Register?handler=ReloadPage',
             success: function (data) {
-                
+
                 if (data != null) {
                     postSelectedEmployees(data, employees);
                 }
-                
+
             },
             error: function (error) {
                 console.log('my message' + error);
             }
         });
-        
+
     });
 
     //Bind the selectedEmployee to the Inputmodel
     $('#selectedEmployee').change(function () {
-        
+
         var data = { employee: $("#selectedEmployee option:selected").text() }
         $.ajax({
             type: 'GET',
@@ -151,10 +194,10 @@
     $("#selectedCompany").change(function (e) {
         $("#selectedEmployee").empty();
 
-     
+
         e.preventDefault();
         var selectedCompany = $(this).val();
-        
+
         var data = $.ajax({
             method: "GET",
             url: '/Identity/Account/Register?handler=Employees',
@@ -167,10 +210,10 @@
             success: function () {
 
                 if (typeof data != "undefined") {
-                   
+
                     postSelectedEmployees(data.responseJSON, employees);
                     //Binden van selected Data aan mijn input model
-                    
+
 
                 }
 
@@ -200,14 +243,14 @@
 
     }
 
- 
+
 
     //Maken van een validation voor opgegeven uren en datum
     $("#day").change(function (e) {
         // Breng in a datetime en vergelijk of de opgegeven value kleiner is dan de value gegeven
         var today = Date.now();
         var selectedDate = Date.parse($(this).val());
-        if (selectedDate < today ) {
+        if (selectedDate < today) {
             document.getElementById("day").value = "";
             document.getElementsByClassName("alert")[0].style.display = "inline";
             setTimeout(function () {
@@ -227,4 +270,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
 }

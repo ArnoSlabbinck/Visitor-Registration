@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using VisitorRegistrationApp.Data.Entities;
 
 namespace VisitorRegistrationApp.Data.Repository
@@ -14,11 +16,14 @@ namespace VisitorRegistrationApp.Data.Repository
             this.logger = logger;
         }
 
-
+        public IQueryable<Employee> GetEmployeesWithCompanies()
+        {
+            return applicationDbContext.Employees.Include(c => c.Company);
+        }
     }
 
     public interface IEmployeeRespository : IRepository<Employee>
     {
-
+        IQueryable<Employee> GetEmployeesWithCompanies();
     }
 }

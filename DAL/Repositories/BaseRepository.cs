@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 
@@ -46,9 +47,9 @@ namespace VisitorRegistrationApp.Data.Repository
             return await applicationDbContext.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public IQueryable<TEntity> GetAll()
         {
-            return await applicationDbContext.Set<TEntity>().ToListAsync();
+            return applicationDbContext.Set<TEntity>().AsQueryable();
         }
 
         public  Task<TEntity> Update(TEntity Entity)
@@ -62,7 +63,7 @@ namespace VisitorRegistrationApp.Data.Repository
 
     public interface IRepository<T> where T : class
     {
-        Task<IEnumerable<T>> GetAll();
+        IQueryable<T> GetAll();
 
         Task<T> Get(int id);
 

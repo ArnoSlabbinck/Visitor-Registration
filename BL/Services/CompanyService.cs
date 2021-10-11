@@ -38,9 +38,9 @@ namespace BL.Services
 
         //Ophalen van alle companies
 
-        public   Task<IEnumerable<Company>> getAll()
+        public  async Task<IEnumerable<Company>> getAll()
         {
-            return companyRes.GetAll();
+            return await Task.FromResult(companyRes.GetAll().AsEnumerable());
         }
 
         //Ophalen van 1Company

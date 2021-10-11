@@ -41,7 +41,7 @@
                             </li>
                             <li class="nav-item" style="margin:8px 3px 0px 0px; ">
                                 <div class="dropdown show">
-                                    <a class="text-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="text-white dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Visitors
                                     </a>
 
@@ -53,10 +53,7 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white text-lg-right" asp-controller="Visitors" asp-action="Index">Visitors</a>
-                            </li>
-
+                          
                         }
                         else if (User.IsInRole("Visitor"))
                         {
@@ -74,8 +71,8 @@
 
 
     </header>
-    <div class="container" >
-        <main role="main" class="pb-3" style="min-height:1100px" >
+    <div class="container" style="min-height:1100px">
+        <main role="main" class="pb-3"  >
             @RenderBody()
         </main>
     </div>

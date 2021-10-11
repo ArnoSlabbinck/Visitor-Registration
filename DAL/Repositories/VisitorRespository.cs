@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,26 @@ namespace DAL.Repositories
             // Ophalen van Visitor in de database en status veranderen van visitor
             return applicationDbContext.Users.Where(u => u.FirstName.ToLower() == firstname && u.LastName.ToLower() == lastname).FirstOrDefault();
         }
+
+        public ApplicationUser GetUserByNameWithImage(string firstname, string lastname, int id)
+        {
+            return applicationDbContext.Users.Where(u => u.FirstName.ToLower() == firstname && u.LastName.ToLower() == lastname).Include(i => i.Picture).Where(image => image.PictureId == id).FirstOrDefault();
+        }
+
+        void IVisitorRepository.DeleteUserWithUserId(string userid)
+        {
+            throw new NotImplementedException();
+        }
+
+        ApplicationUser IVisitorRepository.getUserByName(string firstname, string lastname)
+        {
+            throw new NotImplementedException();
+        }
+
+        ApplicationUser IVisitorRepository.GetUserByNameWithImage(string firstname, string lastname, int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public interface IVisitorRepository : IRepository<ApplicationUser>
@@ -39,5 +60,7 @@ namespace DAL.Repositories
         ApplicationUser getUserByName(string firstname, string lastname);
 
         void DeleteUserWithUserId(string userid);
+
+        ApplicationUser GetUserByNameWithImage(string firstname, string lastname, int id);
     }
 }

@@ -1,11 +1,4 @@
-using BL.Services;
-using BLL.Helper;
-using DAL.Repositories;
-using Microsoft.AspNetCore.Identity;
-using Moq;
 using NUnit.Framework;
-using System.Threading;
-using VisitorRegistrationApp.Data;
 
 namespace VisitorsRegistrationTests
 {
@@ -33,7 +26,7 @@ namespace VisitorsRegistrationTests
         {
             
             //Arrange 
-            var splitName = injectFixture.visitorService.SplitFullnameInFirstAndLast(name);
+            var splitName = injectFixture.visitorService.SplitFullnameInFirstAndLastNameWithLowercase(name);
           
             var lastName = splitName[1];
 

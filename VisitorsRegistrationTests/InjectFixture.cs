@@ -1,5 +1,4 @@
 ﻿using BL.Services;
-using BLL.Helper;
 using Bogus;
 using DAL.Repositories;
 using FluentValidation;
@@ -10,8 +9,6 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VisitorRegistrationApp.Data;
 using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Data.Repository;

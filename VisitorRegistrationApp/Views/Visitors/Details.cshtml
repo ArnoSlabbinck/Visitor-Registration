@@ -4,26 +4,36 @@
 *@
 @{
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link href="~/css/Details.css" rel="stylesheet" />
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="project-info-box mt-0">
+                <h5>@Model.Fullname</h5>
+                <p class="mb-0">@Model.Email</p>
+            </div><!-- / project-info-box -->
 
-<h1>Details</h1>
-<div id="detail" class="card">
-    <img style="max-height:350px;" class="card-img-top" src="" alt="Nothing to see yet">
+            <div class="project-info-box">
+                <p><b>Date: </b>  @Model.VisitDate.ToString("dd/MM/yyyy")</p>
+            </div><!-- / project-info-box -->
 
-    <div class="card-body">
-        <h5 class="card-title">@Model.Fullname</h5>
-        <p class="card-text">Email: @Model.Email</p>
-        <p class="card-text">Date: @Model.VisitDate.ToString("dd/MM/yyyy")</p>
+            <div class="project-info-box mt-0 mb-0">
+                <p class="mb-0">
+                    @Model.AppointmentPeople?[0].Name
+                </p>
+            </div><!-- / project-info-box -->
+        </div><!-- / column -->
 
-        <p class="card-text">Company: @Model.VisitingCompany</p>
-        @if (Model.AppointmentPeople != null)
-            {
-                <p class="card-text">Sign Out: @Model.AppointmentPeople[0].Name</p>
-            }
-        <p class="card-text">Notes: </p>
+        <div class="col-md-7">
+            <img src="data:image/png;base64, @Model.Base64Image" alt="project-image" class="rounded">
+            <div class="project-info-box">
+                <a asp-action="Edit" asp-route-id="@Model.Fullname" class="btn btn-link">Edit</a>
+                <a asp-action="Index" class="btn btn-link">Back to List</a>
+            </div><!-- / project-info-box -->
+        </div><!-- / column -->
     </div>
+</div>
 
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Fullname" class="btn btn-link">Edit</a>
-    <a asp-action="Index" class="btn btn-link">Back to List</a>
-</div>
+
+

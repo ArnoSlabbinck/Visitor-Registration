@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data;
+using VisitorRegistrationApp.Data.Helper;
 using VisitorRegistrationApp.Helper;
 using VisitorRegistrationApp.Models;
 
@@ -34,7 +35,7 @@ namespace VisitorRegistrationApp.Controllers
         // GET: VisitorsController/Details/5
         public async Task<ActionResult> Details(string name)
         {
-            Guard.AgainstNull(name, nameof(name));
+             Guard.AgainstNull(name, nameof(name));
 
             var visitor = await Task.FromResult(visitorService.GetUserFromName(name));
             var visitorViewModel = mapper.Map<VisitorViewModel>(visitor);
@@ -92,16 +93,28 @@ namespace VisitorRegistrationApp.Controllers
         }
 
 
-        public IActionResult SignedIn()
+        public IActionResult SignedIn(string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
-            var visitors = visitorService.GetSignedInVisitors();
+            int pageSize = 3;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            // In de service laag moet de Query gevraagd worden 
+            var visitors =  visitorService.GetSignedInVisitors(1, pageSize).Result;
             var visitorsView = mapper.Map<IEnumerable<VisitorViewModel>>(visitors);
+
+
+            
             return View(visitorsView);
+            
         }
 
         public IActionResult SignedOut()
         {
-            var visitors = visitorService.GetSignedOutVisitors();
+            var visitors = visitorService.GetSignedOutVisitors(1,3);
             var visitorsView = mapper.Map<IEnumerable<VisitorViewModel>>(visitors);
             return View(visitorsView);
         }

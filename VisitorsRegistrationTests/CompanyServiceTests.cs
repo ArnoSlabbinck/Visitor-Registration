@@ -1,15 +1,5 @@
-﻿using BL.Services;
-using BLL.Helper;
-using Bogus;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using NUnit.Framework;
 using System.Threading.Tasks;
-using VisitorRegistrationApp.Data.Entities;
-using VisitorRegistrationApp.Data.Repository;
 
 namespace VisitorsRegistrationTests
 {
@@ -30,7 +20,7 @@ namespace VisitorsRegistrationTests
         public void CompanyRepositoryGetAll_ShouldReturnAllCompanies()
         {
 
-            _injectFixture._companyRepoMock.Setup(x => x.GetAll()).Returns(Task.FromResult(_injectFixture.secondCompanies)); 
+            //_injectFixture._companyRepoMock.Setup(x => x.GetAll()).Returns(Task.FromResult(_injectFixture.secondCompanies)); 
             _injectFixture._companyRepoMock.Object.GetAll();
             _injectFixture._companyRepoMock.Verify(x => x.GetAll());
         

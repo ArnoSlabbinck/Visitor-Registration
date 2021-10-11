@@ -117,7 +117,7 @@ namespace VisitorRegistrationApp.Controllers
             bool result;
             if(!string.IsNullOrEmpty(name))
             {
-                result = visitorService.CheckOut(name).Result;
+                result = visitorService.ConfirmCheckOutForVisitor(name).Result;
                 string VisitorName = User.Identity.Name;
                 _logger.LogInformation($"{VisitorName} is now signout from the lobby");
             }
@@ -162,18 +162,20 @@ namespace VisitorRegistrationApp.Controllers
 
         }
 
-        public async Task<IActionResult> SignIn()
+        public IActionResult SignIn()
         {
             // Uit session halen van object
             // Deserialize
             // Encoded password for security
             
-            var visitorView = HttpContext.Session.GetObject<ApplicationUser>("CurrentVisitor");
+            var visitorView = HttpContext.Session.GetObject<VisitorViewModel>("CurrentVisitor");
             var password = HttpContext.Session.GetString("Password");
-            var imageBase64 = HttpContext.Session.GetString("ImageBase64");
+            var imageBase64 = visitorView.Base64Image;
             var user = mapper.Map<ApplicationUser>(visitorView);
+            user.UserName = user.Email;
+            user.NormalizedUserName = user.Email;
 
-            var checkSignedIn = await Task.FromResult(visitorService.SignIn(user, imageBase64, password));
+            var checkSignedIn = visitorService.SignIn(user, imageBase64, password);
             
             if(checkSignedIn.Result == true)
             {
@@ -224,34 +226,33 @@ namespace VisitorRegistrationApp.Controllers
             //Uit session gaan halen van VisitorViewModel
             // Displayen aan de user 
             var visitor = HttpContext.Session.GetObject<VisitorViewModel>("CurrentVisitor");
-         
 
-
+            
             return View(visitor);
         }
 
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public IActionResult Summary(bool correctUserData)
-        {
-            
-            // Hier krijg ik de bevestiging binnen dat alle gegevens correct zijn
-            return RedirectToAction(nameof(SignIn));
-        }
+      
+
+
+
+
 
         [HttpPost]
 
-        public async Task<IActionResult> RedirectToVisitorProfile([FromBody] RedirectToVisitorProfileData data)
+        public async Task<JsonResult> RedirectToVisitorProfile([FromBody] RedirectToVisitorProfileData data)
         {
 
             if (data.ImageUrl == null || data.ImageUrl.Length == 0)
             {
-                return BadRequest();
+                throw new InvalidCastException();
             }
-            HttpContext.Session.SetString("ImageBase64", data.ImageUrl);
+
+            var visitor = HttpContext.Session.GetObject<VisitorViewModel>("CurrentVisitor");
+            visitor.Base64Image = data.ImageUrl;
+            HttpContext.Session.SetObject("CurrentVisitor", visitor);
 
 
-            return RedirectToAction(nameof(Summary));
+            return Json(null);
         }
 
        
@@ -260,6 +261,8 @@ namespace VisitorRegistrationApp.Controllers
 
             return mapper.Map<List<VisitorViewModel>>(applicationUsers);
         }
+
+        
     }
     public struct RedirectToVisitorProfileData
     {

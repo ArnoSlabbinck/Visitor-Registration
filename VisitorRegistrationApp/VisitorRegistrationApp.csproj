@@ -29,6 +29,7 @@
     <ProjectReference Include="..\BL\BLL.csproj" />
     <ProjectReference Include="..\DAL\DAL.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
+    <ProjectReference Include="..\VisitorsRegistrationTests\VisitorsRegistrationTests.csproj" />
   </ItemGroup>
 
 </Project>

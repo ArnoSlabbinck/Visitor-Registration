@@ -73,9 +73,9 @@ namespace BL.Services
             return null;
         }
 
-        public Task<IEnumerable<Employee>> getAll()
+        public async Task<IEnumerable<Employee>> getAll()
         {
-            return employeeRespository.GetAll();
+            return await Task.FromResult(employeeRespository.GetEmployeesWithCompanies());
         }
 
         public IEnumerable<Employee> GetEmployeesFromCompany(int id)

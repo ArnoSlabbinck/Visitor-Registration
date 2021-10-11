@@ -76,7 +76,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             Input.AllEmployeesOfCompany = null;
             
 
-            Input.AllEmployeesOfCompany = employeeRepository.GetAll().Result
+            Input.AllEmployeesOfCompany = employeeRepository.GetEmployeesWithCompanies().AsEnumerable()
                 .Where(e => e.Company.Name == selectedCompany)
                 .Select(p => new SelectListItem
                 {
@@ -92,7 +92,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
         public JsonResult  OnGetSetEmployee(string employee)
         {
 
-            Employee = employeeRepository.GetAll().Result.Where(e => e.Name == employee).SingleOrDefault();
+            Employee = employeeRepository.GetAll().Where(e => e.Name == employee).SingleOrDefault();
             MultipleAppointmentsWith.Add(Employee);
             return new JsonResult(Input.Email);
 
@@ -101,7 +101,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
         public void SeedAllCompanies()
         {
            
-            Input.AllCompanies = companyRepository.GetAll().Result.Select(c =>
+            Input.AllCompanies = companyRepository.GetAll().Select(c =>
                  new SelectListItem
                  {
                      Value = c.Name,
@@ -114,7 +114,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 
         public async Task<string> GetFirstCompanyInDb()
         {
-            return await Task.FromResult(companyRepository.GetAll().Result.FirstOrDefault().Name);
+            return await Task.FromResult(companyRepository.GetAll().FirstOrDefault().Name);
         }
         
         public JsonResult OnGetReloadPage()
@@ -134,7 +134,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
         {
             //Kijk naar welke Company dat geselecteerd is 
             // Dan pak de eerste value van die Company via InputModel 
-            Input.ApppointmentWith = companyRepository.GetAll().Result.SingleOrDefault(c => c.Name == input.VisitedCompany).Employees.SingleOrDefault();
+            Input.ApppointmentWith = companyRepository.GetAll().SingleOrDefault(c => c.Name == input.VisitedCompany).Employees.SingleOrDefault();
             return input;
          
 
@@ -256,13 +256,15 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
                 MultipleAppointmentsWith.Add(Input.ApppointmentWith);
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName,
                     LastName = Input.LastName, Gender = Input.Gender, VisitingCompany = company,
-                    AppointmenrWith = MultipleAppointmentsWith
+                    AppointmenrWith = MultipleAppointmentsWith, PhoneNumber = Input.PhoneNumber
                 };
+                
                 var visitor = mapper.Map<VisitorViewModel>(user);
-
+                visitor.ChosenPurpose = "Visitor";
 
                 HttpContext.Session.SetObject("CurrentVisitor", visitor );
                 HttpContext.Session.SetString("Password", Input.Password);
+                HttpContext.Session.SetString("Username", Input.Email);
                 return RedirectToAction("Picture", "Home");
 
 
