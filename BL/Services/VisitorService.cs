@@ -3,7 +3,9 @@ using DAL.Repositories;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data;
+using VisitorRegistrationApp.Data.Repository;
 using VisitorRegistrationApp.Helper;
 
 namespace BL.Services
@@ -24,6 +27,7 @@ namespace BL.Services
         private readonly ILogger<VisitorService> logger;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly ICompanyRespository companyRespository;
         private IList<string> Errors;
 
 
@@ -33,7 +37,8 @@ namespace BL.Services
             IValidator<ApplicationUser> validator, 
             ILogger<VisitorService> logger,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager
+            RoleManager<IdentityRole> roleManager, 
+            ICompanyRespository companyRepository
             )
         {
             this.userManager = userManager;
@@ -43,33 +48,36 @@ namespace BL.Services
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.signInManager = signInManager;
+            this.companyRespository = companyRespository;
 
         }
    
-        public List<ApplicationUser> SearchSpecificUsers(string searchInput)
+        public async Task<List<ApplicationUser>> SearchForSpecificUsers(string searchInput)
         {
+            //Ophalen van alle
             searchInput = searchInput.Trim().ToLower();
-            List<ApplicationUser> AllUsers = userManager.Users.ToList();
+            List<ApplicationUser> AllUsers = await userManager.Users
+                .Include(c => c.VisitingCompany).Include(e => e.Hosts).ToListAsync();
 
             List<ApplicationUser> SearchedVisitorUsers = new List<ApplicationUser>();
             // Haal de users eruit die niet behoren bij searchInput
             Regex patternEmail = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-            Regex patternName = new Regex(@"^([a-zA-Z]{2,}\s[a-zA-Z]{1,}'?-?[a-zA-Z]{2,}\s?([a-zA-Z]{1,})?)");
-            Regex patternCompanyFirstName = new Regex(@"[a-z]");
+            Regex patternFullName = new Regex(@"^([a-zA-Z]{2,}\s[a-zA-Z]{1,}'?-?[a-zA-Z]{2,}\s?([a-zA-Z]{1,})?)");
+            Regex patternFirstLastCompanyName = new Regex(@"[a-z]");
 
             if (patternEmail.IsMatch(searchInput))
             {
                 return AllUsers.Where(u => u.Email == searchInput).ToList();
 
             }
-            else if (patternName.IsMatch(searchInput))
+            else if (patternFullName.IsMatch(searchInput))
             {
                 return AllUsers.Where(u => u.Fullname == searchInput).ToList();
             }
-            else if (patternCompanyFirstName.IsMatch(searchInput))
+            else if (patternFirstLastCompanyName.IsMatch(searchInput))
             {
-                return AllUsers.Where(u => u.FirstName.ToLower() == searchInput
-                || u.LastName.ToLower() == searchInput).ToList();
+                return AllUsers.Where(u => u.FirstName.ToLower().Trim() == searchInput
+                || u.LastName.ToLower().Trim() == searchInput || searchInput == u.VisitingCompany.Name.ToLower()).ToList();
             }
 
             return SearchedVisitorUsers;
@@ -78,23 +86,29 @@ namespace BL.Services
 
         public async Task<bool> ConfirmCheckOutForVisitor(string name)
         {
-            var splittedName = SplitFullnameInFirstAndLastNameWithLowercase(name);
+            var splittedName = SplitFullnameInFirstAndLastNameInLowercase(name);
             var firstName = splittedName[0].Trim();
             var lastName = splittedName[1].Trim();
-            var visitor = visitorRepository.getUserByName(firstName, lastName);
+            var visitor = visitorRepository.getUserByNameWithCompanyAndHosts(firstName, lastName);
 
             if (visitor.VisitStatus != VisitStatus.CheckOut)
             {
                 visitor.VisitStatus = VisitStatus.CheckOut;
                 await visitorRepository.Update(visitor);
+                return true;
             }
    
-            return true;
+            return false;
+        }
+
+        public List<ApplicationUser> DeleteAllCheckOutVisitorsFromList(List<ApplicationUser> visitors)
+        {
+            visitors.RemoveAll(x => x.VisitStatus == VisitStatus.CheckOut);
+            return visitors;
         }
 
 
-
-        public string[] SplitFullnameInFirstAndLastNameWithLowercase(string name)
+        public string[] SplitFullnameInFirstAndLastNameInLowercase(string name)
         {
             string[] splittedName = new string[2]; 
             var Name = name.Trim().ToLower();
@@ -151,16 +165,19 @@ namespace BL.Services
         
         }
 
-        public async Task<ApplicationUser> Update(ApplicationUser applicationUser)
+        public async Task<ApplicationUser> Update(ApplicationUser applicationUser, string CompanyName)
         {
             ValidationResult validationResult = validator.Validate(applicationUser);
             Errors = Guard.AgainstErrors(validationResult);
-            if (Errors == null)
+            if (Errors == null )
             {
+                var Company = await companyRespository.GetCompanyByName(CompanyName);
+                applicationUser.VisitingCompany = Company;
                 var visitorAdded = await visitorRepository.Update(applicationUser);
                 logger.LogInformation($"The visitor has been updated with id {visitorAdded?.Id}, {visitorAdded?.Fullname}");
                 return visitorAdded;
             }
+
             return null;
 
            
@@ -197,11 +214,11 @@ namespace BL.Services
             var error = Guard.AgainstNullOrWhiteSpace(name, nameof(name)) == null ? false : true;
             if (error)
                 return null;
-            var splitName = SplitFullnameInFirstAndLastNameWithLowercase(name);
+            var splitName = SplitFullnameInFirstAndLastNameInLowercase(name);
             var firstName = splitName[0].Trim();
             var lastName = splitName[1].Trim();
 
-            var visitor = visitorRepository.getUserByName(firstName, lastName);
+            var visitor = visitorRepository.getUserByNameWithCompanyAndHosts(firstName, lastName);
             int? pictureId = visitor.PictureId;
             if(pictureId != null)
                 return visitorRepository.GetUserByNameWithImage(firstName, lastName, (int)pictureId);
@@ -221,14 +238,15 @@ namespace BL.Services
         public async Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password)
         {
             IdentityResult roleResult = new IdentityResult();
-            visitor.Picture = new Model.Image() { ImageName = $"{visitor.Fullname}Picture", ImageFile = ImgToByteConverter.Base64StringToByteArray(imageBase64) };
-            
+            Image image = new Image() { ImageName = $"{visitor.Fullname}Picture", ImageFile = ImgToByteConverter.Base64StringToByteArray(imageBase64) };
+            visitorRepository.MakeImage(image);
+            visitor.Picture = visitorRepository.GetImage(image.ImageName);
             try
             {
             
                 visitor.SecurityStamp = Guid.NewGuid().ToString();
-                roleResult = await userManager.CreateAsync(visitor, password);
-             
+
+                roleResult =  userManager.CreateAsync(visitor, password).GetAwaiter().GetResult();
                 if (roleResult.Succeeded)
                 {
                     var roleName = "Visitor";
@@ -264,31 +282,30 @@ namespace BL.Services
             return false;
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetSignedInVisitors(int pageIndex, int pageSize)
+        public async Task<IEnumerable<ApplicationUser>> GetSignedInVisitors()
         {
             // Houd vullen vna het ordenen van de logica moet in de service laag gebeuren
             // Het ordenen, filteren En andere logica moet ik terug vinden in de service laag
 
-            var visitorsQuery = visitorRepository.GetAll();
-            var VisitorsForPage = await PagedList<ApplicationUser>.CreateAsync(visitorsQuery, pageIndex, pageSize);
-            return VisitorsForPage.Where(vi => vi.VisitStatus == VisitStatus.CheckIn);    
+            return visitorRepository.GetVisitorsWithCompanyAndHots().Where(u => u.VisitStatus == VisitStatus.CheckIn);
+           
+            
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetSignedOutVisitors(int pageIndex, int pageSize)
+        public async Task<IEnumerable<ApplicationUser>> GetSignedOutVisitors()
         {
-            var visitorsQuery = visitorRepository.GetAll();
-            var VisitorsForPage = await PagedList<ApplicationUser>.CreateAsync(visitorsQuery, pageIndex, pageSize);
-            return VisitorsForPage.Where(vi => vi.VisitStatus == VisitStatus.CheckOut);
+            return visitorRepository.GetVisitorsWithCompanyAndHots().Where(u => u.VisitStatus == VisitStatus.CheckOut);
+
         }
     }
 
     public interface IVisitorService
     {
-        List<ApplicationUser> SearchSpecificUsers(string searchInput);
+        Task<List<ApplicationUser>> SearchForSpecificUsers(string searchInput);
 
         Task<bool> ConfirmCheckOutForVisitor(string name);
 
-        string[] SplitFullnameInFirstAndLastNameWithLowercase(string name);
+        string[] SplitFullnameInFirstAndLastNameInLowercase(string name);
 
         ApplicationUser GetUserFromName(string name);
 
@@ -296,19 +313,19 @@ namespace BL.Services
 
         Task<ApplicationUser> Get(int Id);
 
-        Task<ApplicationUser> Update(ApplicationUser applicationUser);
+        Task<ApplicationUser> Update(ApplicationUser applicationUser, string CompanyName);
 
         Task<ApplicationUser> Add(ApplicationUser applicationUser);
 
         Task<bool> Delete(int id);
 
         bool Delete(string userId);
-
+        public List<ApplicationUser> DeleteAllCheckOutVisitorsFromList(List<ApplicationUser> visitors);
         Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password);
 
 
-        Task<IEnumerable<ApplicationUser>> GetSignedInVisitors(int pageIndex, int pageSize);
-        Task<IEnumerable<ApplicationUser>> GetSignedOutVisitors(int pageIndex, int pageSize);
+        Task<IEnumerable<ApplicationUser>> GetSignedInVisitors();
+        Task<IEnumerable<ApplicationUser>> GetSignedOutVisitors();
 
 
 

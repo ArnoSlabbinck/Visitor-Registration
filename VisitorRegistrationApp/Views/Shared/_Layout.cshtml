@@ -36,9 +36,6 @@
                             <li class="nav-item">
                                 <a class="nav-link text-white text-lg-right" asp-controller="Companies" asp-action="Index">Companies</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white text-lg-right" asp-controller="Employees" asp-action="Index">Employees</a>
-                            </li>
                             <li class="nav-item" style="margin:8px 3px 0px 0px; ">
                                 <div class="dropdown show">
                                     <a class="text-white dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -55,13 +52,7 @@
                             </li>
                           
                         }
-                        else if (User.IsInRole("Visitor"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-white text-lg-right" asp-controller="Home" asp-action="Index">Visitors</a>
-                            </li>
-                        }
-
+                     
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

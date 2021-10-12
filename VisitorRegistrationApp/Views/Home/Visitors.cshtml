@@ -36,8 +36,8 @@ else
                     <td>@visit.Fullname</td>
                     <td>@visit.VisitDate</td>
                     <td>@visit.VisitedTime</td>
-                    <td>@visit.AppointmentPeople.Count()</td>
-                    <td>@visit.AppointmentPeople[0]</td>
+                    <td>@visit.Hosts.Count()</td>
+                    <td>@visit.Hosts.ToList()?[0].Name</td>
                     <td><a asp-controller="Home" asp-action="Completed">Meeting Completed?</a></td>
 
 

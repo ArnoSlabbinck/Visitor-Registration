@@ -20,7 +20,7 @@
 
             <div class="project-info-box mt-0 mb-0">
                 <p class="mb-0">
-                    @Model.AppointmentPeople?[0].Name
+                    @Model.Hosts.ToList().FirstOrDefault().Name
                 </p>
             </div><!-- / project-info-box -->
         </div><!-- / column -->

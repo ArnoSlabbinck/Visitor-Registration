@@ -118,26 +118,29 @@ namespace VisitorRegistrationApp.Controllers
             if(!string.IsNullOrEmpty(name))
             {
                 result = visitorService.ConfirmCheckOutForVisitor(name).Result;
-                string VisitorName = User.Identity.Name;
-                _logger.LogInformation($"{VisitorName} is now signout from the lobby");
+                _logger.LogInformation($"{name} is now signout from the lobby");
+                return RedirectToAction(nameof(Index));
             }
-
-
-            return RedirectToAction(nameof(ThankYou));
+            _logger.LogError($"Name was empty from person who tried to sign out");
+            return NotFound();
+           
         }
 
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Search([FromForm] string searchInput, string logout)
+        public async Task<IActionResult> Search([FromForm] string searchInput, string logout)
         {
             //Custom mapper ==> loskoppelen van data tussen viewmodel en model 
             // functioneel mappen => name convention based
 
-            List<VisitorViewModel> VisitorsList = new List<VisitorViewModel>();
+            List<SignOutVisitorViewModel> VisitorsList = new List<SignOutVisitorViewModel>();
             if (!string.IsNullOrEmpty(logout))// When a visitor signs out
             {
-                VisitorsList = MapApplicationUserToUserViewModel(visitorService.SearchSpecificUsers(searchInput));
+                var visitors = await visitorService.SearchForSpecificUsers(searchInput);
+                VisitorsList = MapApplicationUserToUserViewModel(visitorService.DeleteAllCheckOutVisitorsFromList(visitors));
+                if (VisitorsList.Any() == false)
+                    return RedirectToAction(nameof(SignOutError));
                 TempData["VisitorsViews"] = JsonConvert.SerializeObject(VisitorsList);
                 
                 return RedirectToAction(nameof(SignOut), new { firstTime = false});
@@ -149,7 +152,7 @@ namespace VisitorRegistrationApp.Controllers
             if(!string.IsNullOrEmpty(searchInput))
             {
 
-                VisitorsList = MapApplicationUserToUserViewModel(visitorService.SearchSpecificUsers(searchInput));
+                VisitorsList = MapApplicationUserToUserViewModel(await visitorService.SearchForSpecificUsers(searchInput));
 
                 return View(VisitorsList);
             }
@@ -174,6 +177,10 @@ namespace VisitorRegistrationApp.Controllers
             var user = mapper.Map<ApplicationUser>(visitorView);
             user.UserName = user.Email;
             user.NormalizedUserName = user.Email;
+            user.SecurityStamp = HttpContext.Session.GetString("SecurityStamp");
+            user.ConcurrencyStamp = HttpContext.Session.GetString("ConcurrencyStamp");
+            user.TwoFactorEnabled = false;
+
 
             var checkSignedIn = visitorService.SignIn(user, imageBase64, password);
             
@@ -185,8 +192,12 @@ namespace VisitorRegistrationApp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public IActionResult SignOutError()
+        {
+            return View();
+        }
 
-        public  IActionResult SignOut(IEnumerable<VisitorViewModel> visitorViews, bool firstTime = true)
+        public  IActionResult SignOut(IEnumerable<SignOutVisitorViewModel> visitorViews, bool firstTime = true)
         {
             //
             if(firstTime == true)
@@ -196,7 +207,7 @@ namespace VisitorRegistrationApp.Controllers
             else
             {
                 var JsonVisitorViews = (string)TempData["VisitorsViews"];
-                visitorViews = JsonConvert.DeserializeObject<List<VisitorViewModel>>(JsonVisitorViews, new VisitorViewModelListConverter());
+                visitorViews = JsonConvert.DeserializeObject<List<SignOutVisitorViewModel>>(JsonVisitorViews, new VisitorViewModelListConverter());
 
             }
 
@@ -232,11 +243,6 @@ namespace VisitorRegistrationApp.Controllers
         }
 
       
-
-
-
-
-
         [HttpPost]
 
         public async Task<JsonResult> RedirectToVisitorProfile([FromBody] RedirectToVisitorProfileData data)
@@ -256,10 +262,10 @@ namespace VisitorRegistrationApp.Controllers
         }
 
        
-        private List<VisitorViewModel> MapApplicationUserToUserViewModel(List<ApplicationUser> applicationUsers)
+        private List<SignOutVisitorViewModel> MapApplicationUserToUserViewModel(List<ApplicationUser> applicationUsers)
         {
 
-            return mapper.Map<List<VisitorViewModel>>(applicationUsers);
+            return mapper.Map<List<SignOutVisitorViewModel>>(applicationUsers);
         }
 
         

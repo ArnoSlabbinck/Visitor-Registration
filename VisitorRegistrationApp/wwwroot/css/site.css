@@ -243,20 +243,15 @@ a {
 }
 
 #canvas {
-    padding-top: 90px;
-    margin-bottom: 250px;
-    margin-top: 200px;
     background-color: transparent;
     position: absolute;
-    width: 40rem;
-    height: 43vh;
+    width: 40em;
+    height: 50vh;
     z-index: 9999;
     margin: auto;
     top: 0;
     left: 0;
     right: 0;
-    margin-left: auto;
-    margin-right: 100px;
 }
 
 #picture-intro {
@@ -272,7 +267,7 @@ a {
 
 
 #ServiceForm {
-    margin: 250px 0 0 0;
+    margin: 10rem 0 0 20rem;
     display: grid;
     grid-auto-flow: row;
     grid-column-gap: 55px;

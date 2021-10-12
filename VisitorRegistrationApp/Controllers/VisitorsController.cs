@@ -49,7 +49,8 @@ namespace VisitorRegistrationApp.Controllers
         {
             Guard.AgainstNull(name, nameof(name));
             var visitor = await Task.FromResult(visitorService.GetUserFromName(name));
-            var visitorViewModel = mapper.Map<VisitorViewModel>(visitor); 
+            var visitorViewModel = mapper.Map<VisitorViewModel>(visitor);
+            visitorViewModel.CompanyName = visitor.VisitingCompany.Name;
             return View(visitorViewModel);
         }
 
@@ -61,7 +62,7 @@ namespace VisitorRegistrationApp.Controllers
             if(ModelState.IsValid)
             {
                 var visitor = mapper.Map<ApplicationUser>(visitorViewModel);
-                await visitorService.Update(visitor);
+                await visitorService.Update(visitor, visitorViewModel.CompanyName);
                 return RedirectToAction(nameof(Index));
 
             }
@@ -93,17 +94,10 @@ namespace VisitorRegistrationApp.Controllers
         }
 
 
-        public IActionResult SignedIn(string sortOrder,
-            string currentFilter,
-            string searchString,
-            int? pageNumber)
+        public async Task<IActionResult> SignedIn()
         {
-            int pageSize = 3;
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
             // In de service laag moet de Query gevraagd worden 
-            var visitors =  visitorService.GetSignedInVisitors(1, pageSize).Result;
+            var visitors =  await visitorService.GetSignedInVisitors();
             var visitorsView = mapper.Map<IEnumerable<VisitorViewModel>>(visitors);
 
 
@@ -112,9 +106,9 @@ namespace VisitorRegistrationApp.Controllers
             
         }
 
-        public IActionResult SignedOut()
+        public async Task<IActionResult> SignedOut()
         {
-            var visitors = visitorService.GetSignedOutVisitors(1,3);
+            var visitors = await visitorService.GetSignedOutVisitors();
             var visitorsView = mapper.Map<IEnumerable<VisitorViewModel>>(visitors);
             return View(visitorsView);
         }

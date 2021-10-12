@@ -14,7 +14,10 @@ namespace VisitorRegistrationApp.Data
 {
     public class ApplicationUser : Microsoft.AspNetCore.Identity.IdentityUser
     {
-        
+        public ApplicationUser()
+        {
+            Hosts = new List<Employee>();
+        }
         
         [Required(AllowEmptyStrings = false, ErrorMessage = "Please Provide Last Name")]
         [StringLength(20, MinimumLength = 5, ErrorMessage = "First Name Should be min 5 and max 20 length")]
@@ -26,29 +29,24 @@ namespace VisitorRegistrationApp.Data
         [Required(ErrorMessage = "Please Provide Gender")]
         public bool Gender { get; set; } // true male, false female
  
-
+        [NotMapped]
         public string Fullname { get { return FirstName + " " + LastName; } }
         [Required(ErrorMessage ="A visitor needs to visit a company if he/she wants to have access to the building")]
         public virtual Company VisitingCompany { get; set; }
         [Required(ErrorMessage = "A visitor needs to have an appointment with somebody in the building")]
 
-        public virtual ICollection<Employee> AppointmenrWith { get; set; }
-        
-
-        [Display(Name = "Check-In")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
-        public DateTime? CheckIn { get; set; } = DateTime.Now; // Van zodra een user inlogt
-
-        [Display(Name = "Check-Out")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
-        public DateTime? CheckOut { get; set; } = DateTime.Now;
-
-        [Display(Name = "VisitDay")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
-        public DateTime? VisitDay { get; set; }
+        public virtual List<Employee> Hosts { get; set; }
 
 
-        public TimeSpan? VisitedTime { get; set; }// Bereiken bij het completed visiting
+
+        public TimeSpan CheckIn { get; set; } = DateTime.Now.TimeOfDay; // Van zodra een user inlogt
+
+       
+        public TimeSpan? CheckOut { get; set; }
+
+
+        public DateTime? VisitDay { get; set; } = DateTime.Now.Date;
+
 
         public VisitStatus VisitStatus { get; set; }
 

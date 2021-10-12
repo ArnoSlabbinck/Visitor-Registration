@@ -57,7 +57,7 @@ namespace VisitorRegistrationApp.Data.Repository
             applicationDbContext.Entry(Entity).State = EntityState.Modified;
             logger.LogInformation($"{Entity.ToString()} is now updated int the database ");
             applicationDbContext.SaveChanges();
-            return null; 
+            return Task.FromResult(Entity);
         }
     }
 

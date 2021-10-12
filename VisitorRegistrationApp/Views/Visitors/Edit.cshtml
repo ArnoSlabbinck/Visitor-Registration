@@ -4,7 +4,7 @@
 *@
 @{
 }
-<form asp-controller="Home" asp-action="Edit" method="post" enctype="multipart/form-data">
+<form asp-controller="Visitors" asp-action="Edit" method="post" >
 
     <div class="form-group">
         <label asp-for="FirstName"></label>
@@ -22,9 +22,9 @@
         <span class="text-danger" asp-validation-for="Email"></span>
     </div>
     <div class="form-group">
-        <label asp-for=" VisitingCompany"></label>
-        <input class=" form-control" asp-for="VisitingCompany" />
-        <span class="text-danger" asp-validation-for="VisitingCompany"></span>
+        <label asp-for=" VisitingCompany.Name"></label>
+        <input class=" form-control" asp-for="VisitingCompany.Name" />
+        <span class="text-danger" asp-validation-for="VisitingCompany.Name"></span>
     </div>
     <div class="form-group">
         <label asp-for="VisitStatus"></label>
@@ -32,9 +32,9 @@
         <span class="text-danger" asp-validation-for="VisitStatus"></span>
     </div>
     <div class="form-group">
-        <label asp-for=" ChosenPurpose"></label>
-        <input class=" form-control" asp-for="ChosenPurpose" />
-        <span class="text-danger" asp-validation-for="ChosenPurpose"></span>
+        <label asp-for="VisitStatus"></label>
+        <input class="form-control" asp-for="VisitStatus" />
+        <span class="text-danger" asp-validation-for="VisitStatus"></span>
     </div>
     <br />
     <button class="btn btn-success" type="submit">Edit</button>

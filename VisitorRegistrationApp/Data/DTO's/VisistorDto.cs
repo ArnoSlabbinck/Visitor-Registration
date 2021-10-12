@@ -12,6 +12,8 @@ namespace VisitorRegistrationApp.Data.Profile
         public VisistorDto() 
         {
             this.CreateMap<ApplicationUser, VisitorViewModel>().ReverseMap();
+
+            this.CreateMap<ApplicationUser, SignOutVisitorViewModel>().ReverseMap();
         }
     }
 }

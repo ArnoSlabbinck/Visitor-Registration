@@ -41,15 +41,17 @@ namespace VisitorRegistrationApp.Controllers
         // GET: EmployeesController
         public async Task<IActionResult> Index(int? id)
         {
-            if(id == null)
+            IEnumerable<EmployeeViewModel> employeeViews;
+            if (id == null)
             {
                 return NotFound();
+
             }
-         
+            TempData["Id"] = (int)id;
 
             var results = await Task.FromResult(employeeService.GetEmployeesFromCompany((int)id));
 
-            IEnumerable<EmployeeViewModel> employeeViews = mapper.Map<IEnumerable<EmployeeViewModel>>(results);
+            employeeViews = mapper.Map<IEnumerable<EmployeeViewModel>>(results);
 
             return View(employeeViews);
         }
@@ -73,7 +75,7 @@ namespace VisitorRegistrationApp.Controllers
             EmployeeViewModel employeeViewModel = new EmployeeViewModel();
             // Dan omzetten via automapper en in database steken
 
-            TempData["Id"] = id;
+           
             
             
             return View(employeeViewModel);

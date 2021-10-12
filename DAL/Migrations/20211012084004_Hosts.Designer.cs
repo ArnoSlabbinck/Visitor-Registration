@@ -3,36 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VisitorRegistrationApp.Data;
 
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211012084004_Hosts")]
+    partial class Hosts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("ApplicationUserEmployee", b =>
-                {
-                    b.Property<int>("HostsId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("VisitorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("HostsId", "VisitorId");
-
-                    b.HasIndex("VisitorId");
-
-                    b.ToTable("ApplicationUserEmployee");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -200,11 +187,11 @@ namespace DAL.Migrations
                     b.Property<int?>("BuildingId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("CheckIn")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("CheckIn")
+                        .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan?>("CheckOut")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("CheckOut")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -274,6 +261,9 @@ namespace DAL.Migrations
 
                     b.Property<int>("VisitStatus")
                         .HasColumnType("int");
+
+                    b.Property<TimeSpan?>("VisitedTime")
+                        .HasColumnType("time");
 
                     b.Property<int?>("VisitingCompanyId")
                         .HasColumnType("int");
@@ -419,6 +409,9 @@ namespace DAL.Migrations
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("VisitorId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
@@ -427,22 +420,9 @@ namespace DAL.Migrations
                         .IsUnique()
                         .HasFilter("[PictureId] IS NOT NULL");
 
+                    b.HasIndex("VisitorId");
+
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("ApplicationUserEmployee", b =>
-                {
-                    b.HasOne("VisitorRegistrationApp.Data.Entities.Employee", null)
-                        .WithMany()
-                        .HasForeignKey("HostsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VisitorRegistrationApp.Data.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("VisitorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -542,9 +522,15 @@ namespace DAL.Migrations
                         .WithOne("Employee")
                         .HasForeignKey("VisitorRegistrationApp.Data.Entities.Employee", "PictureId");
 
+                    b.HasOne("VisitorRegistrationApp.Data.ApplicationUser", "Visitor")
+                        .WithMany("Hosts")
+                        .HasForeignKey("VisitorId");
+
                     b.Navigation("Company");
 
                     b.Navigation("Picture");
+
+                    b.Navigation("Visitor");
                 });
 
             modelBuilder.Entity("Model.Image", b =>
@@ -554,6 +540,11 @@ namespace DAL.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("VisitorRegistrationApp.Data.ApplicationUser", b =>
+                {
+                    b.Navigation("Hosts");
                 });
 
             modelBuilder.Entity("VisitorRegistrationApp.Data.Entities.Building", b =>

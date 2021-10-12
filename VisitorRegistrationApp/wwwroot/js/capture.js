@@ -169,6 +169,7 @@ function beforeTakePhoto() {
 }
 
 function afterTakePhoto() {
+    webcam.stop();
     $('#canvas').removeClass('d-none');
     $('#take-photo').addClass('d-none');
     $('#exit-app').removeClass('d-none');

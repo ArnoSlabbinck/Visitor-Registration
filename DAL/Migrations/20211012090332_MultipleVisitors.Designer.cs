@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VisitorRegistrationApp.Data;
 
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211012090332_MultipleVisitors")]
+    partial class MultipleVisitors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,11 +202,11 @@ namespace DAL.Migrations
                     b.Property<int?>("BuildingId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("CheckIn")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("CheckIn")
+                        .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan?>("CheckOut")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("CheckOut")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -274,6 +276,9 @@ namespace DAL.Migrations
 
                     b.Property<int>("VisitStatus")
                         .HasColumnType("int");
+
+                    b.Property<TimeSpan?>("VisitedTime")
+                        .HasColumnType("time");
 
                     b.Property<int?>("VisitingCompanyId")
                         .HasColumnType("int");

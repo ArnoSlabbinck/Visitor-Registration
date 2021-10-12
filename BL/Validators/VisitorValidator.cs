@@ -18,11 +18,7 @@ namespace BLL.Validators
             RuleFor(model => model.VisitingCompany)
                 .NotNull()
                 .SetValidator(new CompanyValidator());
-            RuleForEach(x => x.AppointmenrWith)
-                .NotNull()
-                .WithMessage("You need to fill in a employee")
-                .SetValidator(new EmployeeValidator());
-
+          
             RuleFor(x => x.Email).EmailAddress().WithMessage("You need to give the right email address");
             RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("You need to give a phone number");
             

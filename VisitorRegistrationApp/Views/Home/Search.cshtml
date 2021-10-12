@@ -33,7 +33,7 @@ else
                         <th scope="col">Email</th>
                         <th scope="col">Company</th>
                         <th scope="col">Host</th>
-                        <th scope="col">Check-In/Check-Out</th>
+                        <th scope="col">Check-In</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -59,15 +59,15 @@ else
                             {
                                 <th>@visitor.VisitingCompany.Name</th>
                             }
-                            @if (visitor.AppointmentPeople == null)
+                            @if (visitor.Hosts.Any() == false)
                             {
                                 <th>No Visit </th>
                             }
                             else
                             {
-                                <th>@visitor.AppointmentPeople[0].Name</th>
+                                <th>@visitor.Hosts.ToList().First().Name</th>
                             }
-                            <th>@visitor.VisitDate.ToString("HH:MM:yyyy") :  @visitor.VisitedTime</th>
+                            <th>@visitor.CheckIn</th>
                             <th>
                                 <a class="btn btn-secondary my-2 my-sm-0" asp-controller="Home" asp-action="Edit">
                                     <i class="glyphicon glyphicon-edit"></i>
