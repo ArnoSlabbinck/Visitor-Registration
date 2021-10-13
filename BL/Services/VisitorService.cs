@@ -55,7 +55,7 @@ namespace BL.Services
 
         }
    
-        public async Task<List<ApplicationUser>> SearchForSpecificUsers(string searchInput)
+        public async Task<List<ApplicationUser>> SearchVisitorsWith(string searchInput)
         {
             //Ophalen van alle
             searchInput = searchInput.Trim().ToLower();
@@ -87,7 +87,7 @@ namespace BL.Services
 
         }
 
-        public async Task<bool> ConfirmCheckOutForVisitor(string name)
+        public async Task<bool> CheckOutVisitor(string name)
         {
             var splittedName = SplitFullnameInFirstAndLastNameInLowercase(name);
             var firstName = splittedName[0].Trim();
@@ -104,7 +104,7 @@ namespace BL.Services
             return false;
         }
 
-        public List<ApplicationUser> DeleteAllCheckOutVisitorsFromList(List<ApplicationUser> visitors)
+        public List<ApplicationUser> FilterCheckOutVisitors(List<ApplicationUser> visitors)
         {
             visitors.RemoveAll(x => x.VisitStatus == VisitStatus.CheckOut);
             return visitors;
@@ -311,9 +311,9 @@ namespace BL.Services
 
     public interface IVisitorService
     {
-        Task<List<ApplicationUser>> SearchForSpecificUsers(string searchInput);
+        Task<List<ApplicationUser>> SearchVisitorsWith(string searchInput);
 
-        Task<bool> ConfirmCheckOutForVisitor(string name);
+        Task<bool> CheckOutVisitor(string name);
 
         string[] SplitFullnameInFirstAndLastNameInLowercase(string name);
 
@@ -330,7 +330,7 @@ namespace BL.Services
         Task<bool> Delete(int id);
 
         bool Delete(string userId);
-        public List<ApplicationUser> DeleteAllCheckOutVisitorsFromList(List<ApplicationUser> visitors);
+        public List<ApplicationUser> FilterCheckOutVisitors(List<ApplicationUser> visitors);
         Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password, string employeeName);
 
         Task<ApplicationUser> GetLatestVisitor();

@@ -10,8 +10,8 @@ using VisitorRegistrationApp.Data;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211013113211_initialcreate")]
-    partial class initialcreate
+    [Migration("20211013142653_initialCreate")]
+    partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

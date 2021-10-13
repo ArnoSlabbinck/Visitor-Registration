@@ -118,7 +118,7 @@ namespace VisitorRegistrationApp.Controllers
             bool result;
             if(!string.IsNullOrEmpty(name))
             {
-                result = visitorService.ConfirmCheckOutForVisitor(name).Result;
+                result = visitorService.CheckOutVisitor(name).Result;
                 _logger.LogInformation($"{name} is now signout from the lobby");
                 return RedirectToAction(nameof(Index));
             }
@@ -138,8 +138,8 @@ namespace VisitorRegistrationApp.Controllers
             List<SignOutVisitorViewModel> VisitorsList = new List<SignOutVisitorViewModel>();
             if (!string.IsNullOrEmpty(logout))// When a visitor signs out
             {
-                var visitors = await visitorService.SearchForSpecificUsers(searchInput);
-                VisitorsList = MapApplicationUserToUserViewModel(visitorService.DeleteAllCheckOutVisitorsFromList(visitors));
+                var visitors = await visitorService.SearchVisitorsWith(searchInput);
+                VisitorsList = MapVisitorToVisitorViewModel(visitorService.FilterCheckOutVisitors(visitors));
                 if (VisitorsList.Any() == false)
                     return RedirectToAction(nameof(SignOutError));
                 TempData["VisitorsViews"] = JsonConvert.SerializeObject(VisitorsList);
@@ -153,7 +153,7 @@ namespace VisitorRegistrationApp.Controllers
             if(!string.IsNullOrEmpty(searchInput))
             {
 
-                VisitorsList = MapApplicationUserToUserViewModel(await visitorService.SearchForSpecificUsers(searchInput));
+                VisitorsList = MapVisitorToVisitorViewModel(await visitorService.SearchVisitorsWith(searchInput));
 
                 return View(VisitorsList);
             }
@@ -259,7 +259,7 @@ namespace VisitorRegistrationApp.Controllers
         }
 
        
-        private List<SignOutVisitorViewModel> MapApplicationUserToUserViewModel(List<ApplicationUser> applicationUsers)
+        private List<SignOutVisitorViewModel> MapVisitorToVisitorViewModel(List<ApplicationUser> applicationUsers)
         {
 
             return mapper.Map<List<SignOutVisitorViewModel>>(applicationUsers);

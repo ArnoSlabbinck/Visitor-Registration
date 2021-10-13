@@ -6,6 +6,7 @@ const pictureTitle = document.getElementById("Title");
 var pictureUrl;
 var countDown = document.getElementById("counter");
 var h3Element = document.createElement("h3");
+var takePictureButton = document.getElementById("take-photo");
 var profileInfo = document.querySelector(".picture-intro");
 var pictureGuide = document.getElementById("guide-picture");
 var h4Element = document.createElement("h4");
@@ -26,18 +27,21 @@ function SetupCamera() {
 
     setTimeout(function () {
         h3Element.style.display = "none";
+
         pictureTitle.appendChild(h4Element);
 
 
-    }, 5000);
+    }, 3000);
 
     if (timerInUseCounter == 1) {
         h3Element.innerHTML = "Be Ready. The Camera will start right away. Smile at the camera";
+        $('#take-photo').addClass('d-none');
         startCountDown(5);
     }
     else {
         timerInUseCounter++;
         h3Element.innerHTML = "Please take the picture yourself";
+        $('#take-photo').removeClass('d-none');
         afterTakePhoto();
        
     }
@@ -170,6 +174,7 @@ function beforeTakePhoto() {
 
 function afterTakePhoto() {
     webcam.stop();
+    $('#webcam').addClass('d-none');
     $('#canvas').removeClass('d-none');
     $('#take-photo').addClass('d-none');
     $('#exit-app').removeClass('d-none');
@@ -184,6 +189,7 @@ function afterTakePhoto() {
 $("#resume-camera").click(function () {
     h4Element.style.display = "none";
     h3Element.style.display = "block";
+    $('#webcam').removeClass('d-none');
 
     webcam.stream()
         .then(facingMode => {

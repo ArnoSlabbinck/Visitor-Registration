@@ -73,7 +73,8 @@ namespace DAL
                 TwoFactorEnabled = false, 
                 AccessFailedCount = 0, 
                 LockoutEnabled = false, 
-                VisitingCompany = Companies[0]
+                VisitingCompany = Companies[0], 
+                Host = Companies[0].Employees.ToList()[0]
 
             };
 

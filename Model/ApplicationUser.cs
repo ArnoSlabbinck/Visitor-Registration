@@ -34,7 +34,6 @@ namespace VisitorRegistrationApp.Data
         public virtual Employee Host { get; set; }
 
 
-
         public TimeSpan CheckIn { get; set; } = DateTime.Now.TimeOfDay; // Van zodra een user inlogt
 
        

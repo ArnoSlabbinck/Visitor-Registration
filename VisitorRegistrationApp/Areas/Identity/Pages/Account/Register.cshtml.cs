@@ -24,12 +24,11 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
     [BindProperties]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly ICompanyRespository companyRepository;
         private readonly IEmployeeRespository employeeRepository;
-        private readonly RoleManager<IdentityRole> roleManager;
         private readonly IMapper mapper;
        
 
@@ -37,22 +36,18 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             ICompanyRespository companyRepository,
             IEmployeeRespository employeeRepository, 
-            RoleManager<IdentityRole> roleManager, 
             IMapper mapper
             )
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _logger = logger;
             this.mapper = mapper;
-           
             this.companyRepository = companyRepository;
             this.employeeRepository = employeeRepository;
-            this.roleManager = roleManager;
+           
             MultipleAppointmentsWith = new List<Employee>();
             Input = new InputModel();
             SeedAllCompanies();
@@ -130,16 +125,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
         }
 
 
-        public InputModel GiveDefaultValueToAppointedEmployeeWhenNotGiven(InputModel input)
-        {
-            //Kijk naar welke Company dat geselecteerd is 
-            // Dan pak de eerste value van die Company via InputModel 
-            Input.ApppointmentWith = companyRepository.GetAll().SingleOrDefault(c => c.Name == input.VisitedCompany).Employees.SingleOrDefault();
-            return input;
-         
-
-        }
-
+       
 
         public class InputModel
         {
@@ -183,8 +169,8 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             [Phone]
             public string PhoneNumber { get; set; }
 
-
-
+            
+            public bool UniqueVisitor { get; set; }
 
 
 
@@ -213,9 +199,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-
+        
             //Invullen van Companies 
             
         }
@@ -225,17 +209,15 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 
             Input.ApppointmentWith = Employee;
 
-            //Checken van dat de opgegeven uren wel correct zijn
-            //De startuur mag niet vroeger zijn dan current time checken op de client side
-            // Het minuten verschil moet tussen de 30 minuten zijn  => EndTime - StartTime  > 30
-            //Je kan geen 
+        
             if(Input.VisitedCompany == null)
             {
                 Input.VisitedCompany = GetFirstCompanyInDb().Result;
             }
 
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            
+           
             if(Input.Gender == false)
             {
                 Input.Gender = false;
@@ -244,14 +226,12 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
 
-                
-                if (Input.ApppointmentWith == null)// If there's no employee selected from the list
+                var company = await companyRepository.GetEmployeesFromCompany(Input.VisitedCompany);
+                if (string.IsNullOrWhiteSpace(Input.ApppointmentWith.Name))// If there's no employee selected from the list
                 {
-                     Input = GiveDefaultValueToAppointedEmployeeWhenNotGiven(Input);
-                    
-                     
+                    Input.ApppointmentWith = company.Employees.FirstOrDefault();
                 }
-                var company = await companyRepository.GetCompanyByName(Input.VisitedCompany);
+              
 
                 MultipleAppointmentsWith.Add(Input.ApppointmentWith);
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName,

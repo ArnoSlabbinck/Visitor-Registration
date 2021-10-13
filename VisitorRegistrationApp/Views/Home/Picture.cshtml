@@ -21,7 +21,7 @@
 </div>
 
 
-<div class="container" style="width:100vh">
+<div class="container" >
     <div class="row">
 
         <div id="errorMsg" class="col-12 col-md-6 alert-danger d-none">
@@ -33,12 +33,9 @@
 
             <div id="app-panel" class="app-panel md-content row p-0 m-0">
                 <div id="webcam-container" class="webcam-container  d-none p-0 m-0">
-                    <div class="col-md-6">
+                    <div>
                         <video id="webcam" autoplay playsinline width="200" height="130"></video>
                         <canvas id="canvas" class="d-none"></canvas>
-                    </div>
-                    <div class="col-md-6">
-                       
                         <div class="flash"></div>
                         <audio id="snapSound" src="audio/snap.wav" preload="auto"></audio>
                         <div id="guide-picture">
@@ -57,8 +54,7 @@
 
                         </div>
                     </div>
-
-
+                 
 
                 </div>
                 <div id="cameraControls" class="cameraControls col-12">
