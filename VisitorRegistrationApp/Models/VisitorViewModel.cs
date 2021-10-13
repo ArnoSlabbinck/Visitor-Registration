@@ -68,9 +68,9 @@ namespace VisitorRegistrationApp.Models
             Purpose = new List<SelectListItem>
             {
                      new SelectListItem { Text = "Visitor", Value = "Visitor" },
-                     new SelectListItem { Text = "Making a Delivery", Value = "Delivery" },
-                     new SelectListItem { Text = "Siging Out", Value = "SignOut" },
-                     new SelectListItem { Text = " UpComing", Value = " UpComing"}
+                    // new SelectListItem { Text = "Making a Delivery", Value = "Delivery" },
+                     new SelectListItem { Text = "Siging Out", Value = "SignOut" }
+                     //new SelectListItem { Text = " UpComing", Value = " UpComing"}
             };
 
         }

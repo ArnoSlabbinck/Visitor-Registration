@@ -15,9 +15,9 @@ namespace VisitorRegistrationApp.Areas.Identity
         public void Configure(IWebHostBuilder builder)
         {
             builder.ConfigureServices((context, services) => {
-                services.AddDbContext<VisitorRegistrationAppContext>(options =>
+                services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("VisitorRegistrationAppContextConnection")));
+                        context.Configuration.GetConnectionString("DefaultConnection")));
 
             });
         }

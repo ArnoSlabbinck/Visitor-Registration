@@ -68,10 +68,12 @@ namespace VisitorRegistrationApp.Controllers
             
             return View(visitorViewModel);
         }
-        [Authorize]
+      
         [HttpGet]
         public IActionResult ThankYou()
         {
+            //Get the last in user 
+
             return View();
         }
 
@@ -175,18 +177,14 @@ namespace VisitorRegistrationApp.Controllers
             var password = HttpContext.Session.GetString("Password");
             var imageBase64 = visitorView.Base64Image;
             var user = mapper.Map<ApplicationUser>(visitorView);
-            user.UserName = user.Email;
-            user.NormalizedUserName = user.Email;
-            user.SecurityStamp = HttpContext.Session.GetString("SecurityStamp");
-            user.ConcurrencyStamp = HttpContext.Session.GetString("ConcurrencyStamp");
-            user.TwoFactorEnabled = false;
+          
 
 
             var checkSignedIn = visitorService.SignIn(user, imageBase64, password);
             
             if(checkSignedIn.Result == true)
             {
-                return RedirectToAction("ThankYou ", "Home");
+                return RedirectToAction(nameof(ThankYou));
             }
 
             return RedirectToAction("Index", "Home");

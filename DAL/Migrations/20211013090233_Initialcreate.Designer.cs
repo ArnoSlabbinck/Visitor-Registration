@@ -10,8 +10,8 @@ using VisitorRegistrationApp.Data;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211001090420_validationUpdate")]
-    partial class validationUpdate
+    [Migration("20211013090233_Initialcreate")]
+    partial class Initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,21 @@ namespace DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("ApplicationUserEmployee", b =>
+                {
+                    b.Property<int>("HostsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VisitorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("HostsId", "VisitorId");
+
+                    b.HasIndex("VisitorId");
+
+                    b.ToTable("ApplicationUserEmployee");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -154,7 +169,7 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("Model.Image", b =>
                 {
-                    b.Property<int>("ImageId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -171,7 +186,7 @@ namespace DAL.Migrations
                     b.Property<string>("OriginalFormat")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ImageId");
+                    b.HasKey("Id");
 
                     b.ToTable("Images");
                 });
@@ -187,11 +202,11 @@ namespace DAL.Migrations
                     b.Property<int?>("BuildingId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CheckIn")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("CheckIn")
+                        .HasColumnType("time");
 
-                    b.Property<DateTime?>("CheckOut")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan?>("CheckOut")
+                        .HasColumnType("time");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -262,9 +277,6 @@ namespace DAL.Migrations
                     b.Property<int>("VisitStatus")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan?>("VisitedTime")
-                        .HasColumnType("time");
-
                     b.Property<int?>("VisitingCompanyId")
                         .HasColumnType("int");
 
@@ -301,7 +313,8 @@ namespace DAL.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -346,65 +359,29 @@ namespace DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Address2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("BirthDay")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("HireDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Job")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("PictureId")
                         .HasColumnType("int");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Salary")
                         .HasColumnType("float");
 
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("CompanyId");
 
@@ -413,6 +390,21 @@ namespace DAL.Migrations
                         .HasFilter("[PictureId] IS NOT NULL");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("ApplicationUserEmployee", b =>
+                {
+                    b.HasOne("VisitorRegistrationApp.Data.Entities.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("HostsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VisitorRegistrationApp.Data.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("VisitorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -504,10 +496,6 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("VisitorRegistrationApp.Data.Entities.Employee", b =>
                 {
-                    b.HasOne("VisitorRegistrationApp.Data.ApplicationUser", null)
-                        .WithMany("AppointmenrWith")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("VisitorRegistrationApp.Data.Entities.Company", "Company")
                         .WithMany("Employees")
                         .HasForeignKey("CompanyId");
@@ -528,11 +516,6 @@ namespace DAL.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("VisitorRegistrationApp.Data.ApplicationUser", b =>
-                {
-                    b.Navigation("AppointmenrWith");
                 });
 
             modelBuilder.Entity("VisitorRegistrationApp.Data.Entities.Building", b =>

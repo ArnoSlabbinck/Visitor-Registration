@@ -38,7 +38,7 @@ namespace BL.Services
             ILogger<VisitorService> logger,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager, 
-            ICompanyRespository companyRepository
+            ICompanyRespository company
             )
         {
             this.userManager = userManager;
@@ -48,7 +48,7 @@ namespace BL.Services
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.signInManager = signInManager;
-            this.companyRespository = companyRespository;
+            companyRespository = company;
 
         }
    
@@ -239,13 +239,13 @@ namespace BL.Services
         {
             IdentityResult roleResult = new IdentityResult();
             Image image = new Image() { ImageName = $"{visitor.Fullname}Picture", ImageFile = ImgToByteConverter.Base64StringToByteArray(imageBase64) };
-            visitorRepository.MakeImage(image);
-            visitor.Picture = visitorRepository.GetImage(image.ImageName);
+            visitor.Picture = image;
             try
             {
-            
-                visitor.SecurityStamp = Guid.NewGuid().ToString();
 
+                visitor.SecurityStamp = Guid.NewGuid().ToString();
+                visitor.UserName = visitor.Email;
+                visitor.VisitingCompany = await companyRespository.GetCompanyByName(visitor.VisitingCompany.Name);
                 roleResult =  userManager.CreateAsync(visitor, password).GetAwaiter().GetResult();
                 if (roleResult.Succeeded)
                 {

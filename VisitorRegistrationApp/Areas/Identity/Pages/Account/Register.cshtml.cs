@@ -256,7 +256,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
                 MultipleAppointmentsWith.Add(Input.ApppointmentWith);
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName,
                     LastName = Input.LastName, Gender = Input.Gender, VisitingCompany = company,
-                    Hosts = MultipleAppointmentsWith, PhoneNumber = Input.PhoneNumber
+                    PhoneNumber = Input.PhoneNumber
                 };
                 
                 var visitor = mapper.Map<VisitorViewModel>(user);
@@ -264,9 +264,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 
                 HttpContext.Session.SetObject("CurrentVisitor", visitor );
                 HttpContext.Session.SetString("Password", Input.Password);
-                HttpContext.Session.SetString("Username", Input.Email);
-                HttpContext.Session.SetString("SecurityStamp", user.SecurityStamp);
-                HttpContext.Session.SetString("ConcurrencyStamp", user.ConcurrencyStamp);
+           
                 return RedirectToAction("Picture", "Home");
 
 

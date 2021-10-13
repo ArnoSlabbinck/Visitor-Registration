@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class firstDeploy : Migration
+    public partial class Initialcreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,7 +27,7 @@ namespace DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BuildingPhoto = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -39,15 +39,15 @@ namespace DAL.Migrations
                 name: "Images",
                 columns: table => new
                 {
-                    ImageId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ImageName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    OriginalFormat = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageFile = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                    OriginalFormat = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageFile = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Images", x => x.ImageId);
+                    table.PrimaryKey("PK_Images", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,7 +95,7 @@ namespace DAL.Migrations
                         name: "FK_Companies_Images_PictureId",
                         column: x => x.PictureId,
                         principalTable: "Images",
-                        principalColumn: "ImageId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -108,10 +108,9 @@ namespace DAL.Migrations
                     LastName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Gender = table.Column<bool>(type: "bit", nullable: false),
                     VisitingCompanyId = table.Column<int>(type: "int", nullable: true),
-                    CheckIn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CheckOut = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CheckIn = table.Column<TimeSpan>(type: "time", nullable: false),
+                    CheckOut = table.Column<TimeSpan>(type: "time", nullable: true),
                     VisitDay = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    VisitedTime = table.Column<TimeSpan>(type: "time", nullable: true),
                     VisitStatus = table.Column<int>(type: "int", nullable: false),
                     PictureId = table.Column<int>(type: "int", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -150,7 +149,37 @@ namespace DAL.Migrations
                         name: "FK_AspNetUsers_Images_PictureId",
                         column: x => x.PictureId,
                         principalTable: "Images",
-                        principalColumn: "ImageId",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Job = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Salary = table.Column<double>(type: "float", nullable: false),
+                    PictureId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Employees_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Employees_Images_PictureId",
+                        column: x => x.PictureId,
+                        principalTable: "Images",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -240,50 +269,33 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Employees",
+                name: "ApplicationUserEmployee",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Job = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Salary = table.Column<double>(type: "float", nullable: false),
-                    AtWorkStatus = table.Column<bool>(type: "bit", nullable: false),
-                    HireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PictureId = table.Column<int>(type: "int", nullable: true),
-                    Address1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    HostsId = table.Column<int>(type: "int", nullable: false),
+                    VisitorId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => x.Id);
+                    table.PrimaryKey("PK_ApplicationUserEmployee", x => new { x.HostsId, x.VisitorId });
                     table.ForeignKey(
-                        name: "FK_Employees_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
+                        name: "FK_ApplicationUserEmployee_AspNetUsers_VisitorId",
+                        column: x => x.VisitorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Employees_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
+                        name: "FK_ApplicationUserEmployee_Employees_HostsId",
+                        column: x => x.HostsId,
+                        principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Employees_Images_PictureId",
-                        column: x => x.PictureId,
-                        principalTable: "Images",
-                        principalColumn: "ImageId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserEmployee_VisitorId",
+                table: "ApplicationUserEmployee",
+                column: "VisitorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -354,11 +366,6 @@ namespace DAL.Migrations
                 filter: "[PictureId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_ApplicationUserId",
-                table: "Employees",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Employees_CompanyId",
                 table: "Employees",
                 column: "CompanyId");
@@ -373,6 +380,9 @@ namespace DAL.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ApplicationUserEmployee");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
