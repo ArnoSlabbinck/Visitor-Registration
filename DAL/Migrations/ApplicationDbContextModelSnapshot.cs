@@ -19,21 +19,6 @@ namespace DAL.Migrations
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ApplicationUserEmployee", b =>
-                {
-                    b.Property<int>("HostsId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("VisitorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("HostsId", "VisitorId");
-
-                    b.HasIndex("VisitorId");
-
-                    b.ToTable("ApplicationUserEmployee");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -225,6 +210,9 @@ namespace DAL.Migrations
                     b.Property<bool>("Gender")
                         .HasColumnType("bit");
 
+                    b.Property<int>("HostId")
+                        .HasColumnType("int");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -281,6 +269,8 @@ namespace DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BuildingId");
+
+                    b.HasIndex("HostId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -390,21 +380,6 @@ namespace DAL.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("ApplicationUserEmployee", b =>
-                {
-                    b.HasOne("VisitorRegistrationApp.Data.Entities.Employee", null)
-                        .WithMany()
-                        .HasForeignKey("HostsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VisitorRegistrationApp.Data.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("VisitorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -462,6 +437,12 @@ namespace DAL.Migrations
                         .WithMany("Visitors")
                         .HasForeignKey("BuildingId");
 
+                    b.HasOne("VisitorRegistrationApp.Data.Entities.Employee", "Host")
+                        .WithMany("Visitor")
+                        .HasForeignKey("HostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Model.Image", "Picture")
                         .WithOne("ApplicationUser")
                         .HasForeignKey("VisitorRegistrationApp.Data.ApplicationUser", "PictureId");
@@ -469,6 +450,8 @@ namespace DAL.Migrations
                     b.HasOne("VisitorRegistrationApp.Data.Entities.Company", "VisitingCompany")
                         .WithMany()
                         .HasForeignKey("VisitingCompanyId");
+
+                    b.Navigation("Host");
 
                     b.Navigation("Picture");
 
@@ -526,6 +509,11 @@ namespace DAL.Migrations
             modelBuilder.Entity("VisitorRegistrationApp.Data.Entities.Company", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("VisitorRegistrationApp.Data.Entities.Employee", b =>
+                {
+                    b.Navigation("Visitor");
                 });
 #pragma warning restore 612, 618
         }

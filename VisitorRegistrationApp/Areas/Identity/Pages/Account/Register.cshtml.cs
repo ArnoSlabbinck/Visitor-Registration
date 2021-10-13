@@ -264,6 +264,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 
                 HttpContext.Session.SetObject("CurrentVisitor", visitor );
                 HttpContext.Session.SetString("Password", Input.Password);
+                HttpContext.Session.SetString("Employee", Input.ApppointmentWith.Name);
            
                 return RedirectToAction("Picture", "Home");
 

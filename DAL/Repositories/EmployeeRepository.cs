@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 
 namespace VisitorRegistrationApp.Data.Repository
@@ -16,6 +17,11 @@ namespace VisitorRegistrationApp.Data.Repository
             this.logger = logger;
         }
 
+        public async Task<Employee> GetEmployeeByName(string name)
+        {
+            return applicationDbContext.Employees.Where(e => e.Name == name).FirstOrDefault();
+        }
+
         public IQueryable<Employee> GetEmployeesWithCompanies()
         {
             return applicationDbContext.Employees.Include(c => c.Company);
@@ -25,5 +31,7 @@ namespace VisitorRegistrationApp.Data.Repository
     public interface IEmployeeRespository : IRepository<Employee>
     {
         IQueryable<Employee> GetEmployeesWithCompanies();
+
+        Task<Employee> GetEmployeeByName(string name);
     }
 }

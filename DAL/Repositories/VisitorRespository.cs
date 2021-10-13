@@ -48,7 +48,7 @@ namespace DAL.Repositories
 
         public IQueryable<ApplicationUser> GetVisitorsWithCompanyAndHots()
         {
-            return applicationDbContext.Users.Include(c => c.VisitingCompany).Include(e => e.Hosts).AsQueryable();
+            return applicationDbContext.Users.Include(c => c.VisitingCompany).Include(e => e.Host).AsQueryable();
         }
 
         public void MakeImage(Image image)
@@ -66,7 +66,7 @@ namespace DAL.Repositories
             return applicationDbContext.Users
                 .Where(u => u.FirstName.ToLower() == firstname && u.LastName.ToLower() == lastname)
                 .Include(c => c.VisitingCompany)
-                .Include(e => e.Hosts)
+                .Include(e => e.Host)
                 .FirstOrDefault();
         }
 

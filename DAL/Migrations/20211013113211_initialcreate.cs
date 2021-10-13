@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class Initialcreate : Migration
+    public partial class initialcreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -100,6 +100,36 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Job = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Salary = table.Column<double>(type: "float", nullable: false),
+                    PictureId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Employees_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Employees_Images_PictureId",
+                        column: x => x.PictureId,
+                        principalTable: "Images",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -108,6 +138,7 @@ namespace DAL.Migrations
                     LastName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Gender = table.Column<bool>(type: "bit", nullable: false),
                     VisitingCompanyId = table.Column<int>(type: "int", nullable: true),
+                    HostId = table.Column<int>(type: "int", nullable: false),
                     CheckIn = table.Column<TimeSpan>(type: "time", nullable: false),
                     CheckOut = table.Column<TimeSpan>(type: "time", nullable: true),
                     VisitDay = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -146,37 +177,13 @@ namespace DAL.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_AspNetUsers_Employees_HostId",
+                        column: x => x.HostId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_AspNetUsers_Images_PictureId",
-                        column: x => x.PictureId,
-                        principalTable: "Images",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Employees",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Job = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Salary = table.Column<double>(type: "float", nullable: false),
-                    PictureId = table.Column<int>(type: "int", nullable: true),
-                    CompanyId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Employees", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Employees_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Employees_Images_PictureId",
                         column: x => x.PictureId,
                         principalTable: "Images",
                         principalColumn: "Id",
@@ -268,35 +275,6 @@ namespace DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "ApplicationUserEmployee",
-                columns: table => new
-                {
-                    HostsId = table.Column<int>(type: "int", nullable: false),
-                    VisitorId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApplicationUserEmployee", x => new { x.HostsId, x.VisitorId });
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserEmployee_AspNetUsers_VisitorId",
-                        column: x => x.VisitorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserEmployee_Employees_HostsId",
-                        column: x => x.HostsId,
-                        principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ApplicationUserEmployee_VisitorId",
-                table: "ApplicationUserEmployee",
-                column: "VisitorId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -333,6 +311,11 @@ namespace DAL.Migrations
                 name: "IX_AspNetUsers_BuildingId",
                 table: "AspNetUsers",
                 column: "BuildingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_HostId",
+                table: "AspNetUsers",
+                column: "HostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_PictureId",
@@ -381,9 +364,6 @@ namespace DAL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ApplicationUserEmployee");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -399,13 +379,13 @@ namespace DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Employees");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Companies");

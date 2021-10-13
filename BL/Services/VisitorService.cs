@@ -28,6 +28,7 @@ namespace BL.Services
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly ICompanyRespository companyRespository;
+        private readonly IEmployeeRespository employeeRespository;
         private IList<string> Errors;
 
 
@@ -38,7 +39,8 @@ namespace BL.Services
             ILogger<VisitorService> logger,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager, 
-            ICompanyRespository company
+            ICompanyRespository company, 
+            IEmployeeRespository employeeRespository
             )
         {
             this.userManager = userManager;
@@ -49,6 +51,7 @@ namespace BL.Services
             this.roleManager = roleManager;
             this.signInManager = signInManager;
             companyRespository = company;
+            this.employeeRespository = employeeRespository;
 
         }
    
@@ -57,7 +60,7 @@ namespace BL.Services
             //Ophalen van alle
             searchInput = searchInput.Trim().ToLower();
             List<ApplicationUser> AllUsers = await userManager.Users
-                .Include(c => c.VisitingCompany).Include(e => e.Hosts).ToListAsync();
+                .Include(c => c.VisitingCompany).Include(e => e.Host).ToListAsync();
 
             List<ApplicationUser> SearchedVisitorUsers = new List<ApplicationUser>();
             // Haal de users eruit die niet behoren bij searchInput
@@ -235,7 +238,7 @@ namespace BL.Services
             return true;
         }
 
-        public async Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password)
+        public async Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password, string employeeName)
         {
             IdentityResult roleResult = new IdentityResult();
             Image image = new Image() { ImageName = $"{visitor.Fullname}Picture", ImageFile = ImgToByteConverter.Base64StringToByteArray(imageBase64) };
@@ -246,6 +249,8 @@ namespace BL.Services
                 visitor.SecurityStamp = Guid.NewGuid().ToString();
                 visitor.UserName = visitor.Email;
                 visitor.VisitingCompany = await companyRespository.GetCompanyByName(visitor.VisitingCompany.Name);
+                visitor.Host = await employeeRespository.GetEmployeeByName(employeeName);
+
                 roleResult =  userManager.CreateAsync(visitor, password).GetAwaiter().GetResult();
                 if (roleResult.Succeeded)
                 {
@@ -297,6 +302,11 @@ namespace BL.Services
             return visitorRepository.GetVisitorsWithCompanyAndHots().Where(u => u.VisitStatus == VisitStatus.CheckOut);
 
         }
+
+        public async Task<ApplicationUser> GetLatestVisitor()
+        {
+            return await userManager.Users.OrderByDescending(u => u.CheckIn).FirstOrDefaultAsync();
+        }
     }
 
     public interface IVisitorService
@@ -321,8 +331,9 @@ namespace BL.Services
 
         bool Delete(string userId);
         public List<ApplicationUser> DeleteAllCheckOutVisitorsFromList(List<ApplicationUser> visitors);
-        Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password);
+        Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password, string employeeName);
 
+        Task<ApplicationUser> GetLatestVisitor();
 
         Task<IEnumerable<ApplicationUser>> GetSignedInVisitors();
         Task<IEnumerable<ApplicationUser>> GetSignedOutVisitors();

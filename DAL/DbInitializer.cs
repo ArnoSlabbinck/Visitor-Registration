@@ -31,7 +31,16 @@ namespace DAL
             //Invullen van Companies 
             var Companies = new Company[]
             {
-                new Company { Building = building, Name = "Allphi"},
+                new Company { Building = building, Name = "Allphi", Employees =  new Employee[]
+                    {
+                        new Employee { Name = "Arno Slabbinck", Job = "Junior Developer",  BirthDay = new DateTime(1994, 09, 29), Salary = 2000  },
+                        new Employee { Name = "Joeri Ceulemans", Job = "Junior Developer",  BirthDay = new DateTime(1985, 01, 01), Salary = 2000  },
+                        new Employee { Name = "Roel VaneerdeWegh", Job = "CEO",  BirthDay = new DateTime(1980, 01, 01),  Salary = 2000  },
+                        new Employee { Name = "Dorus Schauwaegers", Job = "CFO",  BirthDay = new DateTime(1985, 01, 01),  Salary = 2000  },
+                        new Employee { Name = "Angelo Dajaeghere", Job = "RUM Gent",  BirthDay = new DateTime(1980, 01, 01), Salary = 2000  },
+                        new Employee { Name = "Wim Simons", Job = "RUM Westerlo",  BirthDay = new DateTime(1980, 01, 01),  Salary = 2000  }
+                    }
+                },
                 new Company { Building = building, Name = "La Source"},
                 new Company { Building = building, Name = "Agidens"},
                 new Company { Building = building, Name = "Queast"}
@@ -43,22 +52,8 @@ namespace DAL
             }
             //Invullen van Employees$
             context.SaveChanges();
-            var Employees = new Employee[]
-            {
-                new Employee { Name = "Arno Slabbinck", Job = "Junior Developer",  BirthDay = new DateTime(1994, 09, 29), Company = Companies[0], Salary = 2000  },
-                new Employee { Name = "Joeri Ceulemans", Job = "Junior Developer",  BirthDay = new DateTime(1985, 01, 01), Company = Companies[0], Salary = 2000  },
-                new Employee { Name = "Roel VaneerdeWegh", Job = "CEO",  BirthDay = new DateTime(1980, 01, 01), Company = Companies[0],  Salary = 2000  },
-                new Employee { Name = "Dorus Schauwaegers", Job = "CFO",  BirthDay = new DateTime(1985, 01, 01), Company = Companies[0],  Salary = 2000  },
-                new Employee { Name = "Angelo Dajaeghere", Job = "RUM Gent",  BirthDay = new DateTime(1980, 01, 01), Company = Companies[0], Salary = 2000  },
-                new Employee { Name = "Wim Simons", Job = "RUM Westerlo",  BirthDay = new DateTime(1980, 01, 01), Company = Companies[0],  Salary = 2000  }
-            };
+           
 
-
-            foreach(var employee in Employees)
-            {
-                context.Employees.Add(employee);
-
-            }
 
             //Add van administrator
             var admin = new ApplicationUser

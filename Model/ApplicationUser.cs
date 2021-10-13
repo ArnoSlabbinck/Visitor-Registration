@@ -14,11 +14,7 @@ namespace VisitorRegistrationApp.Data
 {
     public class ApplicationUser : Microsoft.AspNetCore.Identity.IdentityUser
     {
-        public ApplicationUser()
-        {
-            Hosts = new List<Employee>();
-        }
-        
+       
         [Required(AllowEmptyStrings = false, ErrorMessage = "Please Provide Last Name")]
         [StringLength(20, MinimumLength = 5, ErrorMessage = "First Name Should be min 5 and max 20 length")]
         public string FirstName { get; set; }
@@ -35,7 +31,7 @@ namespace VisitorRegistrationApp.Data
         public virtual Company VisitingCompany { get; set; }
         [Required(ErrorMessage = "A visitor needs to have an appointment with somebody in the building")]
 
-        public virtual List<Employee> Hosts { get; set; }
+        public virtual Employee Host { get; set; }
 
 
 

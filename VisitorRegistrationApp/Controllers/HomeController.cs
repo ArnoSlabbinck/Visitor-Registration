@@ -62,26 +62,25 @@ namespace VisitorRegistrationApp.Controllers
         }
         public IActionResult Service()
         {
-            VisitorViewModel visitorViewModel = new VisitorViewModel();
+            VisitorViewModel visitorView = new VisitorViewModel();
 
-            
-            
-            return View(visitorViewModel);
+            return View(visitorView);
         }
       
         [HttpGet]
-        public IActionResult ThankYou()
+        public async Task<IActionResult> ThankYou()
         {
-            //Get the last in user 
+            var visitor = await visitorService.GetLatestVisitor();
+            var visitorView = mapper.Map<VisitorViewModel>(visitor);
 
-            return View();
+            return View(visitorView);
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public IActionResult Service( [FromForm] VisitorViewModel visitorViewModel)
         {
-
+            //Dictonary maken met keuzes
             switch (visitorViewModel.ChosenPurpose)
             {
                 case "Visitor":
@@ -175,12 +174,12 @@ namespace VisitorRegistrationApp.Controllers
             
             var visitorView = HttpContext.Session.GetObject<VisitorViewModel>("CurrentVisitor");
             var password = HttpContext.Session.GetString("Password");
+            var employee = HttpContext.Session.GetString("Employee");
+
             var imageBase64 = visitorView.Base64Image;
             var user = mapper.Map<ApplicationUser>(visitorView);
           
-
-
-            var checkSignedIn = visitorService.SignIn(user, imageBase64, password);
+            var checkSignedIn = visitorService.SignIn(user, imageBase64, password, employee);
             
             if(checkSignedIn.Result == true)
             {
