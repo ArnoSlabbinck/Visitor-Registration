@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
+using VisitorRegistrationApp.Data.Helper;
 using VisitorRegistrationApp.Data.Repository;
 using VisitorRegistrationApp.Models;
 
@@ -113,10 +114,16 @@ namespace VisitorRegistrationApp.Controllers
         }
 
         // GET: EmployeesController/Edit/5
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit(int? id)
         {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var employee = await employeeService.GetEmployeeWithCompanyAndImage((int)id);
+            var employeeView = mapper.Map<EmployeeViewModel>(employee);
 
-            return View();
+            return View(employeeView);
         }
 
         // POST: EmployeesController/Edit/5
@@ -127,8 +134,9 @@ namespace VisitorRegistrationApp.Controllers
             try
             {
                 var employee = mapper.Map<Employee>(employeeView);
+                byte[] ImageFile = ImageConverter.fileToByteArray(employeeView.file);
 
-                employeeService.Update(employee); 
+                employeeService.Update(employee, ImageFile); 
 
                 return RedirectToAction(nameof(Index));
             }

@@ -1,7 +1,9 @@
 ﻿
+using DAL.Repositories;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace BL.Services
         //Maken van validation rules en checken daar op via Guard 
         private readonly IEmployeeRespository employeeRespository;
         private readonly ICompanyRespository companyRespository;
+        private readonly IImageRespository imageRespository;
         private readonly IValidator<Employee> validator;
         private readonly ILogger<EmployeeService> logger;
         private IList<string> Errors;
@@ -27,12 +30,14 @@ namespace BL.Services
         public EmployeeService(IEmployeeRespository employee, 
             ICompanyRespository companyRespository, 
             IValidator<Employee> validator, 
-            ILogger<EmployeeService> logger)
+            ILogger<EmployeeService> logger, 
+            IImageRespository imageRespository)
         {
             employeeRespository = employee;
             this.companyRespository = companyRespository;
             this.validator = validator;
             this.logger = logger;
+            this.imageRespository = imageRespository;
             
         }
 
@@ -93,9 +98,16 @@ namespace BL.Services
             
         }
 
-        public async Task<IList<string>> Update(Employee employee)
+        public async Task<Employee> GetEmployeeWithCompanyAndImage(int CompanyId)
         {
+            return await employeeRespository.GetEmployeeWithCompanyAndImage(CompanyId);
+        }
 
+        public async Task<IList<string>> Update(Employee employee, byte[] ImageFile)
+        {
+            Image image = new Image() { ImageFile = ImageFile, ImageName = $"{employee.Name}Image" };
+            Image addedImage = await imageRespository.Add(image);
+            employee.PictureId = addedImage.Id;
             ValidationResult validationResult = validator.Validate(employee);
             Errors = Guard.AgainstErrors(validationResult);
             if(Errors.Any() == false)
@@ -113,13 +125,15 @@ namespace BL.Services
 
         Task<Employee> Get(int Id);
 
-        Task<IList<string>> Update(Employee employee);
+        Task<IList<string>> Update(Employee employee, byte[] ImageFile);
 
         Task<IList<string>> Add(Employee employee);
 
         Task<bool> Delete(int id);
 
         Task<IEnumerable<Employee>> GetEmployeesFromCompany(int id);
+
+        Task<Employee> GetEmployeeWithCompanyAndImage(int CompanyId);
 
         
     }

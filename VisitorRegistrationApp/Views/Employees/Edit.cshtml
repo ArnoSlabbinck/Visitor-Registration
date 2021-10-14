@@ -21,16 +21,16 @@
                         <h4 class="text-right">Company Settings</h4>
                     </div>
                     <div class="row mt-2 form-group">
-                        <div class="col-md-6"><label asp-for="Name" class="labels">Change Name: </label><input asp-for="Name" type="text" class="form-control" placeholder="Company Name" value=""> <span asp-validation-for="Name" class="text-danger"></span></div>
+                        <div class="col-md-6"><label asp-for="Name" class="labels">Change Name: </label><input asp-for="Name" type="text" class="form-control" placeholder="Company " value="@Model.Name"> <span asp-validation-for="Name" class="text-danger"></span></div>
                     </div>
                     <div class="row mt-3 form-group">
-                        <div class="col-md-12"><label asp-for="BirthDay " class="labels">Birthday </label><input asp-for="BirthDay" type="date" class="form-control" placeholder="Enter Birthday" value=""></div>
+                        <div class="col-md-12"><label asp-for="BirthDay " class="labels">Birthday </label><input asp-for="BirthDay" type="date" class="form-control" placeholder="Enter Birthday" value="@Model.BirthDay"></div>
                     </div>
                     <div class="row mt-3 form-group">
-                        <div class="col-md-12"><label asp-for="Job" class="labels">Location </label><input asp-for="Job" type="text" class="form-control" placeholder="Enter Job" value=""></div>
+                        <div class="col-md-12"><label asp-for="Job" class="labels">Location </label><input asp-for="Job" type="text" class="form-control" placeholder="Enter Job" value="@Model.Job"></div>
                     </div>
                     <div class="row mt-3 form-group">
-                        <div class="col-md-12"><label asp-for="Salary" class="labels">Type </label><input asp-for="Salary" type="text" class="form-control" placeholder="Enter Type" value=""></div>
+                        <div class="col-md-12"><label asp-for="Salary" class="labels">Type </label><input asp-for="Salary" type="text" class="form-control" placeholder="Enter Salary" value="@Model.Salary"></div>
                     </div>
                     <div class="row mt-3 form-group">
                         <div class="col-md-6"><label asp-for="file" class="labels"> </label><input asp-for="file" class="form-control" placeholder="Image" value=""> <span asp-validation-for="file" class="text-danger"></span></div>

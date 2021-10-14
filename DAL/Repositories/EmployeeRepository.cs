@@ -26,6 +26,13 @@ namespace VisitorRegistrationApp.Data.Repository
         {
             return applicationDbContext.Employees.Include(c => c.Company);
         }
+
+        public async Task<Employee> GetEmployeeWithCompanyAndImage(int CompanyId)
+        {
+            return await applicationDbContext.Employees.Include(c => c.Company)
+                .ThenInclude(i => i.Picture)
+                .Where(x => x.Company.Id == CompanyId).FirstAsync();
+        }
     }
 
     public interface IEmployeeRespository : IRepository<Employee>
@@ -33,5 +40,7 @@ namespace VisitorRegistrationApp.Data.Repository
         IQueryable<Employee> GetEmployeesWithCompanies();
 
         Task<Employee> GetEmployeeByName(string name);
+
+        Task<Employee> GetEmployeeWithCompanyAndImage(int CompanyId);
     }
 }
