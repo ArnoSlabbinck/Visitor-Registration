@@ -27,11 +27,10 @@ namespace VisitorRegistrationApp.Data.Repository
             return applicationDbContext.Employees.Include(c => c.Company);
         }
 
-        public async Task<Employee> GetEmployeeWithCompanyAndImage(int CompanyId)
+        public async Task<Employee> GetEmployeeWithCompany(int employeeId)
         {
             return await applicationDbContext.Employees.Include(c => c.Company)
-                .ThenInclude(i => i.Picture)
-                .Where(x => x.Company.Id == CompanyId).FirstAsync();
+                .Where(x => x.Id == employeeId).FirstAsync();
         }
     }
 
@@ -41,6 +40,6 @@ namespace VisitorRegistrationApp.Data.Repository
 
         Task<Employee> GetEmployeeByName(string name);
 
-        Task<Employee> GetEmployeeWithCompanyAndImage(int CompanyId);
+        Task<Employee> GetEmployeeWithCompany(int employeeId);
     }
 }

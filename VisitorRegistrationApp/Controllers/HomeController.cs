@@ -175,11 +175,12 @@ namespace VisitorRegistrationApp.Controllers
             var visitorView = HttpContext.Session.GetObject<VisitorViewModel>("CurrentVisitor");
             var password = HttpContext.Session.GetString("Password");
             var employee = HttpContext.Session.GetString("Employee");
+            var company = HttpContext.Session.GetString("Company");
 
             var imageBase64 = visitorView.Base64Image;
             var user = mapper.Map<ApplicationUser>(visitorView);
           
-            var checkSignedIn = visitorService.SignIn(user, imageBase64, password, employee);
+            var checkSignedIn = visitorService.SignIn(user, imageBase64, password, employee, company);
             
             if(checkSignedIn.Result == true)
             {

@@ -16,7 +16,7 @@ namespace VisitorRegistrationApp.Models
         public VisitorViewModel()
         {
             SetPurposes();
-            Hosts = new List<EmployeeViewModel>();
+           
           
         }
         [Required(ErrorMessage = "You need to give a firstname")]
@@ -33,7 +33,7 @@ namespace VisitorRegistrationApp.Models
 
         public string CompanyName { get; set; } 
 
-        public virtual ICollection<EmployeeViewModel> Hosts { get; set; }
+        public virtual EmployeeViewModel Host { get; set; }
 
         [Required(ErrorMessage = "A visitor needs to have a checkin")]
         public VisitStatus VisitStatus { get; set; }

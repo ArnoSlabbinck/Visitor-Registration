@@ -40,7 +40,7 @@ namespace VisitorRegistrationApp.Controllers
         }
 
         // GET: EmployeesController
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> Index(int? id) // CompanyId
         {
             IEnumerable<EmployeeViewModel> employeeViews;
             if (id == null)
@@ -50,7 +50,7 @@ namespace VisitorRegistrationApp.Controllers
             TempData["Id"] = (int)id;
 
             var results = await employeeService.GetEmployeesFromCompany((int)id);
-            if (results.Any() == false)
+            if (results.Count() == 0)
                 return View();
 
             ViewBag.Index = (int)id;
@@ -61,14 +61,17 @@ namespace VisitorRegistrationApp.Controllers
         }
 
         // GET: EmployeesController/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? Id)
         {
-            if(id == null)
+            if(Id == null)
             {
                 return NotFound();
             }
-            var employee = await employeeService.Get((int)id);
+            var employee = await employeeService.GetEmployeeWithCompanyAndImage((int)Id);
             var employeeView = mapper.Map<EmployeeViewModel>(employee);
+            ViewBag.Index = (int)TempData["Id"];
+            if (employee.Picture != null)
+                employeeView.Base64Image = ImgToByteConverter.byteArrayToImage(employee.Picture.ImageFile);
             return View(employeeView);
         }
 
@@ -114,31 +117,34 @@ namespace VisitorRegistrationApp.Controllers
         }
 
         // GET: EmployeesController/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? Id )
         {
-            if(id == null)
+            if(Id == null)
             {
                 return NotFound();
             }
-            var employee = await employeeService.GetEmployeeWithCompanyAndImage((int)id);
+            var employee = await employeeService.GetEmployeeWithCompanyAndImage((int)Id);
             var employeeView = mapper.Map<EmployeeViewModel>(employee);
-
+            ViewBag.Index = (int)TempData["Id"]; // Veranderen naar CompanyId
+            TempData["Id"] = ViewBag.Index;
             return View(employeeView);
         }
 
         // POST: EmployeesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, EmployeeViewModel employeeView)
+        public IActionResult Edit(EmployeeViewModel employeeView)
         {
             try
             {
                 var employee = mapper.Map<Employee>(employeeView);
                 byte[] ImageFile = ImageConverter.fileToByteArray(employeeView.file);
 
-                employeeService.Update(employee, ImageFile); 
+                employeeService.Update(employee, ImageFile);
+                var id = (int)TempData["Id"];
 
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction(nameof(Index), new { id = id });
             }
             catch
             {
@@ -147,30 +153,31 @@ namespace VisitorRegistrationApp.Controllers
         }
 
         // GET: EmployeesController/Delete/5
-        public ActionResult Delete(int? id)
+        public async Task<ActionResult> Delete(int? Id)
         {
-            if (id == null)
+            if (Id == null)
             {
                 return BadRequest();
             }
-
-            var employee = mapper.Map<EmployeeViewModel>(employeeService.Get((int)id).Result);
-            return View(employee);
+            var employee = await employeeService.Get((int)Id);
+            var employeeView = mapper.Map<EmployeeViewModel>(employee);
+            ViewBag.Index = (int)Id;
+            return View(employeeView);
         }
 
         // POST: EmployeesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int? id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int? Id, IFormCollection collection)
         {
             try
             {
-                if(id == null)
+                if(Id == null)
                 {
                     return NotFound();
                 }
 
-                bool deletedEmployee  = await employeeService.Delete((int)id);
+                bool deletedEmployee  = await employeeService.Delete((int)Id);
 
  
                 // Als de employee gedelete is terug opvragen van alle employees van de company

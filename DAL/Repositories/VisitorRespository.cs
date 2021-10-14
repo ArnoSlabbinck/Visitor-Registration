@@ -46,9 +46,9 @@ namespace DAL.Repositories
             return applicationDbContext.Users.Where(u => u.FirstName.ToLower() == firstname && u.LastName.ToLower() == lastname).Include(i => i.Picture).Where(image => image.PictureId == id).FirstOrDefault();
         }
 
-        public IQueryable<ApplicationUser> GetVisitorsWithCompanyAndHots()
+        public IEnumerable<ApplicationUser> GetVisitorsWithCompanyAndHots()
         {
-            return applicationDbContext.Users.Include(c => c.VisitingCompany).Include(e => e.Host).AsQueryable();
+            return applicationDbContext.Users.Include(c => c.VisitingCompany).Include(e => e.Host);
         }
 
         public void MakeImage(Image image)
@@ -84,7 +84,7 @@ namespace DAL.Repositories
 
         ApplicationUser GetUserByNameWithImage(string firstname, string lastname, int id);
 
-        IQueryable<ApplicationUser> GetVisitorsWithCompanyAndHots();
+        IEnumerable<ApplicationUser> GetVisitorsWithCompanyAndHots();
 
         void MakeImage(Image image);
 

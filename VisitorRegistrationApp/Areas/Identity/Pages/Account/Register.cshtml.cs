@@ -227,7 +227,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
             {
 
                 var company = await companyRepository.GetEmployeesFromCompany(Input.VisitedCompany);
-                if (string.IsNullOrWhiteSpace(Input.ApppointmentWith.Name))// If there's no employee selected from the list
+                if (string.IsNullOrWhiteSpace(Input.ApppointmentWith?.Name))// If there's no employee selected from the list
                 {
                     Input.ApppointmentWith = company.Employees.FirstOrDefault();
                 }
@@ -235,7 +235,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
 
                 MultipleAppointmentsWith.Add(Input.ApppointmentWith);
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName,
-                    LastName = Input.LastName, Gender = Input.Gender, VisitingCompany = company,
+                    LastName = Input.LastName, Gender = Input.Gender,
                     PhoneNumber = Input.PhoneNumber
                 };
                 
@@ -245,7 +245,7 @@ namespace VisitorRegistrationApp.Areas.Identity.Pages.Account
                 HttpContext.Session.SetObject("CurrentVisitor", visitor );
                 HttpContext.Session.SetString("Password", Input.Password);
                 HttpContext.Session.SetString("Employee", Input.ApppointmentWith.Name);
-           
+                HttpContext.Session.SetString("Company", Input.VisitedCompany);
                 return RedirectToAction("Picture", "Home");
 
 

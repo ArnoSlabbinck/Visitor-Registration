@@ -70,11 +70,11 @@ namespace BL.Services
 
         }
 
-        public Task<Employee> Get(int Id)
+        public Task<Employee> Get(int employeeId)
         {
-            Errors = new List<string>() { Guard.AgainstNull(Id, nameof(Id)) };
+            Errors = new List<string>() { Guard.AgainstNull(employeeId, nameof(employeeId)) };
             if (Errors.All(x => string.IsNullOrEmpty(x)) == true)
-                return employeeRespository.Get(Id);
+                return employeeRespository.GetEmployeeWithCompany(employeeId);
             return null;
         }
 
@@ -98,9 +98,13 @@ namespace BL.Services
             
         }
 
-        public async Task<Employee> GetEmployeeWithCompanyAndImage(int CompanyId)
+        public async Task<Employee> GetEmployeeWithCompanyAndImage(int employeeId)
         {
-            return await employeeRespository.GetEmployeeWithCompanyAndImage(CompanyId);
+
+            var employee =  await employeeRespository.GetEmployeeWithCompany(employeeId);
+            if(employee.PictureId != null)
+                employee.Picture = await imageRespository.Get((int)employee.PictureId);
+            return employee;
         }
 
         public async Task<IList<string>> Update(Employee employee, byte[] ImageFile)
@@ -133,7 +137,7 @@ namespace BL.Services
 
         Task<IEnumerable<Employee>> GetEmployeesFromCompany(int id);
 
-        Task<Employee> GetEmployeeWithCompanyAndImage(int CompanyId);
+        Task<Employee> GetEmployeeWithCompanyAndImage(int employeeId);
 
         
     }

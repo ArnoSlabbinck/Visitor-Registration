@@ -238,7 +238,7 @@ namespace BL.Services
             return true;
         }
 
-        public async Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password, string employeeName)
+        public async Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password, string employeeName, string CompanyName)
         {
             IdentityResult roleResult = new IdentityResult();
             Image image = new Image() { ImageName = $"{visitor.Fullname}Picture", ImageFile = ImgToByteConverter.Base64StringToByteArray(imageBase64) };
@@ -248,7 +248,7 @@ namespace BL.Services
 
                 visitor.SecurityStamp = Guid.NewGuid().ToString();
                 visitor.UserName = visitor.Email;
-                visitor.VisitingCompany = await companyRespository.GetCompanyByName(visitor.VisitingCompany.Name);
+                visitor.VisitingCompany = await companyRespository.GetCompanyByName(CompanyName);
                 visitor.Host = await employeeRespository.GetEmployeeByName(employeeName);
 
                 roleResult =  userManager.CreateAsync(visitor, password).GetAwaiter().GetResult();
@@ -292,7 +292,8 @@ namespace BL.Services
             // Houd vullen vna het ordenen van de logica moet in de service laag gebeuren
             // Het ordenen, filteren En andere logica moet ik terug vinden in de service laag
 
-            return  visitorRepository.GetVisitorsWithCompanyAndHots().Where(u => u.VisitStatus == VisitStatus.CheckIn);
+            return visitorRepository.GetVisitorsWithCompanyAndHots().Where(u => u.VisitStatus == VisitStatus.CheckIn);
+
            
             
         }
@@ -331,7 +332,7 @@ namespace BL.Services
 
         bool Delete(string userId);
         public List<ApplicationUser> FilterCheckOutVisitors(List<ApplicationUser> visitors);
-        Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password, string employeeName);
+        Task<bool> SignIn(ApplicationUser visitor, string imageBase64, string password, string employeeName, string companyName);
 
         Task<ApplicationUser> GetLatestVisitor();
 

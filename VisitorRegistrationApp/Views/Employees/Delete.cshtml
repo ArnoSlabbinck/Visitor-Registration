@@ -15,6 +15,6 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a class="btn btn-link" style="text-decoration:none" asp-action="Index">Back to List</a>
+        <a class="btn btn-link" style="text-decoration:none" asp-action="Index" asp-route-id="@ViewBag.Index">Back to List</a>
     </form>
 </div>

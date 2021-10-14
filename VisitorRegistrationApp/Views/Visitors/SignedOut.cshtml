@@ -20,19 +20,7 @@
 else
 {
 
-    <form method="post" asp-action="Search">
-        <div class="form-group">
-            <div class="input-group">
-                <input type="search" name="searchTerm" class="form-control" value="" />
-                <span class="input-group-btn">
-                    <button class="btn btn-lg">
-                        <i class="glyphicon glyphicon-search"></i>
-                    </button>
-                </span>
-            </div>
-        </div>
-    </form>
-
+   
     <table class="table">
         <thead>
             <tr>
@@ -42,7 +30,6 @@ else
                 </th>
                 <th>Visiting Company</th>
                 <th>Check out Time</th>
-                <th>People</th>
                 <th>To Meet</th>
             </tr>
         </thead>
@@ -56,14 +43,8 @@ else
                     </td>
                     <td>@item.VisitingCompany.Name</td>
                     <td>@item.CheckOut </td>
-                    <td>@item.Hosts?.Count() </td>
-                    <td>>@item.Hosts?.ToList().First().Name </td>
-                    <td>
-                        <a class="btn btn-sm" asp-action="Edit" asp-route-name="@item.Fullname"><i class="glyphicon glyphicon-edit"></i></a>
-                        <a class="btn btn-sm" asp-action="Details" asp-route-name="@item.Fullname"><i class="glyphicon glyphicon-zoom-in"></i></a>
-                        <a class="btn btn-sm" asp-action="Delete" asp-route-name="@item.Fullname"><i class="glyphicon glyphicon-trash"></i></a>
-                        <a class="btn btn-sm" asp-controller="Employees" asp-action="Index" asp-route-name="@item.Fullname"><i class="glyphicon glyphicon-user"></i></a>
-                    </td>
+                    <td>>@item.Host.Name </td>
+                   
                 </tr>
             }
         </tbody>

@@ -97,7 +97,7 @@ namespace VisitorRegistrationApp.Controllers
         public IActionResult SignedIn()
         {
             // In de service laag moet de Query gevraagd worden 
-            var visitors =  visitorService.GetSignedInVisitors();
+            var visitors = visitorService.GetSignedInVisitors();
             var visitorsView = mapper.Map<IEnumerable<VisitorViewModel>>(visitors);
 
 
@@ -108,7 +108,7 @@ namespace VisitorRegistrationApp.Controllers
 
         public IActionResult SignedOut()
         {
-            var visitors = visitorService.GetSignedOutVisitors();
+            var visitors = visitorService.GetSignedOutVisitors().AsEnumerable();
             var visitorsView = mapper.Map<IEnumerable<VisitorViewModel>>(visitors);
             return View(visitorsView);
         }
