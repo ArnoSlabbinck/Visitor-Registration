@@ -94,10 +94,10 @@ namespace VisitorRegistrationApp.Controllers
         }
 
 
-        public async Task<IActionResult> SignedIn()
+        public IActionResult SignedIn()
         {
             // In de service laag moet de Query gevraagd worden 
-            var visitors =  await visitorService.GetSignedInVisitors();
+            var visitors =  visitorService.GetSignedInVisitors();
             var visitorsView = mapper.Map<IEnumerable<VisitorViewModel>>(visitors);
 
 
@@ -106,9 +106,9 @@ namespace VisitorRegistrationApp.Controllers
             
         }
 
-        public async Task<IActionResult> SignedOut()
+        public IActionResult SignedOut()
         {
-            var visitors = await visitorService.GetSignedOutVisitors();
+            var visitors = visitorService.GetSignedOutVisitors();
             var visitorsView = mapper.Map<IEnumerable<VisitorViewModel>>(visitors);
             return View(visitorsView);
         }

@@ -287,17 +287,17 @@ namespace BL.Services
             return false;
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetSignedInVisitors()
+        public IEnumerable<ApplicationUser> GetSignedInVisitors()
         {
             // Houd vullen vna het ordenen van de logica moet in de service laag gebeuren
             // Het ordenen, filteren En andere logica moet ik terug vinden in de service laag
 
-            return visitorRepository.GetVisitorsWithCompanyAndHots().Where(u => u.VisitStatus == VisitStatus.CheckIn);
+            return  visitorRepository.GetVisitorsWithCompanyAndHots().Where(u => u.VisitStatus == VisitStatus.CheckIn);
            
             
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetSignedOutVisitors()
+        public IEnumerable<ApplicationUser> GetSignedOutVisitors()
         {
             return visitorRepository.GetVisitorsWithCompanyAndHots().Where(u => u.VisitStatus == VisitStatus.CheckOut);
 
@@ -335,8 +335,8 @@ namespace BL.Services
 
         Task<ApplicationUser> GetLatestVisitor();
 
-        Task<IEnumerable<ApplicationUser>> GetSignedInVisitors();
-        Task<IEnumerable<ApplicationUser>> GetSignedOutVisitors();
+        IEnumerable<ApplicationUser> GetSignedInVisitors();
+        IEnumerable<ApplicationUser> GetSignedOutVisitors();
 
 
 

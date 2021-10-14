@@ -14,8 +14,7 @@ namespace BLL.Validators
         {
             RuleFor(x => x.Name).NotEmpty().WithMessage("You need to give an employee a name").Length(5, 20);
             RuleFor(x => x.BirthDay).NotNull().WithMessage("Every Employee needs to have a birthday");
-            RuleFor(x => x.Job).NotEmpty().WithMessage("Every employee has a job").Length(20);
-         
+          
 
 
         }

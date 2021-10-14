@@ -4,10 +4,13 @@ using BLL.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VisitorRegistrationApp.Data.Entities;
 using VisitorRegistrationApp.Data.Helper;
+using VisitorRegistrationApp.Helper;
 using VisitorRegistrationApp.Models;
 
 namespace VisitorRegistrationApp.Controllers
@@ -31,10 +34,19 @@ namespace VisitorRegistrationApp.Controllers
            
         }
         // GET: CompaniesController
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+            var JsonCompaniesViews = (string)TempData["Companies"];
+          
+            if (JsonCompaniesViews != null)
+            {
+                var companies = JsonConvert.DeserializeObject<IEnumerable<CompanyViewModel>>(JsonCompaniesViews, new CompanyViewModelListConverter());
+                return View(companies);
+            }
+
+
             //Ophalen van alle companies in Building
-            var results = companyService.getAll().Result; 
+            var results = await companyService.getAll();
             
             IEnumerable<CompanyViewModel> AllCompanies = mapper.Map<IEnumerable<CompanyViewModel>>(results); 
 
@@ -168,10 +180,11 @@ namespace VisitorRegistrationApp.Controllers
             {
                 return RedirectToAction(nameof(NotFound));
             }
-            var results = companyService.SearchByName(searchTerm);
-            IEnumerable<CompanyViewModel> companyViews = mapper.Map<IEnumerable<CompanyViewModel>>(results);
+            var companies = companyService.SearchByName(searchTerm);
+            IEnumerable<CompanyViewModel> companyViews = mapper.Map<IEnumerable<CompanyViewModel>>(companies);
             //Toevoegen met een model 
-            return RedirectToAction(nameof(Index), new { companyViews = companyViews});
+            TempData["Companies"] = JsonConvert.SerializeObject(companyViews);
+            return RedirectToAction(nameof(Index));
         }
 
 

@@ -78,11 +78,16 @@ namespace BL.Services
             return await Task.FromResult(employeeRespository.GetEmployeesWithCompanies());
         }
 
-        public IEnumerable<Employee> GetEmployeesFromCompany(int id)
+        public async  Task<IEnumerable<Employee>> GetEmployeesFromCompany(int id)
         {
+            Company company;
             Errors = new List<string>() { Guard.AgainstNull(id, nameof(id)) };
             if (Errors.All(x => string.IsNullOrEmpty(x)) == true)
-                return companyRespository.GetEmployeesFromCompany(id).Result.Employees;
+            {
+                company = await companyRespository.GetEmployeesFromCompany(id);
+                return company.Employees;
+            }
+            
 
             return null; 
             
@@ -114,7 +119,7 @@ namespace BL.Services
 
         Task<bool> Delete(int id);
 
-        IEnumerable<Employee> GetEmployeesFromCompany(int id);
+        Task<IEnumerable<Employee>> GetEmployeesFromCompany(int id);
 
         
     }
