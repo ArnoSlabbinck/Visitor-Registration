@@ -16,10 +16,9 @@
 
             <div class="project-info-box">
                 <p><b>Amount Employees:</b> @Model.Employees.Count()</p>
-                <p><b>Place:</b> </p>
-                <p><b>Type:</b> </p>
-                <p><b>CEO: </b> </p>
-                <p class="mb-0"><b>Budget: </b> </p>
+                <p><b>Place:</b>@Model.Location </p>
+                <p><b>Type:</b> @Model.TypeOfBusiness </p>
+                <p><b>CEO: </b>@Model.Employees.Where(e => e.Job == "CEO").FirstOrDefault()?.Name </p>
             </div><!-- / project-info-box -->
 
             

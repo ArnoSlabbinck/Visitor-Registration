@@ -322,12 +322,18 @@ namespace DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PictureId")
                         .HasColumnType("int");
+
+                    b.Property<string>("TypeOfBusiness")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -23,13 +23,17 @@ namespace VisitorRegistrationApp.Models
         public virtual Model.Image Picture { get; set; } 
 
         [Display(Name = "Description")]
+        [Required(ErrorMessage = "A company needs a description")]
         public string Description { get; set; }
         [Display(Name = "Photo")]
         //Display the Image 
         public string Base64Image { get; set; }
-        //Uploaden van imagefile 
-        //Omzetten naar bytearray
-        // Omzetting onmiddelijk in de Viewmodel laten gebeure
+        [Required(ErrorMessage = "A company has a type")]
+        public string TypeOfBusiness { get; set; }
+        [Required(ErrorMessage = "A company has a location")]
+        public string Location { get; set; }
+
+
         [Required(ErrorMessage = "You need to upload the right image type")]
  
         public IFormFile file { 

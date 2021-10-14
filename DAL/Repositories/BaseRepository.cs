@@ -26,7 +26,7 @@ namespace VisitorRegistrationApp.Data.Repository
             applicationDbContext.Set<TEntity>().Add(Entity);
             logger.LogInformation($"A new {Entity} is created in the database");
             applicationDbContext.SaveChanges();
-            return null;
+            return Task.FromResult(Entity);
         }
 
         public Task<TEntity> Delete(int id)

@@ -83,7 +83,7 @@ namespace VisitorsRegistrationTests
             fakeUserManager.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>()))
                 .ReturnsAsync(IdentityResult.Success);
 
-            companyService = new CompanyService(_companyRepoMock.Object, companyValidatorMock.Object, loggerCom.Object);
+            //companyService = new CompanyService(_companyRepoMock.Object, companyValidatorMock.Object, loggerCom.Object);
             //visitorService = new VisitorService(fakeUserManager.Object,_visitorRepoMock.Object, visitorValidatorMock.Object, loggerVis.Object, signInManager, roleManager);
         }
         public void Dispose()

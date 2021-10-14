@@ -46,6 +46,8 @@ namespace VisitorRegistrationApp
 
             services.AddScoped<IEmployeeService, EmployeeService>();
 
+            services.AddScoped<IImageRespository, ImageRepository>();
+
             services.AddScoped<ICompanyService, CompanyService>();
 
             services.AddScoped<ICompanyRespository, CompanyRepository>();

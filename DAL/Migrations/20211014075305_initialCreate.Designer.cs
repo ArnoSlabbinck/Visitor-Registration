@@ -10,7 +10,7 @@ using VisitorRegistrationApp.Data;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211013142653_initialCreate")]
+    [Migration("20211014075305_initialCreate")]
     partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -324,12 +324,18 @@ namespace DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PictureId")
                         .HasColumnType("int");
+
+                    b.Property<string>("TypeOfBusiness")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

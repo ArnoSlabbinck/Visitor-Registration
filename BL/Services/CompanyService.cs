@@ -9,6 +9,8 @@ using VisitorRegistrationApp.Helper;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
+using DAL.Repositories;
+using Model;
 
 namespace BL.Services
 {
@@ -17,16 +19,19 @@ namespace BL.Services
         private readonly ICompanyRespository companyRes;
         private readonly IValidator<Company> validator;
         private readonly ILogger<CompanyService> logger;
+        private readonly IImageRespository imageRespository;
         private IList<string> Errors;
 
 
         public CompanyService(ICompanyRespository companyRes,
             IValidator<Company> validator, 
-            ILogger<CompanyService> logger)
+            ILogger<CompanyService> logger, 
+            IImageRespository  imageRespository)
         {
             this.companyRes = companyRes;
             this.validator = validator;
             this.logger = logger;
+            this.imageRespository = imageRespository;
        
         }
         public Building GetBuilding()
@@ -55,12 +60,15 @@ namespace BL.Services
 
         //Update van een company
 
-        public async Task<IList<string>>  Update(Company company)
+        public async Task<IList<string>>  Update(Company company, byte[] ImageFile)
         {
-
+            company.Building = companyRes.getBuilding();
+            Image image = new Image() { ImageFile = ImageFile, ImageName = $"{company.Name}Image" };
+            Image addedImage =  await imageRespository.Add(image);
+            company.PictureId = addedImage.Id;
             ValidationResult validationResult = validator.Validate(company);
             Errors = Guard.AgainstErrors(validationResult);
-            if(Errors == null)
+            if (Errors.Any() == false)
             {
                 var companyAdded  = await companyRes.Update(company);
                 logger.LogInformation($"The company has been updated with id {companyAdded.Id}, {companyAdded.Name}");
@@ -73,7 +81,7 @@ namespace BL.Services
 
         public async Task<IList<string>> Add(Company company)
         {
-
+            company.Building = companyRes.getBuilding();
             ValidationResult validationResult = validator.Validate(company);
             Errors = Guard.AgainstErrors(validationResult);
             if (Errors.Count() == 0)
@@ -130,7 +138,7 @@ namespace BL.Services
 
         Task<Company> Get(int Id);
 
-        Task<IList<string>> Update(Company company);
+        Task<IList<string>> Update(Company company, byte[] ImageFile);
 
         Task<IList<string>> Add(Company company);
 

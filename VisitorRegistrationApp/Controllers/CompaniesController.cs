@@ -52,7 +52,7 @@ namespace VisitorRegistrationApp.Controllers
                 return BadRequest();
             }
 
-            var Company = await Task.FromResult(companyService.Get((int)id).Result);
+            var Company = await companyService.Get((int)id);
             CompanyViewModel company = mapper.Map<CompanyViewModel>(Company);
             if(company.Picture !=  null)
                 company.Base64Image = ImgToByteConverter.byteArrayToImage(company.Picture.ImageFile);
@@ -86,7 +86,7 @@ namespace VisitorRegistrationApp.Controllers
 
                     var results = mapper.Map<Company>(companyViewModel);
 
-                    Errors = await Task.FromResult(await companyService.Add(results));
+                    Errors = await companyService.Add(results);
                     
                     
 
@@ -117,8 +117,10 @@ namespace VisitorRegistrationApp.Controllers
           
             try
             {
-                var result = mapper.Map<Company>(companyView);
-                Errors = await Task.FromResult(await companyService.Update(result));
+
+                var company = mapper.Map<Company>(companyView);
+                byte[] ImageFile = ImageConverter.fileToByteArray(companyView.file);
+                Errors = await companyService.Update(company, ImageFile);
 
                 
                 return RedirectToAction(nameof(Index));

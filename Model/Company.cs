@@ -26,6 +26,11 @@ namespace VisitorRegistrationApp.Data.Entities
         [Required(ErrorMessage ="A Company needs to have employees")]
 
         public virtual ICollection<Employee> Employees { get; set; }
+       
+
+        public string TypeOfBusiness { get; set; }
+
+        public string Location { get; set; }
         [Required(ErrorMessage = "An Company needs to have a building")]
         public virtual Building Building { get; set; }
 
